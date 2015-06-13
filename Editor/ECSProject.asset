@@ -15,8 +15,12 @@ MonoBehaviour:
   _settingsValues: 
   _diagrams:
   - {fileID: 11400000, guid: d24f9108dfe6afa468f17d511bda396f, type: 2}
-  _projectNamespace: 
+  - {fileID: 11400000, guid: 8846fc461bed16942ba96ff1429f03c5, type: 2}
+  _projectNamespace: Invert.uFrame.ECS
   _currentTabs:
   - _graphIdentifier: 5f0e4e63-96ee-4a23-b1e3-4cfce292bfaf
+    _graphName: uFrameECS
+    _path: []
+  - _graphIdentifier: e1684f8a-f8d7-4ccc-b88f-dd4a773cd424
     _graphName: NewUnityGraphData
     _path: []

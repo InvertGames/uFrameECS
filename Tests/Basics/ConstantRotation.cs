@@ -6,7 +6,7 @@ namespace Assets.uFrameECS.Tests.Basics
     public class ConstantRotation : EcsComponent
     {
         [SerializeField]
-        private int _speed;
+        private int _speed; 
 
         public int Speed
         {
