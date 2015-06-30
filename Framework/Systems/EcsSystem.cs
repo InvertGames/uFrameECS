@@ -1,3 +1,4 @@
+using uFrame.IOC;
 using uFrame.Kernel;
 using UniRx;
 using UniRx.Triggers;
@@ -7,6 +8,8 @@ namespace uFrame.ECS
 {
     public abstract class EcsSystem : SystemServiceMonoBehavior, IEcsSystem
     {
+        [Inject]
+        public IComponentSystem ComponentSystem { get; set; }
 
     }
 

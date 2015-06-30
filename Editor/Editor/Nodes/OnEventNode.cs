@@ -7,7 +7,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class OnEventNode : OnEventNodeBase, IFilterConnectable, IUserMethodConnectable {
+    public class OnEventNode : OnEventNodeBase, IActionConnectable {
     }
     
     public partial interface IOnEventConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

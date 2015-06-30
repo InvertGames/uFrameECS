@@ -30,34 +30,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class FilterNodeDrawerBase : GenericNodeDrawer<FilterNode,FilterNodeViewModel> {
-        
-        public FilterNodeDrawerBase(FilterNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class RequireAllNodeDrawerBase : GenericNodeDrawer<RequireAllNode,RequireAllNodeViewModel> {
-        
-        public RequireAllNodeDrawerBase(RequireAllNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class RequireOneNodeDrawerBase : GenericNodeDrawer<RequireOneNode,RequireOneNodeViewModel> {
-        
-        public RequireOneNodeDrawerBase(RequireOneNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class ComponentFilterNodeDrawerBase : GenericNodeDrawer<ComponentFilterNode,ComponentFilterNodeViewModel> {
-        
-        public ComponentFilterNodeDrawerBase(ComponentFilterNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
     public class ItemTypesNodeDrawerBase : GenericNodeDrawer<ItemTypesNode,ItemTypesNodeViewModel> {
         
         public ItemTypesNodeDrawerBase(ItemTypesNodeViewModel viewModel) : 
@@ -65,9 +37,9 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class OnEventNodeDrawerBase : GenericNodeDrawer<OnEventNode,OnEventNodeViewModel> {
+    public class EventNodeDrawerBase : GenericNodeDrawer<EventNode,EventNodeViewModel> {
         
-        public OnEventNodeDrawerBase(OnEventNodeViewModel viewModel) : 
+        public EventNodeDrawerBase(EventNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
@@ -82,6 +54,90 @@ namespace Invert.uFrame.ECS {
     public class UserMethodNodeDrawerBase : GenericNodeDrawer<UserMethodNode,UserMethodNodeViewModel> {
         
         public UserMethodNodeDrawerBase(UserMethodNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class ConditionNodeDrawerBase : GenericNodeDrawer<ConditionNode,ConditionNodeViewModel> {
+        
+        public ConditionNodeDrawerBase(ConditionNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class LoopNodeDrawerBase : GenericNodeDrawer<LoopNode,LoopNodeViewModel> {
+        
+        public LoopNodeDrawerBase(LoopNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class IfNodeDrawerBase : GenericNodeDrawer<IfNode,IfNodeViewModel> {
+        
+        public IfNodeDrawerBase(IfNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class IfNotNodeDrawerBase : GenericNodeDrawer<IfNotNode,IfNotNodeViewModel> {
+        
+        public IfNotNodeDrawerBase(IfNotNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class IsNullNodeDrawerBase : GenericNodeDrawer<IsNullNode,IsNullNodeViewModel> {
+        
+        public IsNullNodeDrawerBase(IsNullNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class IsNotNullNodeDrawerBase : GenericNodeDrawer<IsNotNullNode,IsNotNullNodeViewModel> {
+        
+        public IsNotNullNodeDrawerBase(IsNotNullNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class ActionNodeDrawerBase : GenericNodeDrawer<ActionNode,ActionNodeViewModel> {
+        
+        public ActionNodeDrawerBase(ActionNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class MatcherNodeDrawerBase : GenericNodeDrawer<MatcherNode,MatcherNodeViewModel> {
+        
+        public MatcherNodeDrawerBase(MatcherNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class MatchAllNodeDrawerBase : GenericNodeDrawer<MatchAllNode,MatchAllNodeViewModel> {
+        
+        public MatchAllNodeDrawerBase(MatchAllNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class MatchAnyNodeDrawerBase : GenericNodeDrawer<MatchAnyNode,MatchAnyNodeViewModel> {
+        
+        public MatchAnyNodeDrawerBase(MatchAnyNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class CustomMatcherNodeDrawerBase : GenericNodeDrawer<CustomMatcherNode,CustomMatcherNodeViewModel> {
+        
+        public CustomMatcherNodeDrawerBase(CustomMatcherNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class OnEventNodeDrawerBase : GenericNodeDrawer<OnEventNode,OnEventNodeViewModel> {
+        
+        public OnEventNodeDrawerBase(OnEventNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }

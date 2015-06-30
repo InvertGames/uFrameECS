@@ -1,3 +1,5 @@
+using Invert.IOC;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -8,5 +10,10 @@ namespace Invert.uFrame.ECS {
     
     
     public class uFrameECS : uFrameECSBase {
+        public override void Initialize(UFrameContainer container)
+        {
+            base.Initialize(container);
+
+        }
     }
 }

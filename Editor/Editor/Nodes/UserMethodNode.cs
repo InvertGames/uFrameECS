@@ -7,7 +7,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class UserMethodNode : UserMethodNodeBase, IPublishConnectable {
+    public class UserMethodNode : UserMethodNodeBase {
     }
     
     public partial interface IUserMethodConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

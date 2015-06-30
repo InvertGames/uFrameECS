@@ -29,34 +29,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class FilterNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<FilterNode> {
-        
-        public FilterNodeViewModelBase(FilterNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
-                base(graphItemObject, diagramViewModel) {
-        }
-    }
-    
-    public class RequireAllNodeViewModelBase : ComponentFilterNodeViewModel {
-        
-        public RequireAllNodeViewModelBase(RequireAllNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
-                base(graphItemObject, diagramViewModel) {
-        }
-    }
-    
-    public class RequireOneNodeViewModelBase : ComponentFilterNodeViewModel {
-        
-        public RequireOneNodeViewModelBase(RequireOneNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
-                base(graphItemObject, diagramViewModel) {
-        }
-    }
-    
-    public class ComponentFilterNodeViewModelBase : FilterNodeViewModel {
-        
-        public ComponentFilterNodeViewModelBase(ComponentFilterNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
-                base(graphItemObject, diagramViewModel) {
-        }
-    }
-    
     public class ItemTypesNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ItemTypesNode> {
         
         public ItemTypesNodeViewModelBase(ItemTypesNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
@@ -64,23 +36,107 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class OnEventNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<OnEventNode> {
+    public class EventNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<EventNode> {
         
-        public OnEventNodeViewModelBase(OnEventNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+        public EventNodeViewModelBase(EventNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
     }
     
-    public class PublishNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<PublishNode> {
+    public class PublishNodeViewModelBase : EventNodeViewModel {
         
         public PublishNodeViewModelBase(PublishNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
     }
     
-    public class UserMethodNodeViewModelBase : FilterNodeViewModel {
+    public class UserMethodNodeViewModelBase : ActionNodeViewModel {
         
         public UserMethodNodeViewModelBase(UserMethodNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class ConditionNodeViewModelBase : ActionNodeViewModel {
+        
+        public ConditionNodeViewModelBase(ConditionNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class LoopNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<LoopNode> {
+        
+        public LoopNodeViewModelBase(LoopNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class IfNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<IfNode> {
+        
+        public IfNodeViewModelBase(IfNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class IfNotNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<IfNotNode> {
+        
+        public IfNotNodeViewModelBase(IfNotNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class IsNullNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<IsNullNode> {
+        
+        public IsNullNodeViewModelBase(IsNullNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class IsNotNullNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<IsNotNullNode> {
+        
+        public IsNotNullNodeViewModelBase(IsNotNullNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class ActionNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ActionNode> {
+        
+        public ActionNodeViewModelBase(ActionNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class MatcherNodeViewModelBase : ConditionNodeViewModel {
+        
+        public MatcherNodeViewModelBase(MatcherNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class MatchAllNodeViewModelBase : MatcherNodeViewModel {
+        
+        public MatchAllNodeViewModelBase(MatchAllNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class MatchAnyNodeViewModelBase : MatcherNodeViewModel {
+        
+        public MatchAnyNodeViewModelBase(MatchAnyNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class CustomMatcherNodeViewModelBase : MatcherNodeViewModel {
+        
+        public CustomMatcherNodeViewModelBase(CustomMatcherNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class OnEventNodeViewModelBase : EventNodeViewModel {
+        
+        public OnEventNodeViewModelBase(OnEventNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
     }

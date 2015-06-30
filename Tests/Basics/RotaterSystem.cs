@@ -15,8 +15,7 @@ namespace Assets.uFrameECS.Tests.Basics
 {
     public class RotaterSystem : EcsSystem
     {
-        [Inject]
-        public IComponentSystem ComponentSystem { get; set; }
+
 
         public override void Setup()
         {
