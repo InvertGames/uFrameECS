@@ -1,20 +1,40 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using uFrame.Kernel;
+using UniRx;
 
 namespace uFrame.ECS
 {
     public class EcsComponentManagerOf<TComponentType> : EcsComponentManager, IEcsComponentManagerOf<TComponentType> where TComponentType : IEcsComponent
     {
-        private List<TComponentType> _items;
+        protected List<TComponentType> _items = new List<TComponentType>();
 
-        public List<TComponentType> Components
+        public virtual IEnumerable<TComponentType> Components
         {
-            get { return _items ?? (_items = new List<TComponentType>()); }
-            set { _items = value; }
+            get
+            {
+                return _items;
+            }
         }
 
-        public IEnumerable<TComponentType> ForEntity(int entityId)
+        public override Type For
+        {
+            get { return typeof (TComponentType); }
+        }
+
+        public override IEnumerable<IEcsComponent> All
+        {
+            get
+            {
+                foreach (TComponentType component in Components)
+                    yield return component;
+            }
+        }
+
+        public override IEnumerable<IEcsComponent> ForEntity(int entityId)
         {
             foreach (var item in Components)
             {
@@ -22,15 +42,202 @@ namespace uFrame.ECS
                     yield return item;
             }
         }
+
+        public HashSet<int> _entities = new HashSet<int>();
         protected override void AddItem(IEcsComponent component)
         {
-            Components.Add((TComponentType)component);
+            _items.Add((TComponentType)component);
+            if (!_entities.Contains(component.EntityId))
+                _entities.Add(component.EntityId);
         }
 
         protected override void RemoveItem(IEcsComponent component)
         {
-            Components.Remove((TComponentType)component);
+            _items.Remove((TComponentType)component);
+            _entities.Remove(component.EntityId);
         }
     }
+
+    //public class FilteredComponentManagerOf<TComponentType> : EcsComponentManagerOf<TComponentType> where TComponentType : IEcsComponent
+    //{
+    //    public FilteredComponentManagerOf(Predicate<TComponentType> filter)
+    //    {
+    //        if (filter == null) throw new ArgumentNullException("filter","filter can't be null");
+    //        Filter = filter;
+    //    }
+
+    //    public override IEnumerable<TComponentType> Components
+    //    {
+    //        get
+    //        {
+    //            for (int index = 0; index < _items.Count; index++)
+    //            {
+    //                var item = _items[index];
+    //                if (Filter(item))
+    //                {
+    //                    yield return item;
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    public Predicate<TComponentType> Filter { get; set; }
+    //}
+
+
+    public interface IContext
+    {
+        IEcsComponentManager[] WithAnyManagers { get; set; }
+        IEcsComponentManager[] SelectManagers { get; set; }
+        Type[] WithAnyTypes { get; set; }
+        bool Match(int entityId);
+    }
+
+    public class Context<TContextItem> : IContext where TContextItem : class, new()
+    {
+        public Context()
+        {
+        }
+
+        private readonly EcsSystem _system;
+
+        public IEcsComponentManager[] WithAnyManagers { get; set; }
+        public IEcsComponentManager[] SelectManagers { get; set; }
+
+        public Context(EcsSystem system)
+        {
+            _system = system;
+            ComponentSystem = _system.ComponentSystem;
+            InitializeInternal();
+        }
+
+        private  void InitializeInternal()
+        {
+            
+            Initialize();
+            if (WithAnyManagers != null && WithAnyManagers.Length > 0)
+            {
+                WithAnyTypes = WithAnyManagers.Select(p => p.For).ToArray();
+            }
+            else
+            {
+                WithAnyTypes = SelectManagers.Select(p => p.For).ToArray();
+            }
+            
+        }
+
+        protected virtual void Initialize()
+        {
+            WithAnyManagers = GetWithAnyManagers().ToArray();
+            SelectManagers = GetSelectManagers().ToArray();
+        }
+
+        protected virtual IEnumerable<IEcsComponentManager> GetWithAnyManagers()
+        {
+            yield break;
+        }
+
+        protected virtual IEnumerable<IEcsComponentManager> GetSelectManagers()
+        {
+            yield break;
+        }
+
+        public Context(EcsSystem system, IEcsComponentManager[] withAny, IEcsComponentManager[] selectManagers)
+        {
+            _system = system;
+            ComponentSystem = _system.ComponentSystem;
+     
+            WithAnyManagers = withAny;
+            SelectManagers = selectManagers;
+            if (WithAnyManagers != null && WithAnyManagers.Length > 0)
+            {
+                WithAnyTypes = WithAnyManagers.Select(p => p.For).ToArray();
+            }
+            else
+            {
+                WithAnyTypes = SelectManagers.Select(p => p.For).ToArray();
+            }      
+        }
+
+        public Type[] WithAnyTypes { get; set; }
+
+        public IComponentSystem ComponentSystem { get; set; }
+
+        public IEnumerable<TContextItem> Items
+        {
+            get {
+                if (WithAnyManagers == null || WithAnyManagers.Length < 1)
+                {
+                    // If we only want to work with components that have this type specifically
+                    var first = SelectManagers.First();
+                    foreach (var item in first.All)
+                    {
+                        if (Match(item.EntityId))
+                        {
+                            yield return Select();
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var ecsComponent in AnyItems())
+                    {
+                        if (Match(ecsComponent.EntityId))
+                        {
+                            yield return Select();
+                        }
+                    }
+                }
+                
+                    
+            }
+        }
+
+
+
+        private IEnumerable<IEcsComponent> AnyItems()
+        {
+            var list = new HashSet<int>();
+            foreach (var manager in WithAnyManagers)
+            {
+                foreach (var item in manager.All)
+                {
+                    if (list.Contains(item.EntityId)) continue;
+                    yield return item;
+                    list.Add(item.EntityId);
+                }
+            }
+        }
+
+        public TContextItem MatchAndSelect(int entityId)
+        {
+            if (Match(entityId))
+            {
+                return Select();
+            }
+            return null;
+        }
+
+        public virtual bool Match(int entityId)
+        {
+            return true;
+        
+
+        }
+
+        public virtual TContextItem Select()
+        {
+            return new TContextItem();
+        }
+
+    }
+
+
+
+    public class ContextItem : IEcsComponent
+    {
+        public int EntityId { get; set; }
+    }
+
 }
 

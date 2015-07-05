@@ -43,7 +43,7 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class PublishNodeViewModelBase : EventNodeViewModel {
+    public class PublishNodeViewModelBase : ActionNodeViewModel {
         
         public PublishNodeViewModelBase(PublishNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
@@ -64,7 +64,7 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class LoopNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<LoopNode> {
+    public class LoopNodeViewModelBase : ActionNodeViewModel {
         
         public LoopNodeViewModelBase(LoopNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
@@ -134,9 +134,72 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class OnEventNodeViewModelBase : EventNodeViewModel {
+    public class OnEventNodeViewModelBase : ActionNodeViewModel {
         
         public OnEventNodeViewModelBase(OnEventNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class EachComponentNodeViewModelBase : LoopNodeViewModel {
+        
+        public EachComponentNodeViewModelBase(EachComponentNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class ComponentGroupNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ComponentGroupNode> {
+        
+        public ComponentGroupNodeViewModelBase(ComponentGroupNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class AddComponentNodeViewModelBase : ActionNodeViewModel {
+        
+        public AddComponentNodeViewModelBase(AddComponentNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class RemoveComponentNodeViewModelBase : ActionNodeViewModel {
+        
+        public RemoveComponentNodeViewModelBase(RemoveComponentNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class ComponentFilterNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ComponentFilterNode> {
+        
+        public ComponentFilterNodeViewModelBase(ComponentFilterNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class EqualNodeViewModelBase : FilterExpressionNodeViewModel {
+        
+        public EqualNodeViewModelBase(EqualNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class FilterExpressionNodeViewModelBase : ActionNodeViewModel {
+        
+        public FilterExpressionNodeViewModelBase(FilterExpressionNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class VariableNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<VariableNode> {
+        
+        public VariableNodeViewModelBase(VariableNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class FilterNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<FilterNode> {
+        
+        public FilterNodeViewModelBase(FilterNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
     }

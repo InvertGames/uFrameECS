@@ -4,4 +4,6 @@ namespace uFrame.ECS
     {
         int EntityId { get; set; }
     }
+
+ 
 }

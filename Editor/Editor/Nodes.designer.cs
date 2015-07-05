@@ -17,7 +17,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class ComponentNodeBase : Invert.Core.GraphDesigner.GenericNode, Invert.Core.GraphDesigner.IClassTypeNode, IComponentsConnectable {
+    public class ComponentNodeBase : Invert.Core.GraphDesigner.GenericNode, Invert.Core.GraphDesigner.IClassTypeNode, IComponentsConnectable, IComponentConnectable, IFilterByConnectable, ISelectConnectable, IWithAnyConnectable, IOnEventConnectable {
         
         public virtual string ClassName {
             get {
@@ -92,6 +92,10 @@ namespace Invert.uFrame.ECS {
         
         private Variables _Variables;
         
+        private FilterBy _FilterBy;
+        
+        private Each _Each;
+        
         public override bool AllowMultipleInputs {
             get {
                 return true;
@@ -133,6 +137,13 @@ namespace Invert.uFrame.ECS {
         public virtual System.Collections.Generic.IEnumerable<CollectionsChildItem> Collections {
             get {
                 return ChildItems.OfType<CollectionsChildItem>();
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.Section("New Section", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual System.Collections.Generic.IEnumerable<NewSectionChildItem> NewSection {
+            get {
+                return ChildItems.OfType<NewSectionChildItem>();
             }
         }
         
@@ -182,20 +193,46 @@ namespace Invert.uFrame.ECS {
                 _Variables = value;
             }
         }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Filter By", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual FilterBy FilterByInputSlot {
+            get {
+                if (_FilterBy == null) {
+                    _FilterBy = new FilterBy() { Node = this };
+                }
+                return _FilterBy;
+            }
+            set {
+                _FilterBy = value;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.OutputSlot("Each", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Each EachOutputSlot {
+            get {
+                if (_Each == null) {
+                    _Each = new Each() { Node = this };
+                }
+                return _Each;
+            }
+            set {
+                _Each = value;
+            }
+        }
     }
     
     public partial interface IItemTypesConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class EventNodeBase : Invert.Core.GraphDesigner.GenericNode {
+    public class EventNodeBase : Invert.Core.GraphDesigner.GenericInheritableNode, Invert.Core.GraphDesigner.IClassTypeNode {
         
-        public override bool AllowMultipleInputs {
+        public virtual string ClassName {
             get {
-                return true;
+                return this.Name;
             }
         }
         
-        public override bool AllowMultipleOutputs {
+        public override bool AllowMultipleInputs {
             get {
                 return true;
             }
@@ -219,7 +256,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IEventConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class PublishNodeBase : EventNode {
+    public class PublishNodeBase : ActionNode {
         
         private Variables _Variables;
         
@@ -288,7 +325,9 @@ namespace Invert.uFrame.ECS {
     public partial interface IConditionConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class LoopNodeBase : Invert.Core.GraphDesigner.GenericNode {
+    public class LoopNodeBase : ActionNode {
+        
+        private Each _Each;
         
         public override bool AllowMultipleInputs {
             get {
@@ -299,6 +338,19 @@ namespace Invert.uFrame.ECS {
         public override bool AllowMultipleOutputs {
             get {
                 return true;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.OutputSlot("Each", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Each EachOutputSlot {
+            get {
+                if (_Each == null) {
+                    _Each = new Each() { Node = this };
+                }
+                return _Each;
+            }
+            set {
+                _Each = value;
             }
         }
     }
@@ -378,7 +430,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IIsNotNullConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ActionNodeBase : Invert.Core.GraphDesigner.GenericNode, IPublishConnectable {
+    public class ActionNodeBase : Invert.Core.GraphDesigner.GenericNode, IPublishConnectable, IActionConnectable {
         
         public override bool AllowMultipleInputs {
             get {
@@ -416,6 +468,8 @@ namespace Invert.uFrame.ECS {
     
     public class MatchAllNodeBase : MatcherNode {
         
+        private FilterBy _FilterBy;
+        
         public override bool AllowMultipleInputs {
             get {
                 return true;
@@ -428,16 +482,16 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleComponents {
+        [Invert.Core.GraphDesigner.InputSlot("Filter By", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual FilterBy FilterByInputSlot {
             get {
-                return this.Project.AllGraphItems.OfType<IComponentsConnectable>().Cast<IItem>();
+                if (_FilterBy == null) {
+                    _FilterBy = new FilterBy() { Node = this };
+                }
+                return _FilterBy;
             }
-        }
-        
-        [Invert.Core.GraphDesigner.ReferenceSection("Components", SectionVisibility.Always, false, false, typeof(IComponentsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=false)]
-        public virtual System.Collections.Generic.IEnumerable<ComponentsReference> Components {
-            get {
-                return ChildItems.OfType<ComponentsReference>();
+            set {
+                _FilterBy = value;
             }
         }
     }
@@ -494,7 +548,117 @@ namespace Invert.uFrame.ECS {
     public partial interface ICustomMatcherConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class OnEventNodeBase : EventNode, IActionConnectable {
+    public class OnEventNodeBase : ActionNode, IActionConnectable {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+        
+        public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleMappings {
+            get {
+                return this.Project.AllGraphItems.OfType<IMappingsConnectable>().Cast<IItem>();
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.ReferenceSection("Mappings", SectionVisibility.WhenNodeIsNotFilter, false, false, typeof(IMappingsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=true)]
+        public virtual System.Collections.Generic.IEnumerable<MappingsReference> Mappings {
+            get {
+                return ChildItems.OfType<MappingsReference>();
+            }
+        }
+    }
+    
+    public partial interface IOnEventConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class EachComponentNodeBase : LoopNode {
+        
+        private Component _Component;
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Component", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Component ComponentInputSlot {
+            get {
+                if (_Component == null) {
+                    _Component = new Component() { Node = this };
+                }
+                return _Component;
+            }
+            set {
+                _Component = value;
+            }
+        }
+    }
+    
+    public partial interface IEachComponentConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class ComponentGroupNodeBase : Invert.Core.GraphDesigner.GenericNode, IFilterByConnectable, IComponentsConnectable, IWithAnyConnectable, ISelectConnectable, IOnEventConnectable {
+        
+        private Filter _Filter;
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+        
+        public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleComponents {
+            get {
+                return this.Project.AllGraphItems.OfType<IComponentsConnectable>().Cast<IItem>();
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.ReferenceSection("Components", SectionVisibility.Always, false, false, typeof(IComponentsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=false)]
+        public virtual System.Collections.Generic.IEnumerable<ComponentsReference> Components {
+            get {
+                return ChildItems.OfType<ComponentsReference>();
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.OutputSlot("Filter", false, SectionVisibility.WhenNodeIsFilter, OrderIndex=0, IsNewRow=true)]
+        public virtual Filter FilterOutputSlot {
+            get {
+                if (_Filter == null) {
+                    _Filter = new Filter() { Node = this };
+                }
+                return _Filter;
+            }
+            set {
+                _Filter = value;
+            }
+        }
+    }
+    
+    public partial interface IComponentGroupConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class AddComponentNodeBase : ActionNode {
         
         public override bool AllowMultipleInputs {
             get {
@@ -509,6 +673,185 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public partial interface IOnEventConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    public partial interface IAddComponentConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class RemoveComponentNodeBase : ActionNode {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IRemoveComponentConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class ComponentFilterNodeBase : Invert.Core.GraphDesigner.GenericNode {
+        
+        private Component _Component;
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Component", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Component ComponentInputSlot {
+            get {
+                if (_Component == null) {
+                    _Component = new Component() { Node = this };
+                }
+                return _Component;
+            }
+            set {
+                _Component = value;
+            }
+        }
+    }
+    
+    public partial interface IComponentFilterConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class EqualNodeBase : FilterExpressionNode {
+        
+        private A _A;
+        
+        private B _B;
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("A", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual A AInputSlot {
+            get {
+                if (_A == null) {
+                    _A = new A() { Node = this };
+                }
+                return _A;
+            }
+            set {
+                _A = value;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("B", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual B BInputSlot {
+            get {
+                if (_B == null) {
+                    _B = new B() { Node = this };
+                }
+                return _B;
+            }
+            set {
+                _B = value;
+            }
+        }
+    }
+    
+    public partial interface IEqualConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class FilterExpressionNodeBase : ActionNode {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IFilterExpressionConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class VariableNodeBase : Invert.Core.GraphDesigner.GenericNode, IAConnectable, IBConnectable {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class FilterNodeBase : Invert.Core.GraphDesigner.GenericNode, IWithAnyConnectable, ISelectConnectable, IMappingsConnectable, IOnEventConnectable {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+        
+        public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleWithAny {
+            get {
+                return this.Project.AllGraphItems.OfType<IWithAnyConnectable>().Cast<IItem>();
+            }
+        }
+        
+        public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleSelect {
+            get {
+                return this.Project.AllGraphItems.OfType<ISelectConnectable>().Cast<IItem>();
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.ReferenceSection("With Any", SectionVisibility.Always, false, false, typeof(IWithAnyConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=true)]
+        public virtual System.Collections.Generic.IEnumerable<WithAnyReference> WithAny {
+            get {
+                return ChildItems.OfType<WithAnyReference>();
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.ReferenceSection("Select", SectionVisibility.Always, false, false, typeof(ISelectConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=true)]
+        public virtual System.Collections.Generic.IEnumerable<SelectReference> Select {
+            get {
+                return ChildItems.OfType<SelectReference>();
+            }
+        }
+    }
+    
+    public partial interface IFilterConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
 }

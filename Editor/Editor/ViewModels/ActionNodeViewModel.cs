@@ -1,3 +1,5 @@
+using Invert.Core.GraphDesigner;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -10,5 +12,25 @@ namespace Invert.uFrame.ECS {
         public ActionNodeViewModel(ActionNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+
+        public virtual bool ShowContextVariables
+        {
+            get { return true; }
+        }
+        protected override void CreateContent()
+        {
+            if (ShowContextVariables )
+            {
+                foreach (var item in GraphItem.AllContextVariables)
+                {
+                    ContentItems.Add(new ItemViewModel<IContextVariable>(item, this));
+                }
+            }
+          
+            base.CreateContent();
+          
+        }
     }
+
+
 }

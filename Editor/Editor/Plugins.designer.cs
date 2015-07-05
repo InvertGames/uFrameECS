@@ -55,6 +55,24 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<OnEventNode> _OnEvent;
         
+        private Invert.Core.GraphDesigner.NodeConfig<EachComponentNode> _EachComponent;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ComponentGroupNode> _ComponentGroup;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<AddComponentNode> _AddComponent;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<RemoveComponentNode> _RemoveComponent;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ComponentFilterNode> _ComponentFilter;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<EqualNode> _Equal;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<FilterExpressionNode> _FilterExpression;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<VariableNode> _Variable;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<FilterNode> _Filter;
+        
         public Invert.Core.GraphDesigner.NodeConfig<ComponentNode> Component {
             get {
                 return _Component;
@@ -217,6 +235,87 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<EachComponentNode> EachComponent {
+            get {
+                return _EachComponent;
+            }
+            set {
+                _EachComponent = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ComponentGroupNode> ComponentGroup {
+            get {
+                return _ComponentGroup;
+            }
+            set {
+                _ComponentGroup = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<AddComponentNode> AddComponent {
+            get {
+                return _AddComponent;
+            }
+            set {
+                _AddComponent = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<RemoveComponentNode> RemoveComponent {
+            get {
+                return _RemoveComponent;
+            }
+            set {
+                _RemoveComponent = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ComponentFilterNode> ComponentFilter {
+            get {
+                return _ComponentFilter;
+            }
+            set {
+                _ComponentFilter = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<EqualNode> Equal {
+            get {
+                return _Equal;
+            }
+            set {
+                _Equal = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<FilterExpressionNode> FilterExpression {
+            get {
+                return _FilterExpression;
+            }
+            set {
+                _FilterExpression = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<VariableNode> Variable {
+            get {
+                return _Variable;
+            }
+            set {
+                _Variable = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<FilterNode> Filter {
+            get {
+                return _Filter;
+            }
+            set {
+                _Filter = value;
+            }
+        }
+        
         public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetPropertiesSelectionCommand() {
             return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
         }
@@ -234,6 +333,10 @@ namespace Invert.uFrame.ECS {
             container.RegisterInstance<IEditorCommand>(GetCollectionsSelectionCommand(), typeof(CollectionsChildItem).Name + "TypeSelection");;
             container.AddTypeItem<CollectionsChildItem>();
             container.AddItem<SignalsReference>();
+            container.AddItem<NewSectionChildItem>();
+            container.AddItem<MappingsReference>();
+            container.AddItem<WithAnyReference>();
+            container.AddItem<SelectReference>();
             Component = container.AddNode<ComponentNode,ComponentNodeViewModel,ComponentNodeDrawer>("Component");
             Component.Color(NodeColor.Orange);
             System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
@@ -241,9 +344,13 @@ namespace Invert.uFrame.ECS {
             System.HasSubNode<ComponentNode>();
             System.HasSubNode<EventNode>();
             System.HasSubNode<OnEventNode>();
+            System.HasSubNode<ComponentGroupNode>();
+            System.HasSubNode<ComponentFilterNode>();
+            System.HasSubNode<FilterNode>();
             ItemTypes = container.AddNode<ItemTypesNode,ItemTypesNodeViewModel,ItemTypesNodeDrawer>("ItemTypes");
             ItemTypes.Color(NodeColor.Gray);
-            Event = container.AddGraph<EventGraph, EventNode>("EventGraph");
+            Event = container.AddNode<EventNode,EventNodeViewModel,EventNodeDrawer>("Event");
+            Event.Inheritable();
             Event.Color(NodeColor.Red);
             Event.HasSubNode<ComponentNode>();
             Event.HasSubNode<PublishNode>();
@@ -293,12 +400,60 @@ namespace Invert.uFrame.ECS {
             OnEvent.HasSubNode<MatchAllNode>();
             OnEvent.HasSubNode<MatchAnyNode>();
             OnEvent.HasSubNode<CustomMatcherNode>();
+            OnEvent.HasSubNode<EachComponentNode>();
+            OnEvent.HasSubNode<ComponentGroupNode>();
+            OnEvent.HasSubNode<AddComponentNode>();
+            OnEvent.HasSubNode<RemoveComponentNode>();
+            EachComponent = container.AddNode<EachComponentNode,EachComponentNodeViewModel,EachComponentNodeDrawer>("EachComponent");
+            EachComponent.Color(NodeColor.Gray);
+            ComponentGroup = container.AddNode<ComponentGroupNode,ComponentGroupNodeViewModel,ComponentGroupNodeDrawer>("ComponentGroup");
+            ComponentGroup.Color(NodeColor.Purple);
+            ComponentGroup.HasSubNode<EqualNode>();
+            ComponentGroup.HasSubNode<FilterExpressionNode>();
+            ComponentGroup.HasSubNode<VariableNode>();
+            AddComponent = container.AddNode<AddComponentNode,AddComponentNodeViewModel,AddComponentNodeDrawer>("AddComponent");
+            AddComponent.Color(NodeColor.Gray);
+            RemoveComponent = container.AddNode<RemoveComponentNode,RemoveComponentNodeViewModel,RemoveComponentNodeDrawer>("RemoveComponent");
+            RemoveComponent.Color(NodeColor.Gray);
+            ComponentFilter = container.AddNode<ComponentFilterNode,ComponentFilterNodeViewModel,ComponentFilterNodeDrawer>("ComponentFilter");
+            ComponentFilter.Color(NodeColor.Gray);
+            Equal = container.AddNode<EqualNode,EqualNodeViewModel,EqualNodeDrawer>("Equal");
+            Equal.Color(NodeColor.Gray);
+            FilterExpression = container.AddNode<FilterExpressionNode,FilterExpressionNodeViewModel,FilterExpressionNodeDrawer>("FilterExpression");
+            FilterExpression.Color(NodeColor.Gray);
+            Variable = container.AddNode<VariableNode,VariableNodeViewModel,VariableNodeDrawer>("Variable");
+            Variable.Color(NodeColor.Gray);
+            Filter = container.AddNode<FilterNode,FilterNodeViewModel,FilterNodeDrawer>("Filter");
+            Filter.Color(NodeColor.Gray);
+            Filter.HasSubNode<ComponentNode>();
+            Filter.HasSubNode<OnEventNode>();
+            Filter.HasSubNode<ComponentGroupNode>();
             container.Connectable<ComponentNode,ComponentsReference>();
+            container.Connectable<ComponentNode,Component>();
+            container.Connectable<ComponentNode,FilterBy>();
+            container.Connectable<ComponentNode,SelectReference>();
+            container.Connectable<ComponentNode,WithAnyReference>();
+            container.Connectable<ComponentNode,OnEventNode>();
             container.Connectable<ComponentsReference,Variables>();
             container.Connectable<PropertiesChildItem,Variables>();
+            container.Connectable<PropertiesChildItem,MappingsReference>();
             container.Connectable<CollectionsChildItem,Variables>();
+            container.Connectable<Each,ActionNode>();
             container.Connectable<ActionNode,PublishNode>();
+            container.Connectable<ActionNode,ActionNode>();
             container.Connectable<OnEventNode,ActionNode>();
+            container.Connectable<ComponentGroupNode,FilterBy>();
+            container.Connectable<ComponentGroupNode,ComponentsReference>();
+            container.Connectable<ComponentGroupNode,WithAnyReference>();
+            container.Connectable<ComponentGroupNode,SelectReference>();
+            container.Connectable<ComponentGroupNode,OnEventNode>();
+            container.Connectable<Filter,FilterExpressionNode>();
+            container.Connectable<VariableNode,A>();
+            container.Connectable<VariableNode,B>();
+            container.Connectable<FilterNode,WithAnyReference>();
+            container.Connectable<FilterNode,SelectReference>();
+            container.Connectable<FilterNode,MappingsReference>();
+            container.Connectable<FilterNode,OnEventNode>();
         }
     }
 }

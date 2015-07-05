@@ -15,13 +15,19 @@ namespace Invert.uFrame.ECS.Templates
         {
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<SystemNode,SystemTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentNode,ComponentTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentGroupNode,ComponentGroupTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentGroupNode,ComponentGroupManagerTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<EventNode,EventTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<FilterNode,ContextTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<FilterNode, ContextItemTemplate>();
             
-            RegisteredTemplateGeneratorsFactory.RegisterTemplate<OnEventNode,OnEventTemplate>();
-            RegisteredTemplateGeneratorsFactory.RegisterTemplate<PublishNode,PublishTemplate>();
+            //RegisteredTemplateGeneratorsFactory.RegisterTemplate<OnEventNode,OnEventTemplate>();
+            //RegisteredTemplateGeneratorsFactory.RegisterTemplate<PublishNode,PublishTemplate>();
         }
     }
+
     [TemplateClass(TemplateLocation.Both)]
-   
+    [RequiresNamespace("uFrame.Kernel")]
     public partial class SystemTemplate : IClassTemplate<SystemNode>
     {
         public IEnumerable<ComponentNode> Components
@@ -33,6 +39,26 @@ namespace Invert.uFrame.ECS.Templates
             }
         }
 
+        public IEnumerable<ComponentGroupNode> ComponentGroups
+        {
+            get
+            {
+                return Ctx.Data.Components.Select(p => p.SourceItem).OfType<ComponentGroupNode>()
+                    .Concat(Ctx.Data.Graph.NodeItems.OfType<ComponentGroupNode>()).Distinct();
+            }
+        }
+        public IEnumerable<OnEventNode> EventHandlers
+        {
+            get
+            {
+                return Ctx.Data.EventHandlers;
+            }
+        }
+
+        public IEnumerable<FilterNode> FilterNodes
+        {
+            get { return Ctx.Data.Graph.NodeItems.OfType<FilterNode>(); }
+        }
         public string OutputPath
         {
             get { return Path2.Combine(Ctx.Data.Graph.Name, "Systems"); }
@@ -75,16 +101,152 @@ namespace Invert.uFrame.ECS.Templates
         public TemplateContext<ComponentNode> Ctx { get; set; }
     }
 
-
-   
-    public partial class EventTemplate
+    [TemplateClass(TemplateLocation.DesignerFile)]
+    [ForceBaseType(typeof(ComponentGroup))]
+    [RequiresNamespace("uFrame.ECS")]
+    [AsPartial]
+    public partial class ComponentGroupTemplate : IClassTemplate<ComponentGroupNode>
     {
+        public IEnumerable<ComponentNode> Components
+        {
+            get
+            {
+                return Ctx.Data.Components.Select(p => p.SourceItem).OfType<ComponentNode>();
+            }
+        }
+        public string OutputPath
+        {
+            get { return Path2.Combine(Ctx.Data.Graph.Name, "Components"); }
+        }
 
+        public bool CanGenerate
+        {
+            get { return true; }
+        }
+
+        public void TemplateSetup()
+        {
+
+        }
+
+        public TemplateContext<ComponentGroupNode> Ctx { get; set; }
     }
 
-    [TemplateClass(TemplateLocation.Both)]
+
+    [TemplateClass(TemplateLocation.Both,"{0}Manager")]
     [RequiresNamespace("uFrame.ECS")]
-    public partial class OnEventTemplate : EventTemplate, IClassTemplate<OnEventNode>
+    [RequiresNamespace("uFrame.Kernel")]
+    [RequiresNamespace("UniRx")]
+    public partial class ComponentGroupManagerTemplate : IClassTemplate<ComponentGroupNode>
+    {
+        public IEnumerable<ComponentNode> Components
+        {
+            get
+            {
+                return Ctx.Data.Components.Select(p => p.SourceItem).OfType<ComponentNode>();
+            }
+        }
+        public string OutputPath
+        {
+            get { return Path2.Combine(Ctx.Data.Graph.Name, "ComponentGroups"); }
+        }
+
+        public bool CanGenerate
+        {
+            get { return true; }
+        }
+
+        public void TemplateSetup()
+        {
+            if (Ctx.IsDesignerFile)
+                Ctx.SetBaseType("FilterSystem<{0}>", Ctx.Data.Name);
+        }
+
+        public TemplateContext<ComponentGroupNode> Ctx { get; set; }
+    }
+
+    [TemplateClass(TemplateLocation.DesignerFile, "{0}Context"), AsPartial]
+    [RequiresNamespace("uFrame.ECS")]
+    [RequiresNamespace("uFrame.Kernel")]
+    [RequiresNamespace("UniRx")]
+    public partial class ContextTemplate : IClassTemplate<FilterNode>
+    {
+        public IEnumerable<ComponentNode> WithAnyComponents
+        {
+            get
+            {
+                return Ctx.Data.WithAny.Select(p => p.SourceItem).OfType<ComponentNode>();
+            }
+        }
+        public IEnumerable<ComponentNode> SelectComponents
+        {
+            get
+            {
+                return Ctx.Data.Select.Select(p => p.SourceItem).OfType<ComponentNode>();
+            }
+        }
+        public string OutputPath
+        {
+            get { return Path2.Combine(Ctx.Data.Graph.Name, "ComponentGroups"); }
+        }
+
+        public bool CanGenerate
+        {
+            get { return true; }
+        }
+
+        public void TemplateSetup()
+        {
+
+            this.Ctx.SetBaseType("Context<{0}ContextItem>",Ctx.Data.Name);
+        }
+
+        public TemplateContext<FilterNode> Ctx { get; set; }
+    }
+
+    [TemplateClass(TemplateLocation.DesignerFile, "{0}ContextItem"), AsPartial]
+    [RequiresNamespace("uFrame.ECS")]
+    [RequiresNamespace("uFrame.Kernel")]
+    [RequiresNamespace("UniRx")]
+    public partial class ContextItemTemplate : ContextItem, IClassTemplate<FilterNode>
+    {
+        public IEnumerable<ComponentNode> WithAnyComponents
+        {
+            get
+            {
+                return Ctx.Data.WithAny.Select(p => p.SourceItem).OfType<ComponentNode>();
+            }
+        }
+        public IEnumerable<ComponentNode> SelectComponents
+        {
+            get
+            {
+                return Ctx.Data.Select.Select(p => p.SourceItem).OfType<ComponentNode>();
+            }
+        }
+        public string OutputPath
+        {
+            get { return Path2.Combine(Ctx.Data.Graph.Name, "ComponentGroups"); }
+        }
+
+        public bool CanGenerate
+        {
+            get { return true; }
+        }
+
+        public void TemplateSetup()
+        {
+    
+        }
+
+        public TemplateContext<FilterNode> Ctx { get; set; }
+    }
+
+
+
+    [TemplateClass(TemplateLocation.DesignerFile), AsPartial]
+    [RequiresNamespace("uFrame.ECS")]
+    public partial class EventTemplate : IClassTemplate<EventNode>
     {
 
         public string OutputPath
@@ -99,34 +261,30 @@ namespace Invert.uFrame.ECS.Templates
 
         public void TemplateSetup()
         {
-
+            if (Ctx.Data.Dispatcher)
+            {
+                this.Ctx.CurrentDeclaration.Name += "Dispatcher";
+                this.Ctx.SetBaseType(typeof(EcsDispatcher));
+            }
         }
 
-        public TemplateContext<OnEventNode> Ctx { get; set; }
+        public TemplateContext<EventNode> Ctx { get; set; }
     }
 
-    [TemplateClass(TemplateLocation.Both)]
-    [RequiresNamespace("uFrame.ECS")]
-    public partial class PublishTemplate : EventTemplate, IClassTemplate<PublishNode>
+
+    public class _CONTEXTITEM_ : _ITEMTYPE_
     {
-
-        public string OutputPath
+        public override string TheType(TemplateContext context)
         {
-            get { return Path2.Combine(Ctx.Data.Graph.Name, "Events"); }
+            return base.TheType(context) + "ContextItem";
         }
-
-        public bool CanGenerate
-        {
-            get { return true; }
-        }
-
-        public void TemplateSetup()
-        {
-
-        }
-
-        public TemplateContext<PublishNode> Ctx { get; set; }
     }
 
-
+    public class _CONTEXT_ : _ITEMTYPE_
+    {
+        public override string TheType(TemplateContext context)
+        {
+            return base.TheType(context) + "Context";
+        }
+    }
 }

@@ -8,6 +8,33 @@ namespace Invert.uFrame.ECS {
     
     
     public class EventNode : EventNodeBase {
+
+        [InspectorProperty]
+        public bool Dispatcher
+        {
+            get { return this["Dispatcher"]; }
+            set { this["Dispatcher"] = value; }
+        }
+
+
+
+        [InspectorProperty]
+        public bool NeedsMappings
+        {
+            get { return this["NeedsMappings"]; }
+            set { this["NeedsMappings"] = value; }
+        }
+
+        [InspectorProperty]
+        public bool SystemEvent
+        {
+            get { return this["SystemEvent"]; }
+            set { this["SystemEvent"] = value; }
+        }
+        [InspectorProperty, JsonProperty]
+        public string SystemEventMethod { get; set; }
+
+
     }
     
     public partial interface IEventConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

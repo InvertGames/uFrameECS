@@ -15,16 +15,15 @@ MonoBehaviour:
   _settingsValues: 
   _diagrams:
   - {fileID: 11400000, guid: d24f9108dfe6afa468f17d511bda396f, type: 2}
-  - {fileID: 11400000, guid: 8846fc461bed16942ba96ff1429f03c5, type: 2}
-  - {fileID: 11400000, guid: 0627b8eae447ed6499607c68b3366af3, type: 2}
+  - {fileID: 11400000, guid: 25590331d3c0e084c9e7ed86a17b9b67, type: 2}
+  - {fileID: 11400000, guid: f78b2bfe73f61534fae47200770f5402, type: 2}
+  - {fileID: 11400000, guid: ada50e4776b44794ca3c6e32ce011e40, type: 2}
+  - {fileID: 11400000, guid: dec123279186d3a48859d9d03cf57b3d, type: 2}
   _projectNamespace: Invert.uFrame.ECS
   _currentTabs:
   - _graphIdentifier: 5f0e4e63-96ee-4a23-b1e3-4cfce292bfaf
     _graphName: uFrameECS
     _path: []
-  - _graphIdentifier: e1684f8a-f8d7-4ccc-b88f-dd4a773cd424
-    _graphName: InventorySystem
-    _path: []
-  - _graphIdentifier: 6c0aa667-d6e9-405d-bc17-299a13486c7c
-    _graphName: TargetingSystem
+  - _graphIdentifier: 964b413f-4970-4b96-8ec7-2936b678cbb0
+    _graphName: UnityEvents
     _path: []

@@ -8,6 +8,14 @@ namespace Invert.uFrame.ECS {
     
     
     public class MatchAllNode : MatchAllNodeBase {
+        public override void WriteCode(TemplateContext ctx)
+        {
+            base.WriteCode(ctx);
+            //foreach (var component in Components)
+            //{
+            //    //ctx._("var {0} = ComponentSystem.TryGetComponent<{1}>()");
+            //}
+        }
     }
     
     public partial interface IMatchAllConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

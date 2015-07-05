@@ -18,6 +18,17 @@ namespace uFrame.ECS
             set { _componentManager = value; }
         }
 
+        public IEcsComponentManager RegisterComponent(Type componentType)
+        {
+            IEcsComponentManager existing;
+            if (!ComponentManagers.TryGetValue(componentType, out existing))
+            {
+                throw new Exception(string.Format("Component {0} not registered correctly.",componentType.Name));
+             
+            }
+            return existing;
+        }
+
         public void RegisterComponentInstance(Type componentType, IEcsComponent instance)
         {
             IEcsComponentManager existing;
@@ -39,6 +50,7 @@ namespace uFrame.ECS
             existing.UnRegisterComponent(instance);
 
         }
+
         public IEcsComponentManagerOf<TComponent> RegisterComponent<TComponent>() where TComponent : IEcsComponent
         {
             IEcsComponentManager existing;
@@ -100,6 +112,18 @@ namespace uFrame.ECS
 
             }
            
+        }
+
+        public bool HasAny(int entityId, params Type[] types)
+        {
+            foreach (var type in types)
+            {
+                if (ComponentManagers[type].ForEntity(entityId).Any())
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public bool TryGetComponent<TComponent>(int entityId, out TComponent component) where TComponent : class, IEcsComponent

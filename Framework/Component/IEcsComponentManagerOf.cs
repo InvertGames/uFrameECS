@@ -2,8 +2,8 @@ using System.Collections.Generic;
 
 namespace uFrame.ECS
 {
-    public interface IEcsComponentManagerOf<TComponentType>
+    public interface IEcsComponentManagerOf<TComponentType> : IEcsComponentManager
     {
-        List<TComponentType> Components { get; }
+        IEnumerable<TComponentType> Components { get; }
     }
 }

@@ -67,4 +67,134 @@ namespace Invert.uFrame.ECS {
     
     public partial interface IVariablesConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
+    
+    public class EachBase : SingleOutputSlot<IEachConnectable>, IActionConnectable {
+        
+        public override string Name {
+            get {
+                return "Each";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IEachConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class FilterByBase : SingleInputSlot<IFilterByConnectable> {
+        
+        public override string Name {
+            get {
+                return "Filter By";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IFilterByConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class FilterBase : SingleOutputSlot<IFilterConnectable>, IFilterExpressionConnectable {
+        
+        public override string Name {
+            get {
+                return "Filter";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IFilterConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class ABase : SingleInputSlot<IAConnectable> {
+        
+        public override string Name {
+            get {
+                return "A";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IAConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class BBase : SingleInputSlot<IBConnectable> {
+        
+        public override string Name {
+            get {
+                return "B";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IBConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
 }

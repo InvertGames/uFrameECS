@@ -141,4 +141,67 @@ namespace Invert.uFrame.ECS {
                 base(viewModel) {
         }
     }
+    
+    public class EachComponentNodeDrawerBase : GenericNodeDrawer<EachComponentNode,EachComponentNodeViewModel> {
+        
+        public EachComponentNodeDrawerBase(EachComponentNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class ComponentGroupNodeDrawerBase : GenericNodeDrawer<ComponentGroupNode,ComponentGroupNodeViewModel> {
+        
+        public ComponentGroupNodeDrawerBase(ComponentGroupNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class AddComponentNodeDrawerBase : GenericNodeDrawer<AddComponentNode,AddComponentNodeViewModel> {
+        
+        public AddComponentNodeDrawerBase(AddComponentNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class RemoveComponentNodeDrawerBase : GenericNodeDrawer<RemoveComponentNode,RemoveComponentNodeViewModel> {
+        
+        public RemoveComponentNodeDrawerBase(RemoveComponentNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class ComponentFilterNodeDrawerBase : GenericNodeDrawer<ComponentFilterNode,ComponentFilterNodeViewModel> {
+        
+        public ComponentFilterNodeDrawerBase(ComponentFilterNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class EqualNodeDrawerBase : GenericNodeDrawer<EqualNode,EqualNodeViewModel> {
+        
+        public EqualNodeDrawerBase(EqualNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class FilterExpressionNodeDrawerBase : GenericNodeDrawer<FilterExpressionNode,FilterExpressionNodeViewModel> {
+        
+        public FilterExpressionNodeDrawerBase(FilterExpressionNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class VariableNodeDrawerBase : GenericNodeDrawer<VariableNode,VariableNodeViewModel> {
+        
+        public VariableNodeDrawerBase(VariableNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class FilterNodeDrawerBase : GenericNodeDrawer<FilterNode,FilterNodeViewModel> {
+        
+        public FilterNodeDrawerBase(FilterNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
 }

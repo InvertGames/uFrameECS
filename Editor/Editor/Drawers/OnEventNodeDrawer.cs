@@ -7,7 +7,8 @@ namespace Invert.uFrame.ECS {
     
     
     public class OnEventNodeDrawer : GenericNodeDrawer<OnEventNode,OnEventNodeViewModel> {
-        
+  
+
         public OnEventNodeDrawer(OnEventNodeViewModel viewModel) : 
                 base(viewModel) {
         }

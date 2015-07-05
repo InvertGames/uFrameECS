@@ -44,4 +44,11 @@ namespace uFrame.ECS
             set { _cachedTransform = value; }
         }
     }
+
+    public class EcsDispatcher : uFrameComponent, IEcsComponent
+    {
+        public int EntityId { get; set; }
+    }
+
+   
 }
