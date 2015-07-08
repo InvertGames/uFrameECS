@@ -84,7 +84,14 @@ namespace uFrame.ECS
     //    public Predicate<TComponentType> Filter { get; set; }
     //}
 
-
+    public class ContextItemAdded<TContextItem>
+    {
+        public ContextItem ContextItem { get; set; }
+    }
+    public class ContextItemRemoved<TContextItem>
+    {
+        public ContextItem ContextItem { get; set; }
+    }
     public interface IContext
     {
         IEcsComponentManager[] WithAnyManagers { get; set; }
@@ -193,8 +200,6 @@ namespace uFrame.ECS
             }
         }
 
-
-
         private IEnumerable<IEcsComponent> AnyItems()
         {
             var list = new HashSet<int>();
@@ -232,7 +237,123 @@ namespace uFrame.ECS
 
     }
 
+    public class ReactiveContext<TContextItem> : IContext where TContextItem : class, new()
+    {
+        private readonly EcsSystem _system;
 
+        private Dictionary<int, TContextItem> _items = new Dictionary<int,TContextItem>();
+        public IEcsComponentManager[] WithAnyManagers { get; set; }
+        public IEcsComponentManager[] SelectManagers { get; set; }
+        public TContextItem MatchAndSelect(int entityId)
+        {
+            if (Match(entityId))
+            {
+                return Select();
+            }
+            return null;
+        }
+        public IEnumerable<TContextItem> Items
+        {
+            get { return _items.Values; }
+        }
+
+        public Type[] WithAnyTypes { get; set; }
+
+        public Type[] AllTypes
+        {
+            get; set; 
+            
+        }
+        public Dictionary<int, TContextItem> ContextItems
+        {
+            get { return _items; }
+            set { _items = value; }
+        }
+
+        private void Initialize()
+        {
+       
+            WithAnyManagers = GetWithAnyManagers().ToArray();
+            SelectManagers = GetSelectManagers().ToArray();
+        }
+
+        protected virtual IEnumerable<IEcsComponentManager> GetWithAnyManagers()
+        {
+            yield break;
+        }
+
+        protected virtual IEnumerable<IEcsComponentManager> GetSelectManagers()
+        {
+            yield break;
+        }
+        public ReactiveContext(EcsSystem system)
+        {
+            _system = system;
+            ComponentSystem = system.ComponentSystem;
+            Initialize();
+            AllTypes = WithAnyManagers.Select(p => p.For).Concat(SelectManagers.Select(_ => _.For)).ToArray();
+            if (WithAnyManagers != null && WithAnyManagers.Length > 0)
+            {
+                WithAnyTypes = WithAnyManagers.Select(p => p.For).ToArray();
+            }
+            else
+            {
+                WithAnyTypes = SelectManagers.Select(p => p.For).ToArray();
+            }  
+            system.OnEvent<ComponentCreatedEvent>()
+                .Subscribe(_ =>
+                {
+                    var componentType = _.Component.GetType();
+                    if (AllTypes.Contains(componentType))
+                    {
+                        UpdateItem(_.Component.EntityId);
+                    }
+                }).DisposeWith(system);
+
+            system.OnEvent<ComponentDestroyedEvent>()
+                .Subscribe(_ =>
+                {
+                    var componentType = _.Component.GetType();
+                    if (AllTypes.Contains(componentType))
+                    {
+                        UpdateItem(_.Component.EntityId);
+                    }
+                    
+                }).DisposeWith(system);
+
+        }
+
+        public IComponentSystem ComponentSystem { get; set; }
+
+        public void UpdateItem(int entityId)
+        {
+            if (Match(entityId))
+            {
+                if (ContextItems.ContainsKey(entityId)) return;
+                var item = Select();
+                ContextItems.Add(entityId, item);
+                
+                
+            }
+            else
+            {
+                if (ContextItems.ContainsKey(entityId))
+                {
+                    ContextItems.Remove(entityId);
+                }
+                
+            }
+        }
+
+        public virtual bool Match(int entityId)
+        {
+            return true;
+        }
+        public virtual TContextItem Select()
+        {
+            return new TContextItem();
+        }
+    }
 
     public class ContextItem : IEcsComponent
     {

@@ -120,6 +120,32 @@ namespace Invert.uFrame.ECS {
     public partial interface IFilterByConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
+    public class EventBase : SingleInputSlot<IEventConnectable> {
+        
+        public override string Name {
+            get {
+                return "Event";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IEventConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
     public class FilterBase : SingleOutputSlot<IFilterConnectable>, IFilterExpressionConnectable {
         
         public override string Name {
@@ -196,5 +222,31 @@ namespace Invert.uFrame.ECS {
     }
     
     public partial interface IBConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class StopEventBase : SingleInputSlot<IStopEventConnectable> {
+        
+        public override string Name {
+            get {
+                return "Stop Event";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IStopEventConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
 }

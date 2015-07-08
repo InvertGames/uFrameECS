@@ -12,9 +12,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using uFrame.Kernel;
-using uFrame.ECS;
 using UniRx;
+using uFrame.ECS;
+using uFrame.Kernel;
 
 
 public class RotaterSystemBase : uFrame.ECS.EcsSystem {
@@ -105,21 +105,20 @@ public class RotaterSystemBase : uFrame.ECS.EcsSystem {
         SelectablePlayersContext = new SelectablePlayersContext(this);
         RotatersContext = new RotatersContext(this);
         DamageablesContext = new DamageablesContext(this);
-      
+        EnsureDispatcherOnComponents<OnMouseDownDispatcher>( SelectablePlayersContext.WithAnyTypes );
+        this.OnEvent<OnMouseDownDispatcher>().Subscribe(_=>{ OnMouseDownFilter(_); }).DisposeWith(this);
+        EnsureDispatcherOnComponents<OnCollisionEnterDispatcher>( DamageablesContext.WithAnyTypes );
+        EnsureDispatcherOnComponents<OnCollisionEnterDispatcher>( DamageablesContext.WithAnyTypes );
+        this.OnEvent<OnCollisionEnterDispatcher>().Subscribe(_=>{ OnCollisionEnterFilter(_); }).DisposeWith(this);
     }
-
-
-    public void asdf(Context<object>[] contexts)
-    {
-        
-    }
+    
     protected void OnUpdateHandler(RotatersContextItem item) {
         // OnUpdate
         // Rotate
-        this.Rotate();
+        this.Rotate(item);
     }
     
-    protected virtual void Rotate() {
+    protected virtual void Rotate(RotatersContextItem item) {
     }
     
     public void Update() {
@@ -131,21 +130,41 @@ public class RotaterSystemBase : uFrame.ECS.EcsSystem {
         }
     }
     
-    protected void OnMouseDownHandler(SelectablePlayersContextItem entityidItem) {
+    protected void OnMouseDownHandler(SelectablePlayersContextItem item) {
         // OnMouseDown
         // MakeRotater
-        this.MakeRotater();
+        this.MakeRotater(item);
     }
     
-    protected virtual void MakeRotater() {
+    protected void OnMouseDownFilter(OnMouseDownDispatcher data) {
+        var entityIdItem = SelectablePlayersContext.MatchAndSelect(data.EntityId);
+        if (entityIdItem== null) {
+            return;
+        }
+        this.OnMouseDownHandler(entityIdItem);
     }
     
-    protected void OnCollisionEnterHandler(SelectablePlayersContextItem entityidItem, DamageablesContextItem collideridItem) {
+    protected virtual void MakeRotater(SelectablePlayersContextItem item) {
+    }
+    
+    protected void OnCollisionEnterHandler(DamageablesContextItem entityidItem, DamageablesContextItem collideridItem) {
         // OnCollisionEnter
-        // Collided
-        this.Collided();
+        // ApplyDamage
+        this.ApplyDamage(entityidItem, collideridItem);
     }
     
-    protected virtual void Collided() {
+    protected void OnCollisionEnterFilter(OnCollisionEnterDispatcher data) {
+        var EntityIdItem = DamageablesContext.MatchAndSelect(data.EntityId);
+        if (EntityIdItem == null) {
+            return;
+        }
+        var ColliderIdItem = DamageablesContext.MatchAndSelect(data.ColliderId);
+        if (ColliderIdItem == null) {
+            return;
+        }
+        this.OnCollisionEnterHandler(EntityIdItem, ColliderIdItem);
+    }
+    
+    protected virtual void ApplyDamage(DamageablesContextItem entityidItem, DamageablesContextItem collideridItem) {
     }
 }

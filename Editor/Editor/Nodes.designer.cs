@@ -94,6 +94,8 @@ namespace Invert.uFrame.ECS {
         
         private FilterBy _FilterBy;
         
+        private Event _Event;
+        
         private Each _Each;
         
         public override bool AllowMultipleInputs {
@@ -207,6 +209,19 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        [Invert.Core.GraphDesigner.InputSlot("Event", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Event EventInputSlot {
+            get {
+                if (_Event == null) {
+                    _Event = new Event() { Node = this };
+                }
+                return _Event;
+            }
+            set {
+                _Event = value;
+            }
+        }
+        
         [Invert.Core.GraphDesigner.OutputSlot("Each", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual Each EachOutputSlot {
             get {
@@ -224,7 +239,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IItemTypesConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class EventNodeBase : Invert.Core.GraphDesigner.GenericInheritableNode, Invert.Core.GraphDesigner.IClassTypeNode {
+    public class EventNodeBase : Invert.Core.GraphDesigner.GenericInheritableNode, Invert.Core.GraphDesigner.IClassTypeNode, IEventConnectable {
         
         public virtual string ClassName {
             get {
@@ -260,6 +275,8 @@ namespace Invert.uFrame.ECS {
         
         private Variables _Variables;
         
+        private Event _Event;
+        
         public override bool AllowMultipleInputs {
             get {
                 return true;
@@ -282,6 +299,19 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _Variables = value;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Event", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Event EventInputSlot {
+            get {
+                if (_Event == null) {
+                    _Event = new Event() { Node = this };
+                }
+                return _Event;
+            }
+            set {
+                _Event = value;
             }
         }
     }
@@ -660,6 +690,8 @@ namespace Invert.uFrame.ECS {
     
     public class AddComponentNodeBase : ActionNode {
         
+        private Component _Component;
+        
         public override bool AllowMultipleInputs {
             get {
                 return true;
@@ -669,6 +701,19 @@ namespace Invert.uFrame.ECS {
         public override bool AllowMultipleOutputs {
             get {
                 return true;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Component", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Component ComponentInputSlot {
+            get {
+                if (_Component == null) {
+                    _Component = new Component() { Node = this };
+                }
+                return _Component;
+            }
+            set {
+                _Component = value;
             }
         }
     }
@@ -678,6 +723,8 @@ namespace Invert.uFrame.ECS {
     
     public class RemoveComponentNodeBase : ActionNode {
         
+        private Component _Component;
+        
         public override bool AllowMultipleInputs {
             get {
                 return true;
@@ -687,6 +734,19 @@ namespace Invert.uFrame.ECS {
         public override bool AllowMultipleOutputs {
             get {
                 return true;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Component", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Component ComponentInputSlot {
+            get {
+                if (_Component == null) {
+                    _Component = new Component() { Node = this };
+                }
+                return _Component;
+            }
+            set {
+                _Component = value;
             }
         }
     }
@@ -853,5 +913,38 @@ namespace Invert.uFrame.ECS {
     }
     
     public partial interface IFilterConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class IntervalNodeBase : ActionNode {
+        
+        private StopEvent _StopEvent;
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Stop Event", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual StopEvent StopEventInputSlot {
+            get {
+                if (_StopEvent == null) {
+                    _StopEvent = new StopEvent() { Node = this };
+                }
+                return _StopEvent;
+            }
+            set {
+                _StopEvent = value;
+            }
+        }
+    }
+    
+    public partial interface IIntervalConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
 }

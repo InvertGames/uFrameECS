@@ -16,7 +16,16 @@ namespace Invert.uFrame.ECS {
             set { this["Dispatcher"] = value; }
         }
 
-
+        public override string ClassName
+        {
+            get {
+                if (Dispatcher)
+                {
+                    return string.Format("{0}Dispatcher",Name);
+                }
+                return Name;
+            }
+        }
 
         [InspectorProperty]
         public bool NeedsMappings

@@ -4,22 +4,56 @@ using UnityEngine;
 
 namespace uFrame.ECS
 {
+   
     public class EcsComponent : uFrameComponent, IEcsComponent, IDisposableContainer
     {
-        [SerializeField]
+        //[SerializeField]
         private int _entityId;
 
         private Transform _cachedTransform;
 
-        public int EntityId
+        public virtual int EntityId
         {
-            get { return _entityId; }
-            set { _entityId = value; }
+            get
+            {
+                return _entityId;
+            }
+            set { 
+                _entityId = value;
+            }
+        }
+        public Entity _Entity;
+        private Subject<Unit> _changed;
+
+        public void Reset()
+        {
+            var entityComponent = GetComponent<Entity>();
+            if (entityComponent == null)
+                entityComponent = gameObject.AddComponent<Entity>();
+            _Entity = entityComponent;
+        }
+
+
+
+        public override void KernelLoading()
+        {
+  
+            
+         
+            base.KernelLoading();
         }
 
         public override void KernelLoaded()
         {
             base.KernelLoaded();
+            if (_Entity != null)
+            {
+                _entityId = _Entity.EntityId;
+            }
+            else
+            {
+                _entityId = GetComponent<Entity>().EntityId;
+            }
             this.Publish(new ComponentCreatedEvent()
             {
                 Component = this
@@ -43,12 +77,10 @@ namespace uFrame.ECS
             get { return _cachedTransform ?? (_cachedTransform = transform); }
             set { _cachedTransform = value; }
         }
-    }
 
-    public class EcsDispatcher : uFrameComponent, IEcsComponent
-    {
-        public int EntityId { get; set; }
+        public IObservable<Unit> Changed
+        {
+            get { return _changed ?? (_changed = new Subject<Unit>()); }
+        }
     }
-
-   
 }

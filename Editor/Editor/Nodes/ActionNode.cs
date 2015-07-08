@@ -12,6 +12,7 @@ namespace Invert.uFrame.ECS {
         ITypedItem SourceVariable { get; set; }
         string VariableName { get; set; }
         string AsParameter { get; }
+        bool IsSubVariable { get; set; }
     }
 
     public interface IVariableExpressionItem
@@ -95,6 +96,8 @@ namespace Invert.uFrame.ECS {
         {
             get { return Items.Last().ToString().ToLower(); }
         }
+
+        public bool IsSubVariable { get; set; }
 
         public ITypedItem SourceVariable { get; set; }
     }

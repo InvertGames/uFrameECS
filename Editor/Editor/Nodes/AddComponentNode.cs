@@ -8,6 +8,15 @@ namespace Invert.uFrame.ECS {
     
     
     public class AddComponentNode : AddComponentNodeBase {
+        public override void WriteCode(TemplateContext ctx)
+        {
+            base.WriteCode(ctx);
+            var component = this.ComponentInputSlot.InputFrom<ComponentNode>();
+            //if (component != null)
+            //{
+            //    ctx._("");
+            //}
+        }
     }
     
     public partial interface IAddComponentConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

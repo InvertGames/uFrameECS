@@ -57,7 +57,22 @@ namespace Invert.uFrame.ECS.Templates
 
         public IEnumerable<FilterNode> FilterNodes
         {
-            get { return Ctx.Data.Graph.NodeItems.OfType<FilterNode>(); }
+            get
+            {
+                foreach (var item in Ctx.Data.Project.NodeItems.OfType<FilterNode>())
+                {
+
+                    if (item.Graph.Identifier == Ctx.Data.Graph.Identifier)
+                    {
+                        yield return item;
+                        continue;
+                    }
+                    if (Ctx.Data.Graph.PositionData.HasPosition(Ctx.Data.Graph.RootFilter,item))
+                    {
+                        yield return item;
+                    }
+                }
+            }
         }
         public string OutputPath
         {
@@ -198,7 +213,7 @@ namespace Invert.uFrame.ECS.Templates
         public void TemplateSetup()
         {
 
-            this.Ctx.SetBaseType("Context<{0}ContextItem>",Ctx.Data.Name);
+            this.Ctx.SetBaseType("ReactiveContext<{0}ContextItem>",Ctx.Data.Name);
         }
 
         public TemplateContext<FilterNode> Ctx { get; set; }
@@ -248,7 +263,17 @@ namespace Invert.uFrame.ECS.Templates
     [RequiresNamespace("uFrame.ECS")]
     public partial class EventTemplate : IClassTemplate<EventNode>
     {
-
+        public IEnumerable<PropertiesChildItem> Properties
+        {
+            get
+            {
+                foreach (var item in Ctx.Data.Properties)
+                {
+                    if (item.Name == "EntityId") continue;
+                    yield return item;
+                }
+            }
+        }
         public string OutputPath
         {
             get { return Path2.Combine(Ctx.Data.Graph.Name, "Events"); }
@@ -258,13 +283,21 @@ namespace Invert.uFrame.ECS.Templates
         {
             get { return true; }
         }
-
+        
         public void TemplateSetup()
         {
             if (Ctx.Data.Dispatcher)
             {
                 this.Ctx.CurrentDeclaration.Name += "Dispatcher";
-                this.Ctx.SetBaseType(typeof(EcsDispatcher));
+                this.Ctx.SetBaseType(typeof (EcsDispatcher));
+            }
+            else
+            {
+                this.Ctx.CurrentDeclaration.Name = Ctx.Data.Name;
+                if (!Ctx.IsDesignerFile)
+                {
+                    this.Ctx.CurrentDeclaration.BaseTypes.Clear();
+                }
             }
         }
 

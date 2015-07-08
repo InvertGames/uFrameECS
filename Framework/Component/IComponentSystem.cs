@@ -14,6 +14,7 @@ namespace uFrame.ECS
         IEcsComponentManager RegisterComponent(Type componentType);
         void RegisterComponentInstance(Type componentType, IEcsComponent instance);
         void DestroyComponentInstance(Type componentType, IEcsComponent instance);
-
+        void AddComponent(int entityId, Type componentType);
+        void AddComponent<TComponentType>(int entityId) where TComponentType : IEcsComponent;
     }
 }

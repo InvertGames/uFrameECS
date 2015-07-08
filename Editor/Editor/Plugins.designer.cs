@@ -73,6 +73,8 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<FilterNode> _Filter;
         
+        private Invert.Core.GraphDesigner.NodeConfig<IntervalNode> _Interval;
+        
         public Invert.Core.GraphDesigner.NodeConfig<ComponentNode> Component {
             get {
                 return _Component;
@@ -316,6 +318,15 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<IntervalNode> Interval {
+            get {
+                return _Interval;
+            }
+            set {
+                _Interval = value;
+            }
+        }
+        
         public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetPropertiesSelectionCommand() {
             return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
         }
@@ -395,6 +406,7 @@ namespace Invert.uFrame.ECS {
             OnEvent = container.AddNode<OnEventNode,OnEventNodeViewModel,OnEventNodeDrawer>("OnEvent");
             OnEvent.Color(NodeColor.Red);
             OnEvent.HasSubNode<ComponentNode>();
+            OnEvent.HasSubNode<EventNode>();
             OnEvent.HasSubNode<PublishNode>();
             OnEvent.HasSubNode<UserMethodNode>();
             OnEvent.HasSubNode<MatchAllNode>();
@@ -404,6 +416,7 @@ namespace Invert.uFrame.ECS {
             OnEvent.HasSubNode<ComponentGroupNode>();
             OnEvent.HasSubNode<AddComponentNode>();
             OnEvent.HasSubNode<RemoveComponentNode>();
+            OnEvent.HasSubNode<IntervalNode>();
             EachComponent = container.AddNode<EachComponentNode,EachComponentNodeViewModel,EachComponentNodeDrawer>("EachComponent");
             EachComponent.Color(NodeColor.Gray);
             ComponentGroup = container.AddNode<ComponentGroupNode,ComponentGroupNodeViewModel,ComponentGroupNodeDrawer>("ComponentGroup");
@@ -428,6 +441,8 @@ namespace Invert.uFrame.ECS {
             Filter.HasSubNode<ComponentNode>();
             Filter.HasSubNode<OnEventNode>();
             Filter.HasSubNode<ComponentGroupNode>();
+            Interval = container.AddNode<IntervalNode,IntervalNodeViewModel,IntervalNodeDrawer>("Interval");
+            Interval.Color(NodeColor.Purple);
             container.Connectable<ComponentNode,ComponentsReference>();
             container.Connectable<ComponentNode,Component>();
             container.Connectable<ComponentNode,FilterBy>();
@@ -439,6 +454,7 @@ namespace Invert.uFrame.ECS {
             container.Connectable<PropertiesChildItem,MappingsReference>();
             container.Connectable<CollectionsChildItem,Variables>();
             container.Connectable<Each,ActionNode>();
+            container.Connectable<EventNode,Event>();
             container.Connectable<ActionNode,PublishNode>();
             container.Connectable<ActionNode,ActionNode>();
             container.Connectable<OnEventNode,ActionNode>();

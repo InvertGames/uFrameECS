@@ -12,18 +12,122 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UniRx;
 using uFrame.ECS;
+using UniRx;
 
 
 public class RotaterBase : uFrame.ECS.EcsComponent {
+    
+    private Subject<Single> _SpeedObservable;
+    
+    [UnityEngine.SerializeField()]
+    private Single _Speed;
+    
+    public IObservable<Single> SpeedObservable {
+        get {
+            if (_SpeedObservable == null) {
+                _SpeedObservable = new Subject<Single>();
+            }
+            return _SpeedObservable;
+        }
+    }
+    
+    public Single Speed {
+        get {
+            return _Speed;
+        }
+        set {
+            if (_SpeedObservable != null) {
+                _SpeedObservable.OnNext(value);
+            }
+            _Speed = value;
+        }
+    }
 }
 
 public class SelectableBase : uFrame.ECS.EcsComponent {
 }
 
 public class PlayerBase : uFrame.ECS.EcsComponent {
+    
+    private Subject<String> _FirstNameObservable;
+    
+    private Subject<String> _LastNameObservable;
+    
+    [UnityEngine.SerializeField()]
+    private String _FirstName;
+    
+    [UnityEngine.SerializeField()]
+    private String _LastName;
+    
+    public IObservable<String> FirstNameObservable {
+        get {
+            if (_FirstNameObservable == null) {
+                _FirstNameObservable = new Subject<String>();
+            }
+            return _FirstNameObservable;
+        }
+    }
+    
+    public IObservable<String> LastNameObservable {
+        get {
+            if (_LastNameObservable == null) {
+                _LastNameObservable = new Subject<String>();
+            }
+            return _LastNameObservable;
+        }
+    }
+    
+    public String FirstName {
+        get {
+            return _FirstName;
+        }
+        set {
+            if (_FirstNameObservable != null) {
+                _FirstNameObservable.OnNext(value);
+            }
+            _FirstName = value;
+        }
+    }
+    
+    public String LastName {
+        get {
+            return _LastName;
+        }
+        set {
+            if (_LastNameObservable != null) {
+                _LastNameObservable.OnNext(value);
+            }
+            _LastName = value;
+        }
+    }
 }
 
 public class DamageableBase : uFrame.ECS.EcsComponent {
+    
+    private Subject<Single> _HealthObservable;
+    
+    [UnityEngine.SerializeField()]
+    private Single _Health;
+    
+    public IObservable<Single> HealthObservable {
+        get {
+            if (_HealthObservable == null) {
+                _HealthObservable = new Subject<Single>();
+            }
+            return _HealthObservable;
+        }
+    }
+    
+    public Single Health {
+        get {
+            return _Health;
+        }
+        set {
+            if (_HealthObservable != null) {
+                _HealthObservable.OnNext(value);
+            }
+            _Health = value;
+        }
+    }
 }

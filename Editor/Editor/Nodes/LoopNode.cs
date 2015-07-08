@@ -16,7 +16,14 @@ namespace Invert.uFrame.ECS {
         } 
         public virtual string IndexVariableName
         {
-            get { return this.Name.ToLower() + "Index"; }
+            get
+            {
+                if (this.Name == null)
+                {
+                    return "index";
+                }
+                return this.Name.ToLower() + "Index";
+            }
         }
 
         public override IEnumerable<IContextVariable> ContextVariables

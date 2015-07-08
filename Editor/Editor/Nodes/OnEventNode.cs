@@ -18,7 +18,11 @@ namespace Invert.uFrame.ECS
     {
         private string _eventIdentifier;
         private EventNode _eventNode;
-
+        [ProxySection("User Methods",SectionVisibility.WhenNodeIsNotFilter)]
+        public IEnumerable<IDiagramNodeItem> UserMethods
+        {
+            get { return this.Graph.NodeItems.Where(_ => this.Locations.Keys.Contains(_.Identifier)).OfType<UserMethodNode>().Cast<IDiagramNodeItem>(); }
+        }
         public override string Name
         {
             get
@@ -34,7 +38,24 @@ namespace Invert.uFrame.ECS
 
         public string HandlerMethodName
         {
-            get { return Name + "Handler"; }
+            get { return InputNames + "_" + Name +"Handler"; }
+        }
+        public string HandlerFilterMethodName
+        {
+            get { return InputNames + "_" + Name + "Filter"; }
+        }
+        
+        public string InputNames
+        {
+            get
+            {
+                return
+                    string.Join("_",
+                        Mappings.Select(p => p.InputFrom<FilterNode>())
+                            .Where(p => p != null)
+                            .Select(p => p.Name)
+                            .ToArray());
+            }
         }
 
         [JsonProperty]
@@ -62,7 +83,10 @@ namespace Invert.uFrame.ECS
             get { return _eventNode ?? (_eventNode = Project.NodeItems.FirstOrDefault(p => p.Identifier == EventIdentifier) as EventNode); }
 
         }
-
+        public FilterNode FilterNode
+        {
+            get { return this.InputFrom<FilterNode>(); }
+        }
         public override IEnumerable<IContextVariable> ContextVariables
         {
             get
@@ -73,14 +97,18 @@ namespace Invert.uFrame.ECS
                     if (filter == null) continue;
                     foreach (var select in filter.Select.Select(p => p.SourceItem).OfType<IDiagramNode>())
                     {
-                        yield return new ContextVariable(select.Name)
-                        {
-                            //SourceVariable = select
-                        };
+                      
+                            yield return new ContextVariable(select.Name)
+                            {
+                                //SourceVariable = select as GenericNode
+                            };
+                     
+                       
                         foreach (var child in select.PersistedItems.OfType<ITypedItem>())
                         {
                             yield return new ContextVariable(select.Name, child.Name)
                             {
+                                IsSubVariable = true,
                                 SourceVariable = child
                             };
                         }
@@ -102,6 +130,8 @@ namespace Invert.uFrame.ECS
                 var systemMethod = ctx.CurrentDeclaration.public_func(null, EventNode.SystemEventMethod);
                 // systemMethod.Statements.Add(new )
                 ctx.PushStatements(systemMethod.Statements);
+                ctx._if("{0}Context == null", FilterNode.Name).TrueStatements._("return");
+
                 ctx._("var e = {0}Context.Items.GetEnumerator()", FilterNode.Name);
 
                 var iteration = new CodeIterationStatement(
@@ -126,17 +156,54 @@ namespace Invert.uFrame.ECS
             //}
         }
 
-        public FilterNode FilterNode
-        {
-            get { return this.InputFrom<FilterNode>(); }
-        }
+    
+
+     
 
         public void WriteSetupCode(TemplateContext ctx)
         {
             var handlerMethod = ctx.CurrentDeclaration.protected_func(typeof(void), HandlerMethodName);
-
-
             var defaultFilter = FilterNode;
+            if (!EventNode.SystemEvent)
+            {
+                var handlerFilterMethod = ctx.CurrentDeclaration.protected_func(typeof(void), HandlerFilterMethodName);
+
+                handlerFilterMethod.Parameters.Add(new CodeParameterDeclarationExpression(
+                    EventNode.ClassName,
+                    "data"
+                    ));
+
+                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(
+                     EventNode.ClassName,
+                     "data"
+                 ));
+
+                ctx.PushStatements(handlerFilterMethod.Statements);
+
+                var invoker = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), HandlerMethodName);
+                invoker.Parameters.Add(new CodeSnippetExpression("data"));
+
+                if (defaultFilter != null)
+                {
+                    ctx._("var entityIdItem = {0}Context.MatchAndSelect(data.EntityId)", defaultFilter.Name);
+                    ctx._if("entityIdItem== null").TrueStatements._("return");
+                    invoker.Parameters.Add(new CodeSnippetExpression("entityIdItem"));
+                }
+                foreach (var item in this.Mappings)
+                {
+                    var filter = item.Filter;
+                    if (filter == null) continue;
+
+                    ctx._("var {0}Item = {1}Context.MatchAndSelect(data.{2})",item.Name, filter.Name,item.SourceItem.Name);
+                    ctx._if("{0}Item == null",item.Name).TrueStatements._("return");
+                    invoker.Parameters.Add(new CodeSnippetExpression(string.Format("{0}Item", item.Name)));
+                }
+                ctx.CurrentStatements.Add(invoker);
+                ctx.PopStatements();
+            }
+
+
+           
             if (defaultFilter != null)
             {
 
@@ -163,19 +230,17 @@ namespace Invert.uFrame.ECS
 
             }
 
-            if (!EventNode.SystemEvent && !EventNode.Dispatcher)
+            if (!EventNode.SystemEvent)
             {
-                ctx._("this.OnEvent<{0}>().Subscribe(_=>{{ {1}(_); }}).DisposeWith(this)", Name, HandlerMethodName);
+                ctx._("this.OnEvent<{0}>().Subscribe(_=>{{ {1}(_); }}).DisposeWith(this)", EventNode.ClassName, HandlerFilterMethodName);
             }
 
-            if (EventNode.Dispatcher)
-            {
-                ctx._("this.OnEvent<{0}Dispatcher>().Subscribe(_=>{{ {1}(_); }}).DisposeWith(this)", Name, HandlerMethodName);
-            }
-
+            var prevMethod = ctx.CurrentMethod;
+            ctx.CurrentMember = handlerMethod;
             ctx.PushStatements(handlerMethod.Statements);
             WriteCode(ctx);
             ctx.PopStatements();
+            ctx.CurrentMember = prevMethod;
         }
 
 

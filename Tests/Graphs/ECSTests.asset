@@ -15,7 +15,6 @@ MonoBehaviour:
   _settingsValues: 
   _diagrams:
   - {fileID: 11400000, guid: 644e75491d7a4cf41a61d6cc5ae426c4, type: 2}
-  - {fileID: 11400000, guid: 9aacf1153df08d34e8a8cdf914bea3e3, type: 2}
   _projectNamespace: 
   _currentTabs:
   - _graphIdentifier: 81eea043-1b46-460e-bd2a-a84adad94b3d

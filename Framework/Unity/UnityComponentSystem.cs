@@ -51,6 +51,19 @@ namespace uFrame.ECS
 
         }
 
+        public void AddComponent(int entityId, Type componentType)
+        {
+            var entityManager = RegisterComponent<Entity>();
+            var entity = entityManager.Components.FirstOrDefault(p => p.EntityId == entityId);
+
+
+        }
+
+        public void AddComponent<TComponentType>(int entityId) where TComponentType : IEcsComponent
+        {
+            throw new NotImplementedException();
+        }
+
         public IEcsComponentManagerOf<TComponent> RegisterComponent<TComponent>() where TComponent : IEcsComponent
         {
             IEcsComponentManager existing;

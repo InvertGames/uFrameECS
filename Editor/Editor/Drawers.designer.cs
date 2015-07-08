@@ -204,4 +204,11 @@ namespace Invert.uFrame.ECS {
                 base(viewModel) {
         }
     }
+    
+    public class IntervalNodeDrawerBase : GenericNodeDrawer<IntervalNode,IntervalNodeViewModel> {
+        
+        public IntervalNodeDrawerBase(IntervalNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
 }

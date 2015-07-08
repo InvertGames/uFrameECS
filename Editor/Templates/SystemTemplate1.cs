@@ -64,7 +64,7 @@ namespace Invert.uFrame.ECS.Templates
         [ForEach("Properties"), GenerateProperty, WithLazyField(typeof(Subject<_ITEMTYPE_>), true)]
         public IObservable<_ITEMTYPE_> _Name_Observable { get { return null; } }
 
-        [ForEach("Properties"), GenerateProperty, WithField(null, typeof(SerializeField)), WithName]
+        [ForEach("Properties"), GenerateProperty, WithName, WithField(null, typeof(SerializeField))]
         public _ITEMTYPE_ Property
         {
             get { return null; }
@@ -75,7 +75,7 @@ namespace Invert.uFrame.ECS.Templates
             }
         }
 
-        [ForEach("Collections"), GenerateProperty, WithLazyField, WithName]
+        [ForEach("Collections"), GenerateProperty, WithName, WithLazyField]
         public List<_ITEMTYPE_> Collection { get; set; }
     }
 
@@ -87,7 +87,7 @@ namespace Invert.uFrame.ECS.Templates
         [ForEach("Properties"), GenerateProperty,WithName, WithField(null, typeof(SerializeField))]
         public _ITEMTYPE_ Property { get; set; }
 
-        [ForEach("Collections"), GenerateProperty, WithLazyField, WithName]
+        [ForEach("Collections"), GenerateProperty, WithName, WithLazyField]
         public List<_ITEMTYPE_> Collection { get; set; }
     }
 
@@ -266,7 +266,7 @@ namespace Invert.uFrame.ECS.Templates
         }
 
         [GenerateMethod(CallBase = false), AsOverride]
-        protected bool Match(int entityId)
+        public bool Match(int entityId)
         {
             if (WithAnyComponents.Any())
             {

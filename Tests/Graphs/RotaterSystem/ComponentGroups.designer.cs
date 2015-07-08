@@ -13,39 +13,35 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
-using uFrame.ECS;
 using uFrame.Kernel;
+using uFrame.ECS;
 
 
 public partial class SelectablePlayersContext : Context<SelectablePlayersContextItem> {
     
     private Player _player;
     
-    private Damageable _damageable;
+    private Selectable _selectable;
     
     public SelectablePlayersContext(uFrame.ECS.EcsSystem system) : 
             base(system) {
     }
     
     protected override System.Collections.Generic.IEnumerable<uFrame.ECS.IEcsComponentManager> GetWithAnyManagers() {
-        yield return ComponentSystem.RegisterComponent<Selectable>();
         yield break;
     }
     
     protected override System.Collections.Generic.IEnumerable<uFrame.ECS.IEcsComponentManager> GetSelectManagers() {
         yield return ComponentSystem.RegisterComponent<Player>();
-        yield return ComponentSystem.RegisterComponent<Damageable>();
+        yield return ComponentSystem.RegisterComponent<Selectable>();
         yield break;
     }
-
+    
     public override bool Match(int entityId) {
-        if (!ComponentSystem.HasAny(entityId, WithAnyTypes)) {
-            return false;
-        }
         if (!ComponentSystem.TryGetComponent(entityId, out _player)) {
             return false;
         }
-        if (!ComponentSystem.TryGetComponent(entityId, out _damageable)) {
+        if (!ComponentSystem.TryGetComponent(entityId, out _selectable)) {
             return false;
         }
         return true;
@@ -54,16 +50,16 @@ public partial class SelectablePlayersContext : Context<SelectablePlayersContext
     public override SelectablePlayersContextItem Select() {
         var item = new SelectablePlayersContextItem();
         item.Player = _player;
-        item.Damageable = _damageable;
+        item.Selectable = _selectable;
         return item;
     }
 }
 
-public partial class SelectablePlayersContextItem : ContextItem {
+public partial class SelectablePlayersContextItem : uFrame.ECS.ContextItem {
     
     private Player _Player;
     
-    private Damageable _Damageable;
+    private Selectable _Selectable;
     
     public Player Player {
         get {
@@ -74,16 +70,14 @@ public partial class SelectablePlayersContextItem : ContextItem {
         }
     }
     
-    public Damageable Damageable {
+    public Selectable Selectable {
         get {
-            return _Damageable;
+            return _Selectable;
         }
         set {
-            _Damageable = value;
+            _Selectable = value;
         }
     }
-
-    public int EntityId { get; set; }
 }
 
 public partial class RotatersContext : Context<RotatersContextItem> {
@@ -102,7 +96,7 @@ public partial class RotatersContext : Context<RotatersContextItem> {
         yield return ComponentSystem.RegisterComponent<Rotater>();
         yield break;
     }
-
+    
     public override bool Match(int entityId) {
         if (!ComponentSystem.TryGetComponent(entityId, out _rotater)) {
             return false;
@@ -117,7 +111,7 @@ public partial class RotatersContext : Context<RotatersContextItem> {
     }
 }
 
-public partial class RotatersContextItem : ContextItem {
+public partial class RotatersContextItem : uFrame.ECS.ContextItem {
     
     private Rotater _Rotater;
     
@@ -129,8 +123,6 @@ public partial class RotatersContextItem : ContextItem {
             _Rotater = value;
         }
     }
-
-    public int EntityId { get; set; }
 }
 
 public partial class DamageablesContext : Context<DamageablesContextItem> {
@@ -142,6 +134,8 @@ public partial class DamageablesContext : Context<DamageablesContextItem> {
     }
     
     protected override System.Collections.Generic.IEnumerable<uFrame.ECS.IEcsComponentManager> GetWithAnyManagers() {
+        yield return ComponentSystem.RegisterComponent<Player>();
+        yield return ComponentSystem.RegisterComponent<Rotater>();
         yield break;
     }
     
@@ -149,8 +143,11 @@ public partial class DamageablesContext : Context<DamageablesContextItem> {
         yield return ComponentSystem.RegisterComponent<Damageable>();
         yield break;
     }
-
+    
     public override bool Match(int entityId) {
+        if (!ComponentSystem.HasAny(entityId, WithAnyTypes)) {
+            return false;
+        }
         if (!ComponentSystem.TryGetComponent(entityId, out _damageable)) {
             return false;
         }
@@ -164,7 +161,7 @@ public partial class DamageablesContext : Context<DamageablesContextItem> {
     }
 }
 
-public partial class DamageablesContextItem : ContextItem {
+public partial class DamageablesContextItem : uFrame.ECS.ContextItem {
     
     private Damageable _Damageable;
     

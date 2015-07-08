@@ -203,4 +203,11 @@ namespace Invert.uFrame.ECS {
                 base(graphItemObject, diagramViewModel) {
         }
     }
+    
+    public class IntervalNodeViewModelBase : ActionNodeViewModel {
+        
+        public IntervalNodeViewModelBase(IntervalNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
 }

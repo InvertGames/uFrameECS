@@ -7,7 +7,11 @@ namespace uFrame.ECS
         public override void Load()
         {
             base.Load();
-            Container.RegisterInstance<IComponentSystem>(new UnityComponentSystem());
+            var componentSystem = new UnityComponentSystem();
+            Container.RegisterInstance<IComponentSystem>(componentSystem);
+            var entityManager = componentSystem.RegisterComponent<Entity>();
+            Container.RegisterInstance(entityManager);
+
         }
     }
 }

@@ -4,10 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using uFrame.ECS;
-using UnityEngine;
 
 
-public class Player : PlayerBase
-{
-
+public partial class OnCollisionEnterDispatcher : uFrame.ECS.EcsDispatcher {
 }

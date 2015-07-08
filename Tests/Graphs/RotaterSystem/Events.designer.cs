@@ -12,8 +12,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using uFrame.ECS;
 using UniRx;
+using uFrame.ECS;
 
 
 public partial class OnUpdate : object {
@@ -36,27 +36,5 @@ public partial class OnMouseDownDispatcher : uFrame.ECS.EcsDispatcher {
 
 public partial class OnCollisionEnterDispatcher : uFrame.ECS.EcsDispatcher {
     
-    [UnityEngine.SerializeField()]
-    private Int32 _EntityId;
-    
-    [UnityEngine.SerializeField()]
-    private Int32 _ColliderId;
-    
-    public Int32 EntityId {
-        get {
-            return _EntityId;
-        }
-        set {
-            _EntityId = value;
-        }
-    }
-    
-    public Int32 ColliderId {
-        get {
-            return _ColliderId;
-        }
-        set {
-            _ColliderId = value;
-        }
-    }
+
 }

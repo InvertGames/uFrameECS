@@ -17,7 +17,14 @@ namespace Invert.uFrame.ECS {
 
         public virtual string ItemVariableName
         {
-            get { return this.Name.ToLower() + "Item"; }
+            get
+            {
+                if (this.Name == null)
+                {
+                    return "item";
+                }
+                return this.Name.ToLower() + "Item";
+            }
         }
 
         public override string Name
