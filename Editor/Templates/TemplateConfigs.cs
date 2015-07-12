@@ -18,8 +18,8 @@ namespace Invert.uFrame.ECS.Templates
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentGroupNode,ComponentGroupTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentGroupNode,ComponentGroupManagerTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<EventNode,EventTemplate>();
-            RegisteredTemplateGeneratorsFactory.RegisterTemplate<FilterNode,ContextTemplate>();
-            RegisteredTemplateGeneratorsFactory.RegisterTemplate<FilterNode, ContextItemTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<ContextNode,ContextTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<ContextNode, ContextItemTemplate>();
             
             //RegisteredTemplateGeneratorsFactory.RegisterTemplate<OnEventNode,OnEventTemplate>();
             //RegisteredTemplateGeneratorsFactory.RegisterTemplate<PublishNode,PublishTemplate>();
@@ -47,7 +47,7 @@ namespace Invert.uFrame.ECS.Templates
                     .Concat(Ctx.Data.Graph.NodeItems.OfType<ComponentGroupNode>()).Distinct();
             }
         }
-        public IEnumerable<OnEventNode> EventHandlers
+        public IEnumerable<HandlerNode> EventHandlers
         {
             get
             {
@@ -55,11 +55,11 @@ namespace Invert.uFrame.ECS.Templates
             }
         }
 
-        public IEnumerable<FilterNode> FilterNodes
+        public IEnumerable<ContextNode> FilterNodes
         {
             get
             {
-                foreach (var item in Ctx.Data.Project.NodeItems.OfType<FilterNode>())
+                foreach (var item in Ctx.Data.Project.NodeItems.OfType<ContextNode>())
                 {
 
                     if (item.Graph.Identifier == Ctx.Data.Graph.Identifier)
@@ -97,7 +97,7 @@ namespace Invert.uFrame.ECS.Templates
     [RequiresNamespace("uFrame.ECS")]
     public partial class ComponentTemplate : IClassTemplate<ComponentNode>
     {
-   
+        
         public string OutputPath
         {
             get { return Path2.Combine(Ctx.Data.Graph.Name, "Components"); }
@@ -184,7 +184,7 @@ namespace Invert.uFrame.ECS.Templates
     [RequiresNamespace("uFrame.ECS")]
     [RequiresNamespace("uFrame.Kernel")]
     [RequiresNamespace("UniRx")]
-    public partial class ContextTemplate : IClassTemplate<FilterNode>
+    public partial class ContextTemplate : IClassTemplate<ContextNode>
     {
         public IEnumerable<ComponentNode> WithAnyComponents
         {
@@ -216,14 +216,14 @@ namespace Invert.uFrame.ECS.Templates
             this.Ctx.SetBaseType("ReactiveContext<{0}ContextItem>",Ctx.Data.Name);
         }
 
-        public TemplateContext<FilterNode> Ctx { get; set; }
+        public TemplateContext<ContextNode> Ctx { get; set; }
     }
 
     [TemplateClass(TemplateLocation.DesignerFile, "{0}ContextItem"), AsPartial]
     [RequiresNamespace("uFrame.ECS")]
     [RequiresNamespace("uFrame.Kernel")]
     [RequiresNamespace("UniRx")]
-    public partial class ContextItemTemplate : ContextItem, IClassTemplate<FilterNode>
+    public partial class ContextItemTemplate : ContextItem, IClassTemplate<ContextNode>
     {
         public IEnumerable<ComponentNode> WithAnyComponents
         {
@@ -254,7 +254,7 @@ namespace Invert.uFrame.ECS.Templates
     
         }
 
-        public TemplateContext<FilterNode> Ctx { get; set; }
+        public TemplateContext<ContextNode> Ctx { get; set; }
     }
 
 

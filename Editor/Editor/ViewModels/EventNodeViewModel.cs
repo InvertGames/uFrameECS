@@ -1,3 +1,5 @@
+using Invert.Core.GraphDesigner;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -10,5 +12,7 @@ namespace Invert.uFrame.ECS {
         public EventNodeViewModel(EventNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+
+     
     }
 }

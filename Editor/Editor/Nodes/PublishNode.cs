@@ -12,6 +12,7 @@ namespace Invert.uFrame.ECS {
         {
             get { return EventInputSlot.InputFrom<EventNode>(); }
         }
+
         public override void WriteCode(TemplateContext ctx)
         {
             base.WriteCode(ctx);
@@ -20,7 +21,6 @@ namespace Invert.uFrame.ECS {
                 ctx._("var {0}Event = new {0}()", EventNode.Name);
                 ctx._("this.Publish({0}Event)", EventNode.Name);
             }
-            
         }
     }
     

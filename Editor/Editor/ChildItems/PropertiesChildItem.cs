@@ -7,6 +7,19 @@ namespace Invert.uFrame.ECS {
     
     
     public class PropertiesChildItem : PropertiesChildItemBase {
+        private string _friendlyName;
+
+        [InspectorProperty, JsonProperty]
+        public string FriendlyName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_friendlyName))
+                    return Name;
+                return _friendlyName;
+            }
+            set { _friendlyName = value; }
+        }
     }
     
     public partial interface IPropertiesConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

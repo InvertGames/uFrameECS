@@ -58,48 +58,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class ConditionNodeDrawerBase : GenericNodeDrawer<ConditionNode,ConditionNodeViewModel> {
-        
-        public ConditionNodeDrawerBase(ConditionNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class LoopNodeDrawerBase : GenericNodeDrawer<LoopNode,LoopNodeViewModel> {
-        
-        public LoopNodeDrawerBase(LoopNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class IfNodeDrawerBase : GenericNodeDrawer<IfNode,IfNodeViewModel> {
-        
-        public IfNodeDrawerBase(IfNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class IfNotNodeDrawerBase : GenericNodeDrawer<IfNotNode,IfNotNodeViewModel> {
-        
-        public IfNotNodeDrawerBase(IfNotNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class IsNullNodeDrawerBase : GenericNodeDrawer<IsNullNode,IsNullNodeViewModel> {
-        
-        public IsNullNodeDrawerBase(IsNullNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class IsNotNullNodeDrawerBase : GenericNodeDrawer<IsNotNullNode,IsNotNullNodeViewModel> {
-        
-        public IsNotNullNodeDrawerBase(IsNotNullNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
     public class ActionNodeDrawerBase : GenericNodeDrawer<ActionNode,ActionNodeViewModel> {
         
         public ActionNodeDrawerBase(ActionNodeViewModel viewModel) : 
@@ -107,44 +65,9 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class MatcherNodeDrawerBase : GenericNodeDrawer<MatcherNode,MatcherNodeViewModel> {
+    public class HandlerNodeDrawerBase : GenericNodeDrawer<HandlerNode,HandlerNodeViewModel> {
         
-        public MatcherNodeDrawerBase(MatcherNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class MatchAllNodeDrawerBase : GenericNodeDrawer<MatchAllNode,MatchAllNodeViewModel> {
-        
-        public MatchAllNodeDrawerBase(MatchAllNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class MatchAnyNodeDrawerBase : GenericNodeDrawer<MatchAnyNode,MatchAnyNodeViewModel> {
-        
-        public MatchAnyNodeDrawerBase(MatchAnyNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class CustomMatcherNodeDrawerBase : GenericNodeDrawer<CustomMatcherNode,CustomMatcherNodeViewModel> {
-        
-        public CustomMatcherNodeDrawerBase(CustomMatcherNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class OnEventNodeDrawerBase : GenericNodeDrawer<OnEventNode,OnEventNodeViewModel> {
-        
-        public OnEventNodeDrawerBase(OnEventNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class EachComponentNodeDrawerBase : GenericNodeDrawer<EachComponentNode,EachComponentNodeViewModel> {
-        
-        public EachComponentNodeDrawerBase(EachComponentNodeViewModel viewModel) : 
+        public HandlerNodeDrawerBase(HandlerNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
@@ -156,41 +79,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class AddComponentNodeDrawerBase : GenericNodeDrawer<AddComponentNode,AddComponentNodeViewModel> {
-        
-        public AddComponentNodeDrawerBase(AddComponentNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class RemoveComponentNodeDrawerBase : GenericNodeDrawer<RemoveComponentNode,RemoveComponentNodeViewModel> {
-        
-        public RemoveComponentNodeDrawerBase(RemoveComponentNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class ComponentFilterNodeDrawerBase : GenericNodeDrawer<ComponentFilterNode,ComponentFilterNodeViewModel> {
-        
-        public ComponentFilterNodeDrawerBase(ComponentFilterNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class EqualNodeDrawerBase : GenericNodeDrawer<EqualNode,EqualNodeViewModel> {
-        
-        public EqualNodeDrawerBase(EqualNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class FilterExpressionNodeDrawerBase : GenericNodeDrawer<FilterExpressionNode,FilterExpressionNodeViewModel> {
-        
-        public FilterExpressionNodeDrawerBase(FilterExpressionNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
     public class VariableNodeDrawerBase : GenericNodeDrawer<VariableNode,VariableNodeViewModel> {
         
         public VariableNodeDrawerBase(VariableNodeViewModel viewModel) : 
@@ -198,16 +86,114 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class FilterNodeDrawerBase : GenericNodeDrawer<FilterNode,FilterNodeViewModel> {
+    public class ContextNodeDrawerBase : GenericNodeDrawer<ContextNode,ContextNodeViewModel> {
         
-        public FilterNodeDrawerBase(FilterNodeViewModel viewModel) : 
+        public ContextNodeDrawerBase(ContextNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
     
-    public class IntervalNodeDrawerBase : GenericNodeDrawer<IntervalNode,IntervalNodeViewModel> {
+    public class TimerNodeDrawerBase : GenericNodeDrawer<TimerNode,TimerNodeViewModel> {
         
-        public IntervalNodeDrawerBase(IntervalNodeViewModel viewModel) : 
+        public TimerNodeDrawerBase(TimerNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class StartTimerNodeDrawerBase : GenericNodeDrawer<StartTimerNode,StartTimerNodeViewModel> {
+        
+        public StartTimerNodeDrawerBase(StartTimerNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class StopTimerNodeDrawerBase : GenericNodeDrawer<StopTimerNode,StopTimerNodeViewModel> {
+        
+        public StopTimerNodeDrawerBase(StopTimerNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class ComponentsNodeDrawerBase : GenericNodeDrawer<ComponentsNode,ComponentsNodeViewModel> {
+        
+        public ComponentsNodeDrawerBase(ComponentsNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class LiteralNodeDrawerBase : GenericNodeDrawer<LiteralNode,LiteralNodeViewModel> {
+        
+        public LiteralNodeDrawerBase(LiteralNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class StringLiteralNodeDrawerBase : GenericNodeDrawer<StringLiteralNode,StringLiteralNodeViewModel> {
+        
+        public StringLiteralNodeDrawerBase(StringLiteralNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class SequenceItemNodeDrawerBase : GenericNodeDrawer<SequenceItemNode,SequenceItemNodeViewModel> {
+        
+        public SequenceItemNodeDrawerBase(SequenceItemNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class VariableReferenceNodeDrawerBase : GenericNodeDrawer<VariableReferenceNode,VariableReferenceNodeViewModel> {
+        
+        public VariableReferenceNodeDrawerBase(VariableReferenceNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class Vector3NodeDrawerBase : GenericNodeDrawer<Vector3Node,Vector3NodeViewModel> {
+        
+        public Vector3NodeDrawerBase(Vector3NodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class Vector2NodeDrawerBase : GenericNodeDrawer<Vector2Node,Vector2NodeViewModel> {
+        
+        public Vector2NodeDrawerBase(Vector2NodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class StringNodeDrawerBase : GenericNodeDrawer<StringNode,StringNodeViewModel> {
+        
+        public StringNodeDrawerBase(StringNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class BoolNodeDrawerBase : GenericNodeDrawer<BoolNode,BoolNodeViewModel> {
+        
+        public BoolNodeDrawerBase(BoolNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class FloatNodeDrawerBase : GenericNodeDrawer<FloatNode,FloatNodeViewModel> {
+        
+        public FloatNodeDrawerBase(FloatNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class IntNodeDrawerBase : GenericNodeDrawer<IntNode,IntNodeViewModel> {
+        
+        public IntNodeDrawerBase(IntNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class ColorNodeDrawerBase : GenericNodeDrawer<ColorNode,ColorNodeViewModel> {
+        
+        public ColorNodeDrawerBase(ColorNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }

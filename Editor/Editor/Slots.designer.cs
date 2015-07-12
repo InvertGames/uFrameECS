@@ -146,7 +146,59 @@ namespace Invert.uFrame.ECS {
     public partial interface IEventConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class FilterBase : SingleOutputSlot<IFilterConnectable>, IFilterExpressionConnectable {
+    public class VariableInputBase : SingleInputSlot<IVariableInputConnectable> {
+        
+        public override string Name {
+            get {
+                return "VariableInput";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IVariableInputConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class VariableOutputBase : SingleOutputSlot<IVariableOutputConnectable> {
+        
+        public override string Name {
+            get {
+                return "VariableOutput";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IVariableOutputConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class FilterBase : SingleOutputSlot<IFilterConnectable> {
         
         public override string Name {
             get {
@@ -172,11 +224,11 @@ namespace Invert.uFrame.ECS {
     public partial interface IFilterConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ABase : SingleInputSlot<IAConnectable> {
+    public class TimerBase : SingleInputSlot<ITimerConnectable> {
         
         public override string Name {
             get {
-                return "A";
+                return "Timer";
             }
             set {
             }
@@ -195,58 +247,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public partial interface IAConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
-    public class BBase : SingleInputSlot<IBConnectable> {
-        
-        public override string Name {
-            get {
-                return "B";
-            }
-            set {
-            }
-        }
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface IBConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
-    public class StopEventBase : SingleInputSlot<IStopEventConnectable> {
-        
-        public override string Name {
-            get {
-                return "Stop Event";
-            }
-            set {
-            }
-        }
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface IStopEventConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    public partial interface ITimerConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
 }

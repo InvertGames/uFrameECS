@@ -31,49 +31,45 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<UserMethodNode> _UserMethod;
         
-        private Invert.Core.GraphDesigner.NodeConfig<ConditionNode> _Condition;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<LoopNode> _Loop;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<IfNode> _If;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<IfNotNode> _IfNot;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<IsNullNode> _IsNull;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<IsNotNullNode> _IsNotNull;
-        
         private Invert.Core.GraphDesigner.NodeConfig<ActionNode> _Action;
         
-        private Invert.Core.GraphDesigner.NodeConfig<MatcherNode> _Matcher;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<MatchAllNode> _MatchAll;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<MatchAnyNode> _MatchAny;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<CustomMatcherNode> _CustomMatcher;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<OnEventNode> _OnEvent;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<EachComponentNode> _EachComponent;
+        private Invert.Core.GraphDesigner.NodeConfig<HandlerNode> _Handler;
         
         private Invert.Core.GraphDesigner.NodeConfig<ComponentGroupNode> _ComponentGroup;
         
-        private Invert.Core.GraphDesigner.NodeConfig<AddComponentNode> _AddComponent;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<RemoveComponentNode> _RemoveComponent;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<ComponentFilterNode> _ComponentFilter;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<EqualNode> _Equal;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<FilterExpressionNode> _FilterExpression;
-        
         private Invert.Core.GraphDesigner.NodeConfig<VariableNode> _Variable;
         
-        private Invert.Core.GraphDesigner.NodeConfig<FilterNode> _Filter;
+        private Invert.Core.GraphDesigner.NodeConfig<ContextNode> _Context;
         
-        private Invert.Core.GraphDesigner.NodeConfig<IntervalNode> _Interval;
+        private Invert.Core.GraphDesigner.NodeConfig<TimerNode> _Timer;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<StartTimerNode> _StartTimer;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<StopTimerNode> _StopTimer;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ComponentsNode> _Components;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<LiteralNode> _Literal;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<StringLiteralNode> _StringLiteral;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<SequenceItemNode> _SequenceItem;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<VariableReferenceNode> _VariableReference;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<Vector3Node> _Vector3;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<Vector2Node> _Vector2;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<StringNode> _String;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<BoolNode> _Bool;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<FloatNode> _Float;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<IntNode> _Int;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ColorNode> _Color;
         
         public Invert.Core.GraphDesigner.NodeConfig<ComponentNode> Component {
             get {
@@ -129,60 +125,6 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<ConditionNode> Condition {
-            get {
-                return _Condition;
-            }
-            set {
-                _Condition = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<LoopNode> Loop {
-            get {
-                return _Loop;
-            }
-            set {
-                _Loop = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<IfNode> If {
-            get {
-                return _If;
-            }
-            set {
-                _If = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<IfNotNode> IfNot {
-            get {
-                return _IfNot;
-            }
-            set {
-                _IfNot = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<IsNullNode> IsNull {
-            get {
-                return _IsNull;
-            }
-            set {
-                _IsNull = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<IsNotNullNode> IsNotNull {
-            get {
-                return _IsNotNull;
-            }
-            set {
-                _IsNotNull = value;
-            }
-        }
-        
         public Invert.Core.GraphDesigner.NodeConfig<ActionNode> Action {
             get {
                 return _Action;
@@ -192,57 +134,12 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<MatcherNode> Matcher {
+        public Invert.Core.GraphDesigner.NodeConfig<HandlerNode> Handler {
             get {
-                return _Matcher;
+                return _Handler;
             }
             set {
-                _Matcher = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<MatchAllNode> MatchAll {
-            get {
-                return _MatchAll;
-            }
-            set {
-                _MatchAll = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<MatchAnyNode> MatchAny {
-            get {
-                return _MatchAny;
-            }
-            set {
-                _MatchAny = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<CustomMatcherNode> CustomMatcher {
-            get {
-                return _CustomMatcher;
-            }
-            set {
-                _CustomMatcher = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<OnEventNode> OnEvent {
-            get {
-                return _OnEvent;
-            }
-            set {
-                _OnEvent = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<EachComponentNode> EachComponent {
-            get {
-                return _EachComponent;
-            }
-            set {
-                _EachComponent = value;
+                _Handler = value;
             }
         }
         
@@ -255,51 +152,6 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<AddComponentNode> AddComponent {
-            get {
-                return _AddComponent;
-            }
-            set {
-                _AddComponent = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<RemoveComponentNode> RemoveComponent {
-            get {
-                return _RemoveComponent;
-            }
-            set {
-                _RemoveComponent = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<ComponentFilterNode> ComponentFilter {
-            get {
-                return _ComponentFilter;
-            }
-            set {
-                _ComponentFilter = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<EqualNode> Equal {
-            get {
-                return _Equal;
-            }
-            set {
-                _Equal = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<FilterExpressionNode> FilterExpression {
-            get {
-                return _FilterExpression;
-            }
-            set {
-                _FilterExpression = value;
-            }
-        }
-        
         public Invert.Core.GraphDesigner.NodeConfig<VariableNode> Variable {
             get {
                 return _Variable;
@@ -309,21 +161,147 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<FilterNode> Filter {
+        public Invert.Core.GraphDesigner.NodeConfig<ContextNode> Context {
             get {
-                return _Filter;
+                return _Context;
             }
             set {
-                _Filter = value;
+                _Context = value;
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<IntervalNode> Interval {
+        public Invert.Core.GraphDesigner.NodeConfig<TimerNode> Timer {
             get {
-                return _Interval;
+                return _Timer;
             }
             set {
-                _Interval = value;
+                _Timer = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<StartTimerNode> StartTimer {
+            get {
+                return _StartTimer;
+            }
+            set {
+                _StartTimer = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<StopTimerNode> StopTimer {
+            get {
+                return _StopTimer;
+            }
+            set {
+                _StopTimer = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ComponentsNode> Components {
+            get {
+                return _Components;
+            }
+            set {
+                _Components = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<LiteralNode> Literal {
+            get {
+                return _Literal;
+            }
+            set {
+                _Literal = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<StringLiteralNode> StringLiteral {
+            get {
+                return _StringLiteral;
+            }
+            set {
+                _StringLiteral = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<SequenceItemNode> SequenceItem {
+            get {
+                return _SequenceItem;
+            }
+            set {
+                _SequenceItem = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<VariableReferenceNode> VariableReference {
+            get {
+                return _VariableReference;
+            }
+            set {
+                _VariableReference = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<Vector3Node> Vector3 {
+            get {
+                return _Vector3;
+            }
+            set {
+                _Vector3 = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<Vector2Node> Vector2 {
+            get {
+                return _Vector2;
+            }
+            set {
+                _Vector2 = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<StringNode> String {
+            get {
+                return _String;
+            }
+            set {
+                _String = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<BoolNode> Bool {
+            get {
+                return _Bool;
+            }
+            set {
+                _Bool = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<FloatNode> Float {
+            get {
+                return _Float;
+            }
+            set {
+                _Float = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<IntNode> Int {
+            get {
+                return _Int;
+            }
+            set {
+                _Int = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ColorNode> Color {
+            get {
+                return _Color;
+            }
+            set {
+                _Color = value;
             }
         }
         
@@ -344,7 +322,6 @@ namespace Invert.uFrame.ECS {
             container.RegisterInstance<IEditorCommand>(GetCollectionsSelectionCommand(), typeof(CollectionsChildItem).Name + "TypeSelection");;
             container.AddTypeItem<CollectionsChildItem>();
             container.AddItem<SignalsReference>();
-            container.AddItem<NewSectionChildItem>();
             container.AddItem<MappingsReference>();
             container.AddItem<WithAnyReference>();
             container.AddItem<SelectReference>();
@@ -354,101 +331,88 @@ namespace Invert.uFrame.ECS {
             System.Color(NodeColor.Black);
             System.HasSubNode<ComponentNode>();
             System.HasSubNode<EventNode>();
-            System.HasSubNode<OnEventNode>();
+            System.HasSubNode<HandlerNode>();
             System.HasSubNode<ComponentGroupNode>();
-            System.HasSubNode<ComponentFilterNode>();
-            System.HasSubNode<FilterNode>();
+            System.HasSubNode<ContextNode>();
             ItemTypes = container.AddNode<ItemTypesNode,ItemTypesNodeViewModel,ItemTypesNodeDrawer>("ItemTypes");
             ItemTypes.Color(NodeColor.Gray);
             Event = container.AddNode<EventNode,EventNodeViewModel,EventNodeDrawer>("Event");
             Event.Inheritable();
-            Event.Color(NodeColor.Red);
+            Event.Color(NodeColor.YellowGreen);
             Event.HasSubNode<ComponentNode>();
             Event.HasSubNode<PublishNode>();
             Event.HasSubNode<UserMethodNode>();
-            Event.HasSubNode<ConditionNode>();
-            Event.HasSubNode<LoopNode>();
-            Event.HasSubNode<IfNode>();
-            Event.HasSubNode<IfNotNode>();
-            Event.HasSubNode<IsNullNode>();
-            Event.HasSubNode<IsNotNullNode>();
             Event.HasSubNode<ActionNode>();
-            Event.HasSubNode<MatcherNode>();
-            Event.HasSubNode<MatchAllNode>();
-            Event.HasSubNode<MatchAnyNode>();
-            Event.HasSubNode<CustomMatcherNode>();
             Publish = container.AddNode<PublishNode,PublishNodeViewModel,PublishNodeDrawer>("Publish");
             Publish.Color(NodeColor.Green);
             UserMethod = container.AddNode<UserMethodNode,UserMethodNodeViewModel,UserMethodNodeDrawer>("UserMethod");
             UserMethod.Color(NodeColor.Purple);
-            Condition = container.AddNode<ConditionNode,ConditionNodeViewModel,ConditionNodeDrawer>("Condition");
-            Condition.Color(NodeColor.Gray);
-            Loop = container.AddNode<LoopNode,LoopNodeViewModel,LoopNodeDrawer>("Loop");
-            Loop.Color(NodeColor.Orange);
-            If = container.AddNode<IfNode,IfNodeViewModel,IfNodeDrawer>("If");
-            If.Color(NodeColor.Gray);
-            IfNot = container.AddNode<IfNotNode,IfNotNodeViewModel,IfNotNodeDrawer>("IfNot");
-            IfNot.Color(NodeColor.Gray);
-            IsNull = container.AddNode<IsNullNode,IsNullNodeViewModel,IsNullNodeDrawer>("IsNull");
-            IsNull.Color(NodeColor.Gray);
-            IsNotNull = container.AddNode<IsNotNullNode,IsNotNullNodeViewModel,IsNotNullNodeDrawer>("IsNotNull");
-            IsNotNull.Color(NodeColor.Gray);
             Action = container.AddNode<ActionNode,ActionNodeViewModel,ActionNodeDrawer>("Action");
             Action.Color(NodeColor.Gray);
-            Matcher = container.AddNode<MatcherNode,MatcherNodeViewModel,MatcherNodeDrawer>("Matcher");
-            Matcher.Color(NodeColor.Gray);
-            MatchAll = container.AddNode<MatchAllNode,MatchAllNodeViewModel,MatchAllNodeDrawer>("MatchAll");
-            MatchAll.Color(NodeColor.Gray);
-            MatchAny = container.AddNode<MatchAnyNode,MatchAnyNodeViewModel,MatchAnyNodeDrawer>("MatchAny");
-            MatchAny.Color(NodeColor.Gray);
-            CustomMatcher = container.AddNode<CustomMatcherNode,CustomMatcherNodeViewModel,CustomMatcherNodeDrawer>("CustomMatcher");
-            CustomMatcher.Color(NodeColor.Purple);
-            OnEvent = container.AddNode<OnEventNode,OnEventNodeViewModel,OnEventNodeDrawer>("OnEvent");
-            OnEvent.Color(NodeColor.Red);
-            OnEvent.HasSubNode<ComponentNode>();
-            OnEvent.HasSubNode<EventNode>();
-            OnEvent.HasSubNode<PublishNode>();
-            OnEvent.HasSubNode<UserMethodNode>();
-            OnEvent.HasSubNode<MatchAllNode>();
-            OnEvent.HasSubNode<MatchAnyNode>();
-            OnEvent.HasSubNode<CustomMatcherNode>();
-            OnEvent.HasSubNode<EachComponentNode>();
-            OnEvent.HasSubNode<ComponentGroupNode>();
-            OnEvent.HasSubNode<AddComponentNode>();
-            OnEvent.HasSubNode<RemoveComponentNode>();
-            OnEvent.HasSubNode<IntervalNode>();
-            EachComponent = container.AddNode<EachComponentNode,EachComponentNodeViewModel,EachComponentNodeDrawer>("EachComponent");
-            EachComponent.Color(NodeColor.Gray);
+            Handler = container.AddNode<HandlerNode,HandlerNodeViewModel,HandlerNodeDrawer>("Handler");
+            Handler.Color(NodeColor.Red);
+            Handler.HasSubNode<ComponentNode>();
+            Handler.HasSubNode<EventNode>();
+            Handler.HasSubNode<PublishNode>();
+            Handler.HasSubNode<UserMethodNode>();
+            Handler.HasSubNode<LiteralNode>();
+            Handler.HasSubNode<VariableReferenceNode>();
+            Handler.HasSubNode<Vector3Node>();
+            Handler.HasSubNode<Vector2Node>();
+            Handler.HasSubNode<StringNode>();
+            Handler.HasSubNode<BoolNode>();
+            Handler.HasSubNode<FloatNode>();
+            Handler.HasSubNode<IntNode>();
+            Handler.HasSubNode<ColorNode>();
             ComponentGroup = container.AddNode<ComponentGroupNode,ComponentGroupNodeViewModel,ComponentGroupNodeDrawer>("ComponentGroup");
             ComponentGroup.Color(NodeColor.Purple);
-            ComponentGroup.HasSubNode<EqualNode>();
-            ComponentGroup.HasSubNode<FilterExpressionNode>();
             ComponentGroup.HasSubNode<VariableNode>();
-            AddComponent = container.AddNode<AddComponentNode,AddComponentNodeViewModel,AddComponentNodeDrawer>("AddComponent");
-            AddComponent.Color(NodeColor.Gray);
-            RemoveComponent = container.AddNode<RemoveComponentNode,RemoveComponentNodeViewModel,RemoveComponentNodeDrawer>("RemoveComponent");
-            RemoveComponent.Color(NodeColor.Gray);
-            ComponentFilter = container.AddNode<ComponentFilterNode,ComponentFilterNodeViewModel,ComponentFilterNodeDrawer>("ComponentFilter");
-            ComponentFilter.Color(NodeColor.Gray);
-            Equal = container.AddNode<EqualNode,EqualNodeViewModel,EqualNodeDrawer>("Equal");
-            Equal.Color(NodeColor.Gray);
-            FilterExpression = container.AddNode<FilterExpressionNode,FilterExpressionNodeViewModel,FilterExpressionNodeDrawer>("FilterExpression");
-            FilterExpression.Color(NodeColor.Gray);
             Variable = container.AddNode<VariableNode,VariableNodeViewModel,VariableNodeDrawer>("Variable");
             Variable.Color(NodeColor.Gray);
-            Filter = container.AddNode<FilterNode,FilterNodeViewModel,FilterNodeDrawer>("Filter");
-            Filter.Color(NodeColor.Gray);
-            Filter.HasSubNode<ComponentNode>();
-            Filter.HasSubNode<OnEventNode>();
-            Filter.HasSubNode<ComponentGroupNode>();
-            Interval = container.AddNode<IntervalNode,IntervalNodeViewModel,IntervalNodeDrawer>("Interval");
-            Interval.Color(NodeColor.Purple);
+            Context = container.AddNode<ContextNode,ContextNodeViewModel,ContextNodeDrawer>("Context");
+            Context.Color(NodeColor.Gray);
+            Context.HasSubNode<ComponentNode>();
+            Context.HasSubNode<VariableNode>();
+            Context.HasSubNode<LiteralNode>();
+            Context.HasSubNode<StringLiteralNode>();
+            Timer = container.AddNode<TimerNode,TimerNodeViewModel,TimerNodeDrawer>("Timer");
+            Timer.Color(NodeColor.Purple);
+            StartTimer = container.AddNode<StartTimerNode,StartTimerNodeViewModel,StartTimerNodeDrawer>("StartTimer");
+            StartTimer.Color(NodeColor.Gray);
+            StopTimer = container.AddNode<StopTimerNode,StopTimerNodeViewModel,StopTimerNodeDrawer>("StopTimer");
+            StopTimer.Color(NodeColor.Gray);
+            Components = container.AddGraph<ComponentsGraph, ComponentsNode>("ComponentsGraph");
+            Components.Color(NodeColor.Green);
+            Components.HasSubNode<ComponentNode>();
+            Components.HasSubNode<ContextNode>();
+            Literal = container.AddNode<LiteralNode,LiteralNodeViewModel,LiteralNodeDrawer>("Literal");
+            Literal.Color(NodeColor.Gray);
+            StringLiteral = container.AddNode<StringLiteralNode,StringLiteralNodeViewModel,StringLiteralNodeDrawer>("StringLiteral");
+            StringLiteral.Color(NodeColor.Gray);
+            SequenceItem = container.AddNode<SequenceItemNode,SequenceItemNodeViewModel,SequenceItemNodeDrawer>("SequenceItem");
+            SequenceItem.Color(NodeColor.Gray);
+            VariableReference = container.AddNode<VariableReferenceNode,VariableReferenceNodeViewModel,VariableReferenceNodeDrawer>("VariableReference");
+            VariableReference.Color(NodeColor.Green);
+            Vector3 = container.AddNode<Vector3Node,Vector3NodeViewModel,Vector3NodeDrawer>("Vector3");
+            Vector3.Color(NodeColor.DarkGray);
+            Vector2 = container.AddNode<Vector2Node,Vector2NodeViewModel,Vector2NodeDrawer>("Vector2");
+            Vector2.Color(NodeColor.DarkGray);
+            String = container.AddNode<StringNode,StringNodeViewModel,StringNodeDrawer>("String");
+            String.Color(NodeColor.DarkGray);
+            Bool = container.AddNode<BoolNode,BoolNodeViewModel,BoolNodeDrawer>("Bool");
+            Bool.Color(NodeColor.DarkGray);
+            Float = container.AddNode<FloatNode,FloatNodeViewModel,FloatNodeDrawer>("Float");
+            Float.Color(NodeColor.DarkGray);
+            Int = container.AddNode<IntNode,IntNodeViewModel,IntNodeDrawer>("Int");
+            Int.Color(NodeColor.DarkGray);
+            Color = container.AddNode<ColorNode,ColorNodeViewModel,ColorNodeDrawer>("Color");
+            Color.Color(NodeColor.DarkGray);
             container.Connectable<ComponentNode,ComponentsReference>();
             container.Connectable<ComponentNode,Component>();
             container.Connectable<ComponentNode,FilterBy>();
             container.Connectable<ComponentNode,SelectReference>();
             container.Connectable<ComponentNode,WithAnyReference>();
-            container.Connectable<ComponentNode,OnEventNode>();
+            container.Connectable<ComponentNode,HandlerNode>();
             container.Connectable<ComponentsReference,Variables>();
             container.Connectable<PropertiesChildItem,Variables>();
             container.Connectable<PropertiesChildItem,MappingsReference>();
@@ -457,19 +421,17 @@ namespace Invert.uFrame.ECS {
             container.Connectable<EventNode,Event>();
             container.Connectable<ActionNode,PublishNode>();
             container.Connectable<ActionNode,ActionNode>();
-            container.Connectable<OnEventNode,ActionNode>();
+            container.Connectable<HandlerNode,ActionNode>();
             container.Connectable<ComponentGroupNode,FilterBy>();
             container.Connectable<ComponentGroupNode,ComponentsReference>();
             container.Connectable<ComponentGroupNode,WithAnyReference>();
             container.Connectable<ComponentGroupNode,SelectReference>();
-            container.Connectable<ComponentGroupNode,OnEventNode>();
-            container.Connectable<Filter,FilterExpressionNode>();
-            container.Connectable<VariableNode,A>();
-            container.Connectable<VariableNode,B>();
-            container.Connectable<FilterNode,WithAnyReference>();
-            container.Connectable<FilterNode,SelectReference>();
-            container.Connectable<FilterNode,MappingsReference>();
-            container.Connectable<FilterNode,OnEventNode>();
+            container.Connectable<ComponentGroupNode,HandlerNode>();
+            container.Connectable<ContextNode,WithAnyReference>();
+            container.Connectable<ContextNode,SelectReference>();
+            container.Connectable<ContextNode,MappingsReference>();
+            container.Connectable<ContextNode,HandlerNode>();
+            container.Connectable<TimerNode,Timer>();
         }
     }
 }

@@ -11,5 +11,20 @@ namespace Invert.uFrame.ECS {
         public ActionNodeDrawer(ActionNodeViewModel viewModel) : 
                 base(viewModel) {
         }
+        
+        public override float HeaderPadding
+        {
+            get { return 3; }
+        }
+
+        public override float MinWidth
+        {
+            get { return 100f; }
+        }
+
+        //public override bool ShowHeader
+        //{
+        //    get { return false; }
+        //}
     }
 }

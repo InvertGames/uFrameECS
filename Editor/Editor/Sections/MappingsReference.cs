@@ -7,9 +7,26 @@ namespace Invert.uFrame.ECS {
     
     
     public class MappingsReference : MappingsReferenceBase {
-        public FilterNode Filter
+        public ContextNode Context
         {
-            get { return this.InputFrom<FilterNode>(); }
+            get { return this.InputFrom<ContextNode>(); }
+        }
+
+        public override bool AllowOutputs
+        {
+            get { return false; }
+        }
+
+        public override string Name
+        {
+            get
+            {
+                var sourceItem = SourceItem as PropertiesChildItem;
+                if (sourceItem != null)
+                    return sourceItem.FriendlyName;
+                return base.Name;
+            }
+            set { base.Name = value; }
         }
     }
     

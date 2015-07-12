@@ -7,7 +7,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class IntervalNode : IntervalNodeBase {
+    public class TimerNode : TimerNodeBase {
     }
     
     public partial interface IIntervalConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

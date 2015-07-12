@@ -13,7 +13,7 @@ namespace Invert.uFrame.ECS {
 
         public override void WriteCode(TemplateContext ctx)
         {
-            base.WriteCode(ctx);
+            //base.WriteCode(ctx);
             var handlerMethod = ctx.CurrentDeclaration.protected_virtual_func(typeof(void), Name, Name.ToLower());
             var handlerInvoke = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), Name);
 

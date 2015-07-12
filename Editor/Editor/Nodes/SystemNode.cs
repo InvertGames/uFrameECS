@@ -8,9 +8,9 @@ namespace Invert.uFrame.ECS {
     
     
     public class SystemNode : SystemNodeBase {
-        public IEnumerable<OnEventNode> EventHandlers
+        public IEnumerable<HandlerNode> EventHandlers
         {
-            get { return this.Graph.NodeItems.OfType<OnEventNode>(); }
+            get { return this.Graph.NodeItems.OfType<HandlerNode>(); }
         }
     }
     

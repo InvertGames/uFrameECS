@@ -1,0 +1,18 @@
+namespace Invert.uFrame.ECS {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Invert.Core;
+    using Invert.Core.GraphDesigner;
+    
+    
+    public class BoolNode : BoolNodeBase {
+        [NodeProperty, JsonProperty]
+        public bool Value { get; set; }
+        
+    }
+    
+    public partial interface IBoolConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+}

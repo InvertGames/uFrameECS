@@ -19,17 +19,20 @@ namespace Invert.uFrame.ECS {
             container.RegisterDrawer<ItemViewModel<IContextVariable>, ItemDrawer>();
             container.AddItemFlag<ComponentsReference>("Multiple", UnityEngine.Color.blue);
             container.AddNodeFlag<EventNode>("Dispatcher");
+            System.HasSubNode<EnumNode>();
+            container.Connectable<IContextVariable, IVariableInput>();
+            container.Connectable<IVariableOutput, IContextVariable>();
+   
+            VariableReference.Name = "Var";
         }
 
         public IEnumerable<QuickAddItem> PrefabNodes(INodeRepository nodeRepository)
         {
             foreach (var item in nodeRepository.NodeItems.OfType<EventNode>())
             {
-               
                 var qa = new QuickAddItem(item.Group, item.Name, _ =>
                 {
-                  
-                    var eventNode = new OnEventNode()
+                    var eventNode = new HandlerNode()
                     {
                         EventIdentifier = _.Item.Identifier
                     };
