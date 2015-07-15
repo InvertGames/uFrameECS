@@ -21,4 +21,10 @@ namespace Invert.uFrame.ECS {
     
     public class ComponentsGraphBase : GenericGraphData<ComponentsNode> {
     }
+    
+    public class ActionLibraryGraphBase : GenericGraphData<ActionLibraryNode> {
+    }
+    
+    public class LibraryGraphBase : GenericGraphData<LibraryNode> {
+    }
 }

@@ -23,15 +23,52 @@ namespace Invert.uFrame.ECS {
         {
             get
             {
+                yield break;
                 if (Action.Meta == null)
                 {
                     yield return "Action Not Found";
                     yield break;
                 }
+                if (Action.Meta.Method != null)
+                {
+                    yield break;
+                }
                 yield return Action.Meta.TitleText;
             }
         }
-         
+
+        public override bool IsCollapsed
+        {
+            get { return false; }
+            set { base.IsCollapsed = value; }
+        }
+
+        public override bool AllowCollapsing
+        {
+            get { return false; }
+        }
+
+        public override bool IsEditable
+        {
+            get
+            {
+                
+                return base.IsEditable;
+            }
+        }
+
+        public override string Name
+        {
+            get
+            {
+                return Action.Meta.TitleText;
+                if (Action.Meta != null && Action.Meta.Method != null)
+                    return Action.Meta.Method.Name;
+                return base.Name;
+            }
+            set { base.Name = value; }
+        }
+
         public ActionNodeViewModel(ActionNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }

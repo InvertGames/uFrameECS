@@ -331,9 +331,8 @@ namespace uFrame.ECS
             {
                 if (ContextItems.ContainsKey(entityId)) return;
                 var item = Select();
+                
                 ContextItems.Add(entityId, item);
-                
-                
             }
             else
             {
@@ -341,7 +340,6 @@ namespace uFrame.ECS
                 {
                     ContextItems.Remove(entityId);
                 }
-                
             }
         }
 
@@ -357,7 +355,14 @@ namespace uFrame.ECS
 
     public class ContextItem : IEcsComponent
     {
+        private Entity _entityView;
         public int EntityId { get; set; }
+
+        public Entity EntityView
+        {
+            get { return _entityView ?? (_entityView = EntityService.GetEntityView(EntityId)); }
+        }
+
     }
 
 }

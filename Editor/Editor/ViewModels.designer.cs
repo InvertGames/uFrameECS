@@ -196,4 +196,32 @@ namespace Invert.uFrame.ECS {
                 base(graphItemObject, diagramViewModel) {
         }
     }
+    
+    public class CustomActionNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<CustomActionNode> {
+        
+        public CustomActionNodeViewModelBase(CustomActionNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class ActionLibraryNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ActionLibraryNode> {
+        
+        public ActionLibraryNodeViewModelBase(ActionLibraryNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class LibraryNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<LibraryNode> {
+        
+        public LibraryNodeViewModelBase(LibraryNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class SetVariableNodeViewModelBase : SequenceItemNodeViewModel {
+        
+        public SetVariableNodeViewModelBase(SetVariableNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
 }

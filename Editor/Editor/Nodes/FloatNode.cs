@@ -1,3 +1,5 @@
+using System.CodeDom;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -11,6 +13,13 @@ namespace Invert.uFrame.ECS {
         public override string VariableType
         {
             get { return typeof (float).Name; }
+        }
+        [NodeProperty, JsonProperty]
+        public float Value { get; set; }
+
+        public override CodeExpression GetCreateExpression()
+        {
+            return new CodePrimitiveExpression(Value);
         }
 
     }

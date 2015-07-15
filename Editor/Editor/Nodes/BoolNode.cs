@@ -1,3 +1,5 @@
+using System.CodeDom;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -10,7 +12,15 @@ namespace Invert.uFrame.ECS {
     public class BoolNode : BoolNodeBase {
         [NodeProperty, JsonProperty]
         public bool Value { get; set; }
-        
+        public override string VariableType
+        {
+            get { return typeof(bool).FullName; }
+        }
+
+        public override CodeExpression GetCreateExpression()
+        {
+            return new CodePrimitiveExpression(Value);
+        }
     }
     
     public partial interface IBoolConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

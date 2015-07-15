@@ -16,10 +16,10 @@ namespace Invert.uFrame.ECS
     }
     public class HandlerNode : HandlerNodeBase, ISetupCodeWriter, ICodeOutput
     {
-        
+
         private string _eventIdentifier;
         private EventNode _eventNode;
-        [ProxySection("User Methods",SectionVisibility.WhenNodeIsNotFilter)]
+        [ProxySection("User Methods", SectionVisibility.WhenNodeIsNotFilter)]
         public IEnumerable<IDiagramNodeItem> UserMethods
         {
             get { return this.Graph.NodeItems.Where(_ => this.Locations.Keys.Contains(_.Identifier)).OfType<UserMethodNode>().Cast<IDiagramNodeItem>(); }
@@ -39,22 +39,36 @@ namespace Invert.uFrame.ECS
 
         public string HandlerMethodName
         {
-            get { return InputNames + "_" + Name +"Handler"; }
+            get { return Graph.Name + "_" + InputNames + "_" + Name + "Handler"; }
         }
         public string HandlerFilterMethodName
         {
             get { return InputNames + "_" + Name + "Filter"; }
         }
-        
+
+        public IEnumerable<ContextNode> Contexts
+        {
+            get
+            {
+                if (this.ContextNode != null)
+                {
+                    yield return this.ContextNode;
+                }
+                foreach (var item  in Mappings.Select(p => p.InputFrom<ContextNode>())
+                    .Where(p => p != null))
+                {
+                    yield return item;
+                }
+            }
+        } 
         public string InputNames
         {
             get
             {
+
                 return
                     string.Join("_",
-                        Mappings.Select(p => p.InputFrom<ContextNode>())
-                            .Where(p => p != null)
-                            .Select(p => p.Name)
+                            Contexts.Select(p => p.Name)
                             .ToArray());
             }
         }
@@ -67,7 +81,7 @@ namespace Invert.uFrame.ECS
             {
                 _eventIdentifier = value;
                 _eventNode = null;
-     
+
             }
         }
 
@@ -117,13 +131,36 @@ namespace Invert.uFrame.ECS
         {
             get
             {
+                var evtNode = EventNode;
+                if (evtNode != null && !evtNode.SystemEvent)
+                {
+
+
+                    yield return new ContextVariable("Event")
+                        {
+                            Node = this,
+                            //SourceVariable = select as GenericNode
+                        };
+
+
+                    foreach (var child in evtNode.PersistedItems.OfType<ITypedItem>())
+                        {
+                            yield return new ContextVariable("Event", child.Name)
+                            {
+                                Node = this,
+                                IsSubVariable = true,
+                                SourceVariable = child
+                            };
+                        }
+                    
+                }
                 var defaultFilter = this.InputFrom<ContextNode>();
                 if (defaultFilter != null)
                 {
                     foreach (var select in defaultFilter.Select.Select(p => p.SourceItem).OfType<IDiagramNode>())
                     {
 
-                        yield return new ContextVariable(defaultFilter.Name.ToLower() + "Item", select.Name)
+                        yield return new ContextVariable("EntityIdItem", select.Name)
                         {
                             Node = this,
                             //SourceVariable = select as GenericNode
@@ -132,7 +169,7 @@ namespace Invert.uFrame.ECS
 
                         foreach (var child in select.PersistedItems.OfType<ITypedItem>())
                         {
-                            yield return new ContextVariable(defaultFilter.Name.ToLower() + "Item", select.Name, child.Name)
+                            yield return new ContextVariable("EntityIdItem", select.Name, child.Name)
                             {
                                 Node = this,
                                 IsSubVariable = true,
@@ -148,16 +185,16 @@ namespace Invert.uFrame.ECS
                     foreach (var select in filter.Select.Select(p => p.SourceItem).OfType<IDiagramNode>())
                     {
 
-                        yield return new ContextVariable(filter.Name.ToLower() + "Item", select.Name)
+                        yield return new ContextVariable(item.Name + "Item", select.Name)
                         {
                             Node = this,
                             //SourceVariable = select as GenericNode
                         };
-                        
+
 
                         foreach (var child in select.PersistedItems.OfType<ITypedItem>())
                         {
-                            yield return new ContextVariable(filter.Name.ToLower() + "Item", select.Name, child.Name)
+                            yield return new ContextVariable(item.Name + "Item", select.Name, child.Name)
                             {
                                 Node = this,
                                 IsSubVariable = true,
@@ -174,33 +211,30 @@ namespace Invert.uFrame.ECS
             }
         }
 
-      
+
         public override void WriteCode(TemplateContext ctx)
         {
-            if (EventNode.SystemEvent)
+            var defaultFilter = ContextNode;
+            //base.WriteCode(ctx);
+            ctx._("var {0} = new {1}()", this.Name,HandlerMethodName);
+            ctx._("{0}.System = this",this.Name);
+            if (!EventNode.SystemEvent)
             {
-                var systemMethod = ctx.CurrentDeclaration.public_func(null, EventNode.SystemEventMethod);
-                // systemMethod.Statements.Add(new )
-                ctx.PushStatements(systemMethod.Statements);
-                ctx._if("{0}Context == null", ContextNode.Name).TrueStatements._("return");
-
-                ctx._("var e = {0}Context.Items.GetEnumerator()", ContextNode.Name);
-
-                var iteration = new CodeIterationStatement(
-                    new CodeSnippetStatement(string.Empty),
-                    new CodeSnippetExpression("e.MoveNext()"),
-                    new CodeSnippetStatement(string.Empty)
-                    );
-
-                ctx.CurrentStatements.Add(iteration);
-                ctx.PushStatements(iteration.Statements);
-                ctx._("{0}(e.Current)", HandlerMethodName);
-
-                ctx.PopStatements();
-                ctx.PopStatements();
-
+                ctx._("{0}.Event = data", this.Name);
             }
-            base.WriteCode(ctx);
+            
+            if (defaultFilter != null)
+            {
+                ctx._("{0}.EntityIdItem = {1}",this.Name, "entityIdItem");
+            }
+            foreach (var item in this.Mappings)
+            {
+                var filter = item.Context;
+                if (filter == null) continue;
+                ctx._("{0}.{1}Item = {1}Item", this.Name, item.Name.ToLower());
+            }
+            ctx._("{0}.Execute()", this.Name);
+
             //var seq = this.OutputTo<ActionNode>();
             //foreach (var item in this.Use)
             //{
@@ -210,6 +244,18 @@ namespace Invert.uFrame.ECS
 
         public void WriteSetupCode(TemplateContext ctx)
         {
+            if (EventNode.SystemEvent)
+            {
+                var sysMethodName = EventNode.SystemEventMethod;
+                var systemMethod = ctx.CurrentDeclaration.Members.OfType<CodeMemberMethod>()
+                    .FirstOrDefault(p => p.Name == sysMethodName) ?? ctx.CurrentDeclaration.public_func(null, EventNode.SystemEventMethod);
+                // systemMethod.Statements.Add(new )
+                ctx.PushStatements(systemMethod.Statements);
+                LoopContextHandler(ctx);
+        
+                ctx.PopStatements();
+
+            }
             var handlerMethod = ctx.CurrentDeclaration.protected_func(typeof(void), HandlerMethodName);
             var defaultFilter = ContextNode;
             if (!EventNode.SystemEvent)
@@ -228,30 +274,45 @@ namespace Invert.uFrame.ECS
 
                 ctx.PushStatements(handlerFilterMethod.Statements);
 
+
+
+
                 var invoker = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), HandlerMethodName);
                 invoker.Parameters.Add(new CodeSnippetExpression("data"));
-
-                if (defaultFilter != null)
+                if (this.Mappings.Any())
                 {
-                    ctx._("var entityIdItem = {0}Context.MatchAndSelect(data.EntityId)", defaultFilter.Name);
-                    ctx._if("entityIdItem== null").TrueStatements._("return");
-                    invoker.Parameters.Add(new CodeSnippetExpression("entityIdItem"));
-                }
-                foreach (var item in this.Mappings)
-                {
-                    var filter = item.Context;
-                    if (filter == null) continue;
+                    
+                    if (defaultFilter != null)
+                    {
+                        ctx._("var entityIdItem = {0}Context.MatchAndSelect(data.EntityId)", defaultFilter.Name);
+                        ctx._if("entityIdItem== null").TrueStatements._("return");
+                        invoker.Parameters.Add(new CodeSnippetExpression("entityIdItem"));
+                    }
+                    foreach (var item in this.Mappings)
+                    {
+                        var filter = item.Context;
+                        if (filter == null) continue;
 
-                    ctx._("var {0}Item = {1}Context.MatchAndSelect(data.{2})",item.Name, filter.Name,item.SourceItem.Name);
-                    ctx._if("{0}Item == null",item.Name).TrueStatements._("return");
-                    invoker.Parameters.Add(new CodeSnippetExpression(string.Format("{0}Item", item.Name)));
+                        ctx._("var {0}Item = {1}Context.MatchAndSelect(data.{2})", item.Name, filter.Name,
+                            item.SourceItem.Name);
+                        ctx._if("{0}Item == null", item.Name).TrueStatements._("return");
+                        invoker.Parameters.Add(new CodeSnippetExpression(string.Format("{0}Item", item.Name)));
+                    }
+                    ctx.CurrentStatements.Add(invoker);
                 }
-                ctx.CurrentStatements.Add(invoker);
+                else if (defaultFilter != null)
+                {
+                    LoopContextHandler(ctx, true);
+                }
+                else
+                {
+                    ctx.CurrentStatements.Add(invoker);
+                }
+
+                
                 ctx.PopStatements();
             }
 
-
-           
             if (defaultFilter != null)
             {
 
@@ -261,7 +322,7 @@ namespace Invert.uFrame.ECS
                         defaultFilter.Name);
 
                 }
-                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(defaultFilter.Name + "ContextItem", defaultFilter.Name.ToLower() + "Item"));
+                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(defaultFilter.Name + "ContextItem",  "entityIdItem"));
             }
             else
             {
@@ -273,7 +334,7 @@ namespace Invert.uFrame.ECS
                     {
                         ctx._("EnsureDispatcherOnComponents<{0}Dispatcher>( {1}Context.WithAnyTypes )", EventNode.Name, filter.Name);
                     }
-                    handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(filter.Name + "ContextItem", filter.Name.ToLower() + "Item"));
+                    handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(filter.Name + "ContextItem", item.Name.ToLower() + "Item"));
                 }
 
             }
@@ -289,6 +350,33 @@ namespace Invert.uFrame.ECS
             WriteCode(ctx);
             ctx.PopStatements();
             ctx.CurrentMember = prevMethod;
+        }
+
+        private void LoopContextHandler(TemplateContext ctx, bool isAggregatorEvent= false)
+        {
+            ctx.PushStatements(ctx._if("{0}Context != null", ContextNode.Name).TrueStatements);
+
+            ctx._("var e = {0}Context.Items.GetEnumerator()", ContextNode.Name);
+
+            var iteration = new CodeIterationStatement(
+                new CodeSnippetStatement(string.Empty),
+                new CodeSnippetExpression("e.MoveNext()"),
+                new CodeSnippetStatement(string.Empty)
+                );
+
+            ctx.CurrentStatements.Add(iteration);
+            ctx.PushStatements(iteration.Statements);
+            if (isAggregatorEvent)
+            {
+                ctx._("{0}(data, e.Current)", HandlerMethodName);
+            }
+            else
+            {
+                ctx._("{0}(e.Current)", HandlerMethodName);
+            }
+            
+            ctx.PopStatements();
+            ctx.PopStatements();
         }
 
 

@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using System.CodeDom;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Invert.Core.GraphDesigner;
 using Invert.IOC;
 using Invert.uFrame.ECS;
+using uFrame.Actions;
+using uFrame.Actions.Attributes;
 using uFrame.ECS;
 
 namespace Invert.uFrame.ECS.Templates
@@ -20,10 +24,44 @@ namespace Invert.uFrame.ECS.Templates
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<EventNode,EventTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<ContextNode,ContextTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<ContextNode, ContextItemTemplate>();
-            
-            //RegisteredTemplateGeneratorsFactory.RegisterTemplate<OnEventNode,OnEventTemplate>();
-            //RegisteredTemplateGeneratorsFactory.RegisterTemplate<PublishNode,PublishTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<HandlerNode, HandlerTemplate>();
+
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<CustomActionNode, CustomActionEditableTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<CustomActionNode, CustomActionDesignerTemplate>();
         }
+    }
+
+    [TemplateClass(TemplateLocation.DesignerFile)]
+    [RequiresNamespace("uFrame.Kernel")]
+    [RequiresNamespace("UnityEngine")]
+    public partial class HandlerTemplate : IClassTemplate<HandlerNode>
+    {
+       
+  
+        //public VariableNode Variables
+        //{
+        //    get
+        //    {
+
+        //        return Ctx.Data.
+        //    }
+        //}
+        public string OutputPath
+        {
+            get { return Path2.Combine(Ctx.Data.Graph.Name, "Handlers"); }
+        }
+
+        public bool CanGenerate
+        {
+            get { return true; }
+        }
+
+        public void TemplateSetup()
+        {
+
+        }
+
+        public TemplateContext<HandlerNode> Ctx { get; set; }
     }
 
     [TemplateClass(TemplateLocation.Both)]
@@ -304,7 +342,72 @@ namespace Invert.uFrame.ECS.Templates
         public TemplateContext<EventNode> Ctx { get; set; }
     }
 
+    [TemplateClass(TemplateLocation.DesignerFile), ForceBaseType(typeof(UFAction)), AsPartial]
+    [RequiresNamespace("uFrame.ECS")]
+    [RequiresNamespace("UnityEngine")]
+    public partial class CustomActionDesignerTemplate : IClassTemplate<CustomActionNode>
+    {
 
+        public string OutputPath
+        {
+            get { return Path2.Combine(Ctx.Data.Graph.Name, "Actions"); }
+        }
+
+        public bool CanGenerate
+        {
+            get { return true; }
+        }
+
+        public void TemplateSetup()
+        {
+  
+            foreach (var item in Ctx.Data.Inputs)
+            {
+                var field = Ctx.CurrentDeclaration._public_(item.RelatedTypeName, item.Name);
+                field.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(In).ToCodeReference(),
+                    new CodeAttributeArgument(new CodePrimitiveExpression(item.Name))));
+            }
+            foreach (var item in Ctx.Data.Outputs)
+            {
+                var field = Ctx.CurrentDeclaration._public_(item.RelatedTypeName, item.Name);
+                field.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(Out).ToCodeReference(),
+                    new CodeAttributeArgument(new CodePrimitiveExpression(item.Name))));
+            }
+            foreach (var item in Ctx.Data.Branches)
+            {
+                var field = Ctx.CurrentDeclaration._public_(typeof(Action), item.Name);
+                field.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(Out).ToCodeReference(),
+                    new CodeAttributeArgument(new CodePrimitiveExpression(item.Name))));
+            }
+        }
+
+        public TemplateContext<CustomActionNode> Ctx { get; set; }
+    }
+
+    [TemplateClass(TemplateLocation.EditableFile), ForceBaseType(typeof(UFAction)), AsPartial]
+    [RequiresNamespace("uFrame.ECS")]
+    public partial class CustomActionEditableTemplate : IClassTemplate<CustomActionNode>
+    {
+
+        public string OutputPath
+        {
+            get { return Path2.Combine(Ctx.Data.Graph.Name, "Actions"); }
+        }
+
+        public bool CanGenerate
+        {
+            get { return true; }
+        }
+
+        public void TemplateSetup()
+        {
+            this.Ctx.CurrentDeclaration.BaseTypes.Clear();
+            var method = Ctx.CurrentDeclaration.public_override_func(typeof (bool), "Execute");
+            method.Statements.Add(new CodeSnippetExpression("return base.Execute()"));
+        }
+
+        public TemplateContext<CustomActionNode> Ctx { get; set; }
+    }
     public class _CONTEXTITEM_ : _ITEMTYPE_
     {
         public override string TheType(TemplateContext context)

@@ -20,8 +20,9 @@ namespace Invert.uFrame.ECS {
             container.AddItemFlag<ComponentsReference>("Multiple", UnityEngine.Color.blue);
             container.AddNodeFlag<EventNode>("Dispatcher");
             System.HasSubNode<EnumNode>();
-            container.Connectable<IContextVariable, IVariableInput>();
-            container.Connectable<IVariableOutput, IContextVariable>();
+            container.Connectable<IContextVariable, IActionIn>();
+            container.Connectable<IActionOut, IContextVariable>();
+            container.Connectable<ActionBranch, SequenceItemNode>();
    
             VariableReference.Name = "Var";
         }

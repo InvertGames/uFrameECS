@@ -249,4 +249,56 @@ namespace Invert.uFrame.ECS {
     
     public partial interface ITimerConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
+    
+    public class VariableBase : SingleInputSlot<IVariableConnectable> {
+        
+        public override string Name {
+            get {
+                return "Variable";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class ValueBase : SingleInputSlot<IValueConnectable> {
+        
+        public override string Name {
+            get {
+                return "Value";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IValueConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
 }

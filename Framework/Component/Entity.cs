@@ -8,8 +8,6 @@ namespace uFrame.ECS
         [SerializeField]
         private int _entityId;
 
-        private static int _lastUsedId = 0;
-
         public int EntityId
         {
             get
@@ -19,22 +17,22 @@ namespace uFrame.ECS
             set { _entityId = value; }
         }
 
-        public static int LastUsedId
-        {
-            get { return _lastUsedId; }
-            set { _lastUsedId = value; }
-        }
-
         public override void KernelLoading()
         {
             base.KernelLoading();
+            EntityService.NewId();
             if (_entityId == 0)
             {
-                _lastUsedId--;
-                _entityId = _lastUsedId;
+                _entityId = EntityService.NewId();
             }
-    
+            EntityService.RegisterEntityView(this);
 
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            EntityService.UnRegisterEntityView(this);
         }
     }
 }

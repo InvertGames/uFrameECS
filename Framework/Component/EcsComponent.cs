@@ -33,8 +33,6 @@ namespace uFrame.ECS
             _Entity = entityComponent;
         }
 
-
-
         public override void KernelLoading()
         {
   

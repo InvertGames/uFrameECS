@@ -21,7 +21,13 @@ namespace Invert.uFrame.ECS
         {
             return new CodeVariableDeclarationStatement(VariableType, VariableName, GetCreateExpression());
         }
-
+        public virtual CodeMemberField GetFieldStatement()
+        {
+            return new CodeMemberField(VariableType, VariableName)
+            {
+                InitExpression = GetCreateExpression()
+            };
+        }
         public virtual CodeExpression GetCreateExpression()
         {
             return null;

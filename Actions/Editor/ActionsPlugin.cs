@@ -6,10 +6,12 @@ using System.Linq;
 using System.Reflection;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
+using Invert.ICSharpCode.NRefactory.Utils.CompositeFormatStringParser;
 using Invert.IOC;
 using Invert.uFrame.ECS;
 using uFrame.Actions;
 using uFrame.Actions.Attributes;
+using UnityEditor;
 
 public class ActionsPlugin : DiagramPlugin, IContextMenuQuery {
     private static Dictionary<string, ActionMetaInfo> _actions;
@@ -21,6 +23,73 @@ public class ActionsPlugin : DiagramPlugin, IContextMenuQuery {
 
         // Query for the available actions
         ActionTypes = InvertApplication.GetDerivedTypes<UFAction>(false, false).ToArray();
+
+        foreach (var assembly in InvertApplication.CachedAssemblies)
+        {
+            foreach (
+                var type in
+                    assembly.GetTypes()
+                        .Where(p => p.IsSealed && p.IsSealed && p.IsDefined(typeof (ActionLibrary), true)))
+            {
+                Debug.Log(string.Format("Loading type: {0}", type.Name));
+                var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static);
+                foreach (var method in methods)
+                {
+                    Debug.Log(string.Format("Loading method: {0}", method.Name));
+                    var actionInfo = new ActionMetaInfo()
+                    {
+                        Type = type,
+                        Method = method,
+                
+                    };
+                    actionInfo.MetaAttributes = method.GetCustomAttributes(typeof(ActionMetaAttribute), true).OfType<ActionMetaAttribute>().ToArray();
+           
+             
+                    var vars = method.GetParameters();
+                    foreach (var parameter in vars)
+                    {
+                        var fieldMetaInfo = new ActionFieldInfo()
+                        {
+                            Type = parameter.ParameterType,
+                            Name = parameter.Name
+                        };
+
+                        fieldMetaInfo.MetaAttributes = method.GetCustomAttributes(typeof(FieldDisplayTypeAttribute), true).Cast<FieldDisplayTypeAttribute>()
+                            .Where(p => p.ParameterName == parameter.Name).ToArray();
+                        if (!fieldMetaInfo.MetaAttributes.Any())
+                        {
+                            if (parameter.IsOut || parameter.ParameterType == typeof(Action))
+                            {
+                                fieldMetaInfo.DisplayType = new Out(parameter.Name, parameter.Name);
+                            }
+                            else
+                            {
+                                fieldMetaInfo.DisplayType = new In(parameter.Name, parameter.Name);
+                            }
+                            
+                        }
+                        actionInfo.ActionFields.Add(fieldMetaInfo);
+
+                    }
+                    if (method.ReturnType != typeof(void))
+                    {
+                        var result = new ActionFieldInfo()
+                        {
+                            Type = actionInfo.Type,
+                            Name = "Result"
+                        };
+                        result.MetaAttributes = method.GetCustomAttributes(typeof(FieldDisplayTypeAttribute), true).OfType<FieldDisplayTypeAttribute>()
+                            .Where(p => p.ParameterName == "Result").ToArray();
+
+                        result.DisplayType = new Out("Result","Result");
+                        actionInfo.ActionFields.Add(result);
+                    }
+                    Actions.Add(actionInfo.FullName,actionInfo);
+
+                }
+            }
+        }
+
         foreach (var actionType in ActionTypes)
         {
             var actionInfo = new ActionMetaInfo()
@@ -33,7 +102,8 @@ public class ActionsPlugin : DiagramPlugin, IContextMenuQuery {
             {
                 var fieldMetaInfo = new ActionFieldInfo()
                 {
-                    Field = field
+                    Type = field.FieldType,
+                    Name = field.Name
                 };
                 fieldMetaInfo.MetaAttributes =
                     field.GetCustomAttributes(typeof (ActionAttribute), true).OfType<ActionAttribute>().ToArray();
@@ -60,8 +130,6 @@ public class ActionsPlugin : DiagramPlugin, IContextMenuQuery {
     {
         if (contextType == typeof (IDiagramContextCommand))
         {
-   
-
             var diagramViewModel = ui.Handler.ContextObjects.OfType<DiagramViewModel>().FirstOrDefault();
             if (diagramViewModel != null)
             {
@@ -96,13 +164,22 @@ public class ActionMetaInfo
     private ActionTitle _title;
     private List<ActionFieldInfo> _actionFields;
     public Type Type { get; set; }
-
+    public MethodInfo Method { get; set; }
     public ActionTitle Title
     {
         get { return _title ?? (_title = MetaAttributes.OfType<ActionTitle>().FirstOrDefault()); }
         set { _title = value; }
     }
 
+    public string FullName
+    {
+        get
+        {
+            if (Method == null)
+                return Type.FullName;
+            return Type.FullName + "." + Method.Name;
+        }
+    }
     public string TitleText
     {
         get
@@ -147,12 +224,14 @@ public class ActionFieldInfo
     {
         get
         {
-            
-            return DisplayType.Name ?? Field.Name;
+            if (DisplayType == null) return _name;
+            return DisplayType.DisplayName ?? _name ;
         }
+        set { _name = value; }
     }
     private FieldDisplayTypeAttribute _displayType;
-    public FieldInfo Field { get; set; }
+    private string _name;
+    public Type Type { get; set; }
     public ActionAttribute[] MetaAttributes { get; set; }
 
     public FieldDisplayTypeAttribute DisplayType

@@ -1,5 +1,6 @@
 using System.CodeDom;
 using Invert.ICSharpCode.NRefactory.CSharp.Statements;
+using Invert.ICSharpCode.NRefactory.TypeSystem.Implementation;
 using Invert.Json;
 using uFrame.Actions.Attributes;
 
@@ -158,39 +159,147 @@ namespace Invert.uFrame.ECS {
         
         public override void WriteCode(TemplateContext ctx)
         {
-            base.WriteCode(ctx);
-            CodeVariableDeclarationStatement varStatement = new CodeVariableDeclarationStatement(Meta.Type, VarName, new CodeObjectCreateExpression(Meta.Type));
-            ctx.CurrentStatements.Add(varStatement);
-
-            foreach (var item in GraphItems.OfType<IActionItem>())
+            if (Meta.Method == null)
             {
-                var decl = item.InputFrom<VariableNode>();
-                if (decl == null) continue;
+                var varStatement = ctx.CurrentDeclaration._private_(Meta.Type, VarName);
+                varStatement.InitExpression = new CodeObjectCreateExpression(Meta.Type);
 
-                ctx.CurrentStatements.Add(decl.GetDeclerationStatement());
+                foreach (var item in GraphItems.OfType<GenericSlot>())
+                {
+                    var contextVariable = item.InputFrom<IContextVariable>();
+                    if (contextVariable == null) continue;
+                    ctx._("{0}.{1} = {2}", varStatement.Name, item.Name, contextVariable.Name);
+                }
+
+                ctx._("{0}.System = System", varStatement.Name);
+                foreach (var item in OutputVars.OfType<ActionOut>())
+                {
+                    var contextVariable = item.OutputTo<IContextVariable>();
+                    if (contextVariable == null) continue;
+                    ctx._("{0} = {1}.{2}", contextVariable.Name, varStatement.Name, item.Name);
+                }
+                foreach (var item in OutputVars.OfType<ActionBranch>())
+                {
+                    var branchOutput = item.OutputTo<SequenceItemNode>();
+                    if (branchOutput == null) continue;
+                    ctx._("{0}.{1} = {2}", varStatement.Name, item.Name, branchOutput.Name);
+                    var method = ctx.CurrentDeclaration.protected_func(typeof(void).ToCodeReference(), branchOutput.Name);
+                    ctx.PushStatements(method.Statements);
+                    branchOutput.WriteCode(ctx);
+                    ctx.PopStatements();
+                }
+                ctx._if("!{0}.Execute()", varStatement.Name).TrueStatements._("return");
             }
-
-            foreach (var item in InputVars)
+            else
             {
-                var contextVariable = item.InputFrom<IContextVariable>();
-                if (contextVariable == null) continue;
-                ctx._("{0}.{1} = {2}", varStatement.Name, item.Name,contextVariable.Name);
+                var invoker = new CodeMethodInvokeExpression(new CodeSnippetExpression(Meta.Type.Name), Meta.Method.Name);
+                var parameters = Meta.Method.GetParameters();
+                foreach (var item in parameters)
+                {
+                    if (item.IsOut || item.ParameterType == typeof(Action))
+                    {
+                        var item1 = item;
+                        var output = OutputVars.FirstOrDefault(p => p.ActionFieldInfo.DisplayType.ParameterName == item1.Name);
+                        
+                        if (item1.ParameterType == typeof (Action))
+                        {
+                            var branchOutput = output.OutputTo<SequenceItemNode>();
+                            if (branchOutput != null)
+                            {
+                                invoker.Parameters.Add(new CodeSnippetExpression(branchOutput.Name));
+                                var method = ctx.CurrentDeclaration.protected_func(typeof (void).ToCodeReference(),
+                                    branchOutput.Name);
+                                ctx.PushStatements(method.Statements);
+                                branchOutput.WriteCode(ctx);
+                                ctx.PopStatements();
+                            }
+                            else
+                            {
+                                invoker.Parameters.Add(new CodeSnippetExpression("null"));
+                            }
+                        
+                        }
+                        else
+                        {
+                            var outputVariable = output.OutputTo<IContextVariable>();
+                            if (outputVariable != null)
+                            {
+                                invoker.Parameters.Add(new CodeSnippetExpression("out " + outputVariable.Name));
+                            }
+                            else
+                            {
+                                invoker.Parameters.Add(new CodeSnippetExpression("null"));
+                            }
+                            
+                        }
+                    }
+                    else
+                    {
+                        var item1 = item;
+                        var input = InputVars.FirstOrDefault(p => p.ActionFieldInfo.DisplayType.ParameterName == item1.Name);
+                        var inputVar = input.InputFrom<IContextVariable>();
+
+                        if (inputVar != null)
+                        {
+                            invoker.Parameters.Add(new CodeSnippetExpression(inputVar.Name));
+                        }
+                        else
+                        {
+                            invoker.Parameters.Add(
+                                new CodeSnippetExpression(string.Format("default({0})", item.ParameterType.Name)));
+                        }
+
+                    }
+                }
+                
+                if (Meta.Method.ReturnType != typeof (void))
+                {
+                    var result = OutputVars.FirstOrDefault(p => p.Name == "Result");
+                    if (result != null)
+                    {
+                        var outputVar = result.OutputTo<IContextVariable>();
+                        if (outputVar != null)
+                        {
+                            var assign = new CodeAssignStatement(new CodeSnippetExpression(outputVar.VariableName),
+                                invoker);
+                            ctx.CurrentStatements.Add(assign);
+                        }
+                        else
+                        {
+                            ctx.CurrentStatements.Add(invoker);
+                        }
+                    }
+                    else
+                    {
+                        ctx.CurrentStatements.Add(invoker);
+                    }
+                }
+                else
+                {
+                    ctx.CurrentStatements.Add(invoker);
+                }
                 
             }
-            ctx._if("!{0}.Execute()", varStatement.Name).TrueStatements._("return");
-            foreach (var item in OutputVars)
-            {
-                var contextVariable = item.OutputTo<IContextVariable>();
-                if (contextVariable == null) continue;
-                ctx._("{0} = {1}.{2}", contextVariable.Name, varStatement.Name, item.Name);
+            
 
-            }
+            //foreach (var item in GraphItems.OfType<IActionItem>())
+            //{
+            //    var decl = item.InputFrom<VariableNode>();
+            //    if (decl == null) continue;
+
+            //    ctx.CurrentDeclaration.Members.Add(decl.GetFieldStatement());
+            //}
+
+
+    
+
+            base.WriteCode(ctx);
         }
 
         private ActionMetaInfo _meta;
         private string _metaType;
-        private IVariableInput[] _inputVars;
-        private IVariableOutput[] _outputVars;
+        private IActionIn[] _inputVars;
+        private IActionOut[] _outputVars;
 
         public ActionMetaInfo Meta
         {
@@ -203,7 +312,7 @@ namespace Invert.uFrame.ECS {
             set
             {
                 _meta = value;
-                _metaType = value.Type.FullName;
+                _metaType = value.FullName;
             }
         }
          
@@ -220,20 +329,20 @@ namespace Invert.uFrame.ECS {
         }
 
 
-        public IVariableInput[] InputVars
+        public IActionIn[] InputVars
         {
             get { return _inputVars ?? (_inputVars = GetInputVars().ToArray()); }
             set { _inputVars = value; }
         }
 
-        private IEnumerable<IVariableInput> GetInputVars()
+        private IEnumerable<IActionIn> GetInputVars()
         {
             var meta = Meta;
             if (meta != null)
             {
-                foreach (var item in Meta.ActionFields.Where(p => p.DisplayType is VarIn))
+                foreach (var item in Meta.ActionFields.Where(p => p.DisplayType is In))
                 {
-                    var variableIn = new VariableIn()
+                    var variableIn = new ActionIn()
                     {
                         ActionFieldInfo = item,
                         Node = this,
@@ -244,26 +353,51 @@ namespace Invert.uFrame.ECS {
             }
         }
 
-        public IVariableOutput[] OutputVars
+        public IActionOut[] OutputVars
         {
             get { return _outputVars ?? (_outputVars = GetOutputVars().ToArray()); }
             set { _outputVars = value; }
         }
 
-        private IEnumerable<IVariableOutput> GetOutputVars()
+        public IEnumerable<IActionOut> GetOutsWithType<TType>()
+        {
+            return OutputVars.Where(p => p.ActionFieldInfo.Type.IsAssignableFrom(typeof (TType)));
+        }
+
+        public IEnumerable<IActionIn> GetInsWithType<TType>()
+        {
+            return InputVars.Where(p => p.ActionFieldInfo.Type.IsAssignableFrom(typeof(TType)));
+        }
+
+        private IEnumerable<IActionOut> GetOutputVars()
         {
             var meta = Meta;
             if (meta != null)
             {
-                foreach (var item in Meta.ActionFields.Where(p => p.DisplayType is VarOut))
+                foreach (var item in Meta.ActionFields.Where(p => p.DisplayType is Out))
                 {
-                    var variableOut = new VariableOut()
+                    if (item.Type == typeof (Action))
                     {
-                        ActionFieldInfo = item,
-                        Node = this,
-                        Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name
-                    };
-                    yield return variableOut;
+                        var variableOut = new ActionBranch()
+                        {
+                            ActionFieldInfo = item,
+                            Node = this,
+                            Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name
+                        };
+                        yield return variableOut;
+                    }
+                    else
+                    {
+                        var variableOut = new ActionOut()
+                        {
+                            ActionFieldInfo = item,
+                            Node = this,
+                            Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name
+                        };
+                        yield return variableOut;
+                    }
+               
+                
                 }
             }
         }
@@ -280,17 +414,17 @@ namespace Invert.uFrame.ECS {
     {
         ActionFieldInfo ActionFieldInfo { get; set; }
     }
-    public interface IVariableInput : IActionItem
+    public interface IActionIn : IActionItem
     {
         
     }
 
-    public interface IVariableOutput : IActionItem
+    public interface IActionOut : IActionItem
     {
         
     }
 
-    public class VariableIn : SingleInputSlot<IContextVariable>, IVariableInput
+    public class ActionIn : SingleInputSlot<IContextVariable>, IActionIn
     {
         public ActionFieldInfo ActionFieldInfo { get; set; }
 
@@ -301,7 +435,17 @@ namespace Invert.uFrame.ECS {
         }
     }
 
-    public class VariableOut : SingleOutputSlot<IContextVariable>, IVariableOutput
+    public class ActionOut : SingleOutputSlot<IContextVariable>, IActionOut
+    {
+        public ActionFieldInfo ActionFieldInfo { get; set; }
+        public override string Name
+        {
+            get { return ActionFieldInfo.Name; }
+            set { base.Name = value; }
+        }
+    }
+
+    public class ActionBranch : SingleOutputSlot<ActionNode>, IActionOut
     {
         public ActionFieldInfo ActionFieldInfo { get; set; }
         public override string Name

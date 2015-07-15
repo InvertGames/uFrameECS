@@ -378,7 +378,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IActionConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class HandlerNodeBase : SequenceItemNode, IActionConnectable {
+    public class HandlerNodeBase : SequenceItemNode, ISequenceItemConnectable {
         
         public override bool AllowMultipleInputs {
             get {
@@ -619,7 +619,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IComponentsConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class LiteralNodeBase : VariableNode {
+    public class LiteralNodeBase : VariableNode, IValueConnectable {
         
         public override bool AllowMultipleInputs {
             get {
@@ -655,7 +655,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IStringLiteralConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class SequenceItemNodeBase : Invert.Core.GraphDesigner.GenericNode {
+    public class SequenceItemNodeBase : Invert.Core.GraphDesigner.GenericNode, ISequenceItemConnectable {
         
         public override bool AllowMultipleInputs {
             get {
@@ -673,7 +673,7 @@ namespace Invert.uFrame.ECS {
     public partial interface ISequenceItemConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class VariableReferenceNodeBase : Invert.Core.GraphDesigner.GenericNode {
+    public class VariableReferenceNodeBase : Invert.Core.GraphDesigner.GenericNode, IVariableConnectable, IValueConnectable {
         
         public override bool AllowMultipleInputs {
             get {
@@ -815,5 +815,128 @@ namespace Invert.uFrame.ECS {
     }
     
     public partial interface IColorConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class CustomActionNodeBase : Invert.Core.GraphDesigner.GenericNode {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.Section("Inputs", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual System.Collections.Generic.IEnumerable<InputsChildItem> Inputs {
+            get {
+                return ChildItems.OfType<InputsChildItem>();
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.Section("Outputs", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual System.Collections.Generic.IEnumerable<OutputsChildItem> Outputs {
+            get {
+                return ChildItems.OfType<OutputsChildItem>();
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.Section("Branches", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual System.Collections.Generic.IEnumerable<BranchesChildItem> Branches {
+            get {
+                return ChildItems.OfType<BranchesChildItem>();
+            }
+        }
+    }
+    
+    public partial interface ICustomActionConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class ActionLibraryNodeBase : Invert.Core.GraphDesigner.GenericNode {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IActionLibraryConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class LibraryNodeBase : Invert.Core.GraphDesigner.GenericNode {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface ILibraryConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class SetVariableNodeBase : SequenceItemNode {
+        
+        private Variable _Variable;
+        
+        private Value _Value;
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Variable", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Variable VariableInputSlot {
+            get {
+                if (_Variable == null) {
+                    _Variable = new Variable() { Node = this };
+                }
+                return _Variable;
+            }
+            set {
+                _Variable = value;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Value", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Value ValueInputSlot {
+            get {
+                if (_Value == null) {
+                    _Value = new Value() { Node = this };
+                }
+                return _Value;
+            }
+            set {
+                _Value = value;
+            }
+        }
+    }
+    
+    public partial interface ISetVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
 }

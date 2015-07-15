@@ -24,7 +24,12 @@ namespace Invert.uFrame.ECS {
 
         //public override bool ShowHeader
         //{
-        //    get { return false; }
+        //    get
+        //    {
+        //        if (NodeViewModel.Action.Meta.Method == null)
+        //            return false;
+        //        return true;
+        //    }
         //}
     }
 }

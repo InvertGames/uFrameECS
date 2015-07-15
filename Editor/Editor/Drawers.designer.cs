@@ -197,4 +197,32 @@ namespace Invert.uFrame.ECS {
                 base(viewModel) {
         }
     }
+    
+    public class CustomActionNodeDrawerBase : GenericNodeDrawer<CustomActionNode,CustomActionNodeViewModel> {
+        
+        public CustomActionNodeDrawerBase(CustomActionNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class ActionLibraryNodeDrawerBase : GenericNodeDrawer<ActionLibraryNode,ActionLibraryNodeViewModel> {
+        
+        public ActionLibraryNodeDrawerBase(ActionLibraryNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class LibraryNodeDrawerBase : GenericNodeDrawer<LibraryNode,LibraryNodeViewModel> {
+        
+        public LibraryNodeDrawerBase(LibraryNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class SetVariableNodeDrawerBase : GenericNodeDrawer<SetVariableNode,SetVariableNodeViewModel> {
+        
+        public SetVariableNodeDrawerBase(SetVariableNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
 }

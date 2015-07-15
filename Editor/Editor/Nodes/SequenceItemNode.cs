@@ -1,3 +1,5 @@
+using System.CodeDom;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -78,8 +80,9 @@ namespace Invert.uFrame.ECS {
 
         public virtual void WriteCode(TemplateContext ctx)
         {
+            OutputVariables(ctx);
             ctx._comment(Name);
-            foreach (var right in this.OutputsTo<ActionNode>())
+            foreach (var right in this.OutputsTo<SequenceItemNode>())
             {
                 if (right != null)
                 {
@@ -87,6 +90,18 @@ namespace Invert.uFrame.ECS {
                 }
             }
             
+        }
+
+        protected void OutputVariables(TemplateContext ctx)
+        {
+            foreach (var item in GraphItems.OfType<IConnectable>())
+            {
+                var decl = item.InputFrom<VariableNode>();
+                if (decl == null) continue;
+
+                ctx.CurrentDeclaration.Members.Add(decl.GetFieldStatement());
+            }
+     
         }
     }
     
