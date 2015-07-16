@@ -8,7 +8,6 @@ namespace Invert.uFrame.ECS {
     
     public class HandlerNodeDrawer : GenericNodeDrawer<HandlerNode,HandlerNodeViewModel> {
   
-
         public HandlerNodeDrawer(HandlerNodeViewModel viewModel) : 
                 base(viewModel) {
         }

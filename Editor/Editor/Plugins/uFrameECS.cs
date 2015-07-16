@@ -50,6 +50,8 @@ namespace Invert.uFrame.ECS {
 
         private void LoadActionTypes()
         {
+            Actions.Clear();
+
             // Query for the available actions
             ActionTypes = InvertApplication.GetDerivedTypes<UFAction>(false, false).ToArray();
 
@@ -170,7 +172,7 @@ namespace Invert.uFrame.ECS {
         private void LoadEvents()
         {
             
-  
+            Events.Clear();
             foreach (var eventType in EventTypes)
             {
                 var eventInfo = new EventMetaInfo()
