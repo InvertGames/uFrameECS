@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using uFrame.Actions.Attributes;
 using uFrame.Kernel;
 
 namespace uFrame.ECS
@@ -62,6 +63,23 @@ namespace uFrame.ECS
         public static void UnRegisterEntityView(Entity entity)
         {
             Entities.Remove(entity.EntityId);
+        }
+    }
+
+    [EventDispatcher("On Mouse Down")]
+    public class MouseDownDispatcher : EcsDispatcher
+    {
+        public void OnMouseDown()
+        {
+            Publish(this);
+        }
+    }
+    [EventDispatcher("On Mouse Up")]
+    public class MouseUpDispatcher : EcsDispatcher
+    {
+        public void OnMouseUp()
+        {
+            Publish(this);
         }
     }
 }

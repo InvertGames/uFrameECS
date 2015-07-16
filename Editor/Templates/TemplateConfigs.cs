@@ -324,6 +324,10 @@ namespace Invert.uFrame.ECS.Templates
         
         public void TemplateSetup()
         {
+            this.Ctx.CurrentDeclaration.CustomAttributes.Add(
+                new CodeAttributeDeclaration(
+                    typeof (EventAttribute).ToCodeReference(),new CodeAttributeArgument(new CodePrimitiveExpression(Ctx.Data.Name)) 
+                    ));
             if (Ctx.Data.Dispatcher)
             {
                 this.Ctx.CurrentDeclaration.Name += "Dispatcher";

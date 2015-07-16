@@ -12,7 +12,7 @@ namespace Invert.uFrame.ECS.Templates
         {
             get
             {
-                this.Ctx.SetType(Ctx.Data.EventNode.Name);
+                this.Ctx.SetType(Ctx.Data.Meta.Type);
                 return null;
             }
             set

@@ -79,6 +79,8 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<SetVariableNode> _SetVariable;
         
+        private Invert.Core.GraphDesigner.NodeConfig<ModuleNode> _Module;
+        
         public Invert.Core.GraphDesigner.NodeConfig<ComponentNode> Component {
             get {
                 return _Component;
@@ -349,6 +351,15 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<ModuleNode> Module {
+            get {
+                return _Module;
+            }
+            set {
+                _Module = value;
+            }
+        }
+        
         public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetPropertiesSelectionCommand() {
             return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
         }
@@ -386,12 +397,20 @@ namespace Invert.uFrame.ECS {
             Component.Color(NodeColor.Orange);
             System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
             System.Color(NodeColor.Black);
-            System.HasSubNode<ComponentNode>();
-            System.HasSubNode<EventNode>();
+            System.HasSubNode<UserMethodNode>();
             System.HasSubNode<HandlerNode>();
             System.HasSubNode<ComponentGroupNode>();
             System.HasSubNode<ContextNode>();
+            System.HasSubNode<VariableReferenceNode>();
+            System.HasSubNode<Vector3Node>();
+            System.HasSubNode<Vector2Node>();
+            System.HasSubNode<StringNode>();
+            System.HasSubNode<BoolNode>();
+            System.HasSubNode<FloatNode>();
+            System.HasSubNode<IntNode>();
+            System.HasSubNode<ColorNode>();
             System.HasSubNode<CustomActionNode>();
+            System.HasSubNode<SetVariableNode>();
             ItemTypes = container.AddNode<ItemTypesNode,ItemTypesNodeViewModel,ItemTypesNodeDrawer>("ItemTypes");
             ItemTypes.Color(NodeColor.Gray);
             Event = container.AddNode<EventNode,EventNodeViewModel,EventNodeDrawer>("Event");
@@ -409,20 +428,6 @@ namespace Invert.uFrame.ECS {
             Action.Color(NodeColor.Gray);
             Handler = container.AddNode<HandlerNode,HandlerNodeViewModel,HandlerNodeDrawer>("Handler");
             Handler.Color(NodeColor.Red);
-            Handler.HasSubNode<ComponentNode>();
-            Handler.HasSubNode<EventNode>();
-            Handler.HasSubNode<PublishNode>();
-            Handler.HasSubNode<UserMethodNode>();
-            Handler.HasSubNode<LiteralNode>();
-            Handler.HasSubNode<VariableReferenceNode>();
-            Handler.HasSubNode<Vector3Node>();
-            Handler.HasSubNode<Vector2Node>();
-            Handler.HasSubNode<StringNode>();
-            Handler.HasSubNode<BoolNode>();
-            Handler.HasSubNode<FloatNode>();
-            Handler.HasSubNode<IntNode>();
-            Handler.HasSubNode<ColorNode>();
-            Handler.HasSubNode<SetVariableNode>();
             ComponentGroup = container.AddNode<ComponentGroupNode,ComponentGroupNodeViewModel,ComponentGroupNodeDrawer>("ComponentGroup");
             ComponentGroup.Color(NodeColor.Purple);
             ComponentGroup.HasSubNode<VariableNode>();
@@ -467,7 +472,7 @@ namespace Invert.uFrame.ECS {
             Color = container.AddNode<ColorNode,ColorNodeViewModel,ColorNodeDrawer>("Color");
             Color.Color(NodeColor.DarkGray);
             CustomAction = container.AddNode<CustomActionNode,CustomActionNodeViewModel,CustomActionNodeDrawer>("CustomAction");
-            CustomAction.Color(NodeColor.Blue);
+            CustomAction.Color(NodeColor.Red);
             ActionLibrary = container.AddGraph<ActionLibraryGraph, ActionLibraryNode>("ActionLibraryGraph");
             ActionLibrary.Color(NodeColor.DarkDarkGray);
             Library = container.AddGraph<LibraryGraph, LibraryNode>("LibraryGraph");
@@ -476,6 +481,13 @@ namespace Invert.uFrame.ECS {
             Library.HasSubNode<CustomActionNode>();
             SetVariable = container.AddNode<SetVariableNode,SetVariableNodeViewModel,SetVariableNodeDrawer>("SetVariable");
             SetVariable.Color(NodeColor.Blue);
+            Module = container.AddGraph<ModuleGraph, ModuleNode>("ModuleGraph");
+            Module.Color(NodeColor.Blue);
+            Module.HasSubNode<ComponentNode>();
+            Module.HasSubNode<SystemNode>();
+            Module.HasSubNode<EventNode>();
+            Module.HasSubNode<ContextNode>();
+            Module.HasSubNode<CustomActionNode>();
             container.Connectable<ComponentNode,ComponentsReference>();
             container.Connectable<ComponentNode,Component>();
             container.Connectable<ComponentNode,FilterBy>();

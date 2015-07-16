@@ -19,6 +19,9 @@ namespace Invert.uFrame.ECS
 
         private string _eventIdentifier;
         private EventNode _eventNode;
+        private EventMetaInfo _meta;
+        private string _metaType;
+
         [ProxySection("User Methods", SectionVisibility.WhenNodeIsNotFilter)]
         public IEnumerable<IDiagramNodeItem> UserMethods
         {
@@ -28,22 +31,22 @@ namespace Invert.uFrame.ECS
         {
             get
             {
-                if (EventNode == null)
+                if (Meta == null)
                 {
                     return "Event Not Found";
                 }
-                return EventNode.Name;
+                return Meta.Attribute.Title;
             }
             set { base.Name = value; }
         }
 
         public string HandlerMethodName
         {
-            get { return Graph.Name + "_" + InputNames + "_" + Name + "Handler"; }
+            get { return Graph.Name + "_" + InputNames + "_" + Meta.Type.Name + "Handler"; }
         }
         public string HandlerFilterMethodName
         {
-            get { return InputNames + "_" + Name + "Filter"; }
+            get { return InputNames + "_" + Meta.Type.Name + "Filter"; }
         }
 
         public IEnumerable<ContextNode> Contexts
@@ -54,13 +57,13 @@ namespace Invert.uFrame.ECS
                 {
                     yield return this.ContextNode;
                 }
-                foreach (var item  in Mappings.Select(p => p.InputFrom<ContextNode>())
+                foreach (var item in Mappings.Select(p => p.InputFrom<ContextNode>())
                     .Where(p => p != null))
                 {
                     yield return item;
                 }
             }
-        } 
+        }
         public string InputNames
         {
             get
@@ -73,31 +76,58 @@ namespace Invert.uFrame.ECS
             }
         }
 
-        [JsonProperty]
-        public string EventIdentifier
-        {
-            get { return _eventIdentifier; }
-            set
-            {
-                _eventIdentifier = value;
-                _eventNode = null;
+        //[JsonProperty]
+        //public string EventIdentifier
+        //{
+        //    get { return _eventIdentifier; }
+        //    set
+        //    {
+        //        _eventIdentifier = value;
+        //        _eventNode = null;
 
-            }
-        }
+        //    }
+        //}
 
         public override IEnumerable<IItem> PossibleMappings
         {
             get
             {
-                return EventNode.Properties.Cast<IItem>();
+                // TODO Make this work or remove it one
+                return Meta.Members.Cast<IItem>();
                 //                return base.PossibleMappings;
             }
         }
 
-        public EventNode EventNode
-        {
-            get { return _eventNode ?? (_eventNode = Project.NodeItems.FirstOrDefault(p => p.Identifier == EventIdentifier) as EventNode); }
+        //public EventNode EventNode
+        //{
+        //    get { return _eventNode ?? (_eventNode = Project.NodeItems.FirstOrDefault(p => p.Identifier == EventIdentifier) as EventNode); }
 
+        //}
+
+
+        public EventMetaInfo Meta
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(MetaType))
+                    return null;
+                return _meta ?? (_meta = uFrameECS.Events[MetaType]);
+            }
+            set
+            {
+                _meta = value;
+                _metaType = value.Type.FullName;
+            }
+        }
+
+        [JsonProperty]
+        public string MetaType
+        {
+            get { return _metaType; }
+            set
+            {
+                _metaType = value;
+            }
         }
         public ContextNode ContextNode
         {
@@ -131,7 +161,7 @@ namespace Invert.uFrame.ECS
         {
             get
             {
-                var evtNode = EventNode;
+                var evtNode = Meta;
                 if (evtNode != null && !evtNode.SystemEvent)
                 {
 
@@ -143,16 +173,16 @@ namespace Invert.uFrame.ECS
                         };
 
 
-                    foreach (var child in evtNode.PersistedItems.OfType<ITypedItem>())
+                    foreach (var child in evtNode.Members)
+                    {
+                        yield return new ContextVariable("Event", child.Name)
                         {
-                            yield return new ContextVariable("Event", child.Name)
-                            {
-                                Node = this,
-                                IsSubVariable = true,
-                                SourceVariable = child
-                            };
-                        }
-                    
+                            Node = this,
+                            IsSubVariable = true,
+                            VariableType = child.Type.FullName
+                        };
+                    }
+
                 }
                 var defaultFilter = this.InputFrom<ContextNode>();
                 if (defaultFilter != null)
@@ -203,10 +233,7 @@ namespace Invert.uFrame.ECS
                         }
                     }
                 }
-                if (EventNode == null)
-                {
-                    yield break;
-                }
+        
 
             }
         }
@@ -216,59 +243,59 @@ namespace Invert.uFrame.ECS
         {
             var defaultFilter = ContextNode;
             //base.WriteCode(ctx);
-            ctx._("var {0} = new {1}()", this.Name,HandlerMethodName);
-            ctx._("{0}.System = this",this.Name);
-            if (!EventNode.SystemEvent)
+            ctx._("var {0} = new {1}()", this.Meta.Type.Name, HandlerMethodName);
+            ctx._("{0}.System = this", Meta.Type.Name);
+            if (!Meta.SystemEvent)
             {
-                ctx._("{0}.Event = data", this.Name);
+                ctx._("{0}.Event = data", Meta.Type.Name);
             }
-            
+
             if (defaultFilter != null)
             {
-                ctx._("{0}.EntityIdItem = {1}",this.Name, "entityIdItem");
+                ctx._("{0}.EntityIdItem = {1}", Meta.Type.Name, "entityIdItem");
             }
             foreach (var item in this.Mappings)
             {
                 var filter = item.Context;
                 if (filter == null) continue;
-                ctx._("{0}.{1}Item = {1}Item", this.Name, item.Name.ToLower());
+                ctx._("{0}.{1}Item = {1}Item", Meta.Type.Name, item.Name.ToLower());
             }
-            ctx._("{0}.Execute()", this.Name);
+            ctx._("{0}.Execute()", Meta.Type.Name);
 
             //var seq = this.OutputTo<ActionNode>();
             //foreach (var item in this.Use)
             //{
-                
+
             //}
         }
 
         public void WriteSetupCode(TemplateContext ctx)
         {
-            if (EventNode.SystemEvent)
+            if (Meta.SystemEvent)
             {
-                var sysMethodName = EventNode.SystemEventMethod;
+                var sysMethodName = Meta.SystemEventMethod;
                 var systemMethod = ctx.CurrentDeclaration.Members.OfType<CodeMemberMethod>()
-                    .FirstOrDefault(p => p.Name == sysMethodName) ?? ctx.CurrentDeclaration.public_func(null, EventNode.SystemEventMethod);
+                    .FirstOrDefault(p => p.Name == sysMethodName) ?? ctx.CurrentDeclaration.public_func(null, Meta.SystemEventMethod);
                 // systemMethod.Statements.Add(new )
                 ctx.PushStatements(systemMethod.Statements);
                 LoopContextHandler(ctx);
-        
+
                 ctx.PopStatements();
 
             }
             var handlerMethod = ctx.CurrentDeclaration.protected_func(typeof(void), HandlerMethodName);
             var defaultFilter = ContextNode;
-            if (!EventNode.SystemEvent)
+            if (!Meta.SystemEvent)
             {
                 var handlerFilterMethod = ctx.CurrentDeclaration.protected_func(typeof(void), HandlerFilterMethodName);
 
                 handlerFilterMethod.Parameters.Add(new CodeParameterDeclarationExpression(
-                    EventNode.ClassName,
+                    Meta.Type.Name,
                     "data"
                     ));
 
                 handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(
-                     EventNode.ClassName,
+                     Meta.Type.Name,
                      "data"
                  ));
 
@@ -281,7 +308,7 @@ namespace Invert.uFrame.ECS
                 invoker.Parameters.Add(new CodeSnippetExpression("data"));
                 if (this.Mappings.Any())
                 {
-                    
+
                     if (defaultFilter != null)
                     {
                         ctx._("var entityIdItem = {0}Context.MatchAndSelect(data.EntityId)", defaultFilter.Name);
@@ -309,20 +336,20 @@ namespace Invert.uFrame.ECS
                     ctx.CurrentStatements.Add(invoker);
                 }
 
-                
+
                 ctx.PopStatements();
             }
 
             if (defaultFilter != null)
             {
 
-                if (EventNode.Dispatcher)
+                if (Meta.Dispatcher)
                 {
-                    ctx._("EnsureDispatcherOnComponents<{0}Dispatcher>( {1}Context.WithAnyTypes )", EventNode.Name,
+                    ctx._("EnsureDispatcherOnComponents<{0}>( {1}Context.WithAnyTypes )", Meta.Type.Name,
                         defaultFilter.Name);
 
                 }
-                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(defaultFilter.Name + "ContextItem",  "entityIdItem"));
+                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(defaultFilter.Name + "ContextItem", "entityIdItem"));
             }
             else
             {
@@ -330,18 +357,18 @@ namespace Invert.uFrame.ECS
                 {
                     var filter = item.Context;
                     if (filter == null) continue;
-                    if (EventNode.Dispatcher)
+                    if (Meta.Dispatcher)
                     {
-                        ctx._("EnsureDispatcherOnComponents<{0}Dispatcher>( {1}Context.WithAnyTypes )", EventNode.Name, filter.Name);
+                        ctx._("EnsureDispatcherOnComponents<{0}>( {1}Context.WithAnyTypes )", Meta.Type.Name, filter.Name);
                     }
                     handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(filter.Name + "ContextItem", item.Name.ToLower() + "Item"));
                 }
 
             }
 
-            if (!EventNode.SystemEvent)
+            if (!Meta.SystemEvent)
             {
-                ctx._("this.OnEvent<{0}>().Subscribe(_=>{{ {1}(_); }}).DisposeWith(this)", EventNode.ClassName, HandlerFilterMethodName);
+                ctx._("this.OnEvent<{0}>().Subscribe(_=>{{ {1}(_); }}).DisposeWith(this)", Meta.Type.FullName, HandlerFilterMethodName);
             }
 
             var prevMethod = ctx.CurrentMethod;
@@ -352,7 +379,7 @@ namespace Invert.uFrame.ECS
             ctx.CurrentMember = prevMethod;
         }
 
-        private void LoopContextHandler(TemplateContext ctx, bool isAggregatorEvent= false)
+        private void LoopContextHandler(TemplateContext ctx, bool isAggregatorEvent = false)
         {
             ctx.PushStatements(ctx._if("{0}Context != null", ContextNode.Name).TrueStatements);
 
@@ -374,7 +401,7 @@ namespace Invert.uFrame.ECS
             {
                 ctx._("{0}(e.Current)", HandlerMethodName);
             }
-            
+
             ctx.PopStatements();
             ctx.PopStatements();
         }

@@ -33,7 +33,8 @@ namespace Invert.uFrame.ECS {
     {
 
         private string _memberExpression;
-        
+        private string _variableType;
+
         public override string Identifier
         {
             get { return Node.Identifier + ":" + MemberExpression; }
@@ -112,7 +113,8 @@ namespace Invert.uFrame.ECS {
 
         public string VariableType
         {
-            get { return SourceVariable.RelatedTypeName; }
+            get { return _variableType ?? (_variableType = SourceVariable.RelatedTypeName); }
+            set { _variableType = value; }
         }
 
         public string ShortName
@@ -307,7 +309,7 @@ namespace Invert.uFrame.ECS {
             {
                 if (string.IsNullOrEmpty(MetaType))
                     return null;
-                return _meta ??(_meta = ActionsPlugin.Actions[MetaType]);
+                return _meta ??(_meta = uFrameECS.Actions[MetaType]);
             }
             set
             {
