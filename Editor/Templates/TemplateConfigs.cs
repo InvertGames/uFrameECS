@@ -9,6 +9,7 @@ using Invert.IOC;
 using Invert.uFrame.ECS;
 using uFrame.Actions;
 using uFrame.Actions.Attributes;
+using uFrame.Attributes;
 using uFrame.ECS;
 
 namespace Invert.uFrame.ECS.Templates
@@ -25,6 +26,7 @@ namespace Invert.uFrame.ECS.Templates
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<ContextNode,ContextTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<ContextNode, ContextItemTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<HandlerNode, HandlerTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<EntityNode, EntityTemplate>();
 
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<CustomActionNode, CustomActionEditableTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<CustomActionNode, CustomActionDesignerTemplate>();
@@ -63,6 +65,47 @@ namespace Invert.uFrame.ECS.Templates
 
         public TemplateContext<HandlerNode> Ctx { get; set; }
     }
+    [TemplateClass(TemplateLocation.Both,"{0}PrefabPool")]
+    [RequiresNamespace("uFrame.Kernel")]
+    [RequiresNamespace("UnityEngine")]
+    [RequiresNamespace("uFrame.ECS")]
+    [ForceBaseType(typeof(EntityPrefabPool)), AsPartial]
+    public partial class EntityTemplate : IClassTemplate<EntityNode>
+    {
+
+        public string OutputPath
+        {
+            get { return Path2.Combine(Ctx.Data.Graph.Name, "Entities"); }
+        }
+
+        public bool CanGenerate
+        {
+            get { return true; }
+        }
+
+        public void TemplateSetup()
+        {
+            Ctx.CurrentDeclaration.Name = Ctx.Data.Name + "PrefabPool";
+            if (!Ctx.IsDesignerFile)
+            {
+                Ctx.CurrentDeclaration.BaseTypes.Clear();
+            }
+            else
+            {
+                foreach (var item in Ctx.Data.Components)
+                {
+                    Ctx.CurrentDeclaration.CustomAttributes.Add(
+                        new CodeAttributeDeclaration(typeof(RequireComponent).ToCodeReference(),
+                            new CodeAttributeArgument(new CodeSnippetExpression(string.Format("typeof({0})", item.Name)))));
+                }
+            }
+
+            
+        }
+
+        public TemplateContext<EntityNode> Ctx { get; set; }
+    }
+
 
     [TemplateClass(TemplateLocation.Both)]
     [RequiresNamespace("uFrame.Kernel")]
@@ -133,6 +176,7 @@ namespace Invert.uFrame.ECS.Templates
     [TemplateClass(TemplateLocation.Both)]
     [ForceBaseType(typeof(EcsComponent))]
     [RequiresNamespace("uFrame.ECS")]
+    [RequiresNamespace("UnityEngine")]
     public partial class ComponentTemplate : IClassTemplate<ComponentNode>
     {
         
@@ -326,7 +370,7 @@ namespace Invert.uFrame.ECS.Templates
         {
             this.Ctx.CurrentDeclaration.CustomAttributes.Add(
                 new CodeAttributeDeclaration(
-                    typeof (EventAttribute).ToCodeReference(),new CodeAttributeArgument(new CodePrimitiveExpression(Ctx.Data.Name)) 
+                    typeof (uFrameEvent).ToCodeReference(),new CodeAttributeArgument(new CodePrimitiveExpression(Ctx.Data.Name)) 
                     ));
             if (Ctx.Data.Dispatcher)
             {
@@ -364,7 +408,8 @@ namespace Invert.uFrame.ECS.Templates
 
         public void TemplateSetup()
         {
-  
+            Ctx.CurrentDeclaration.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(ActionTitle).ToCodeReference(),
+                        new CodeAttributeArgument(new CodePrimitiveExpression(string.IsNullOrEmpty(Ctx.Data.ActionTitle) ? Ctx.Data.Name : Ctx.Data.ActionTitle))));
             foreach (var item in Ctx.Data.Inputs)
             {
                 var field = Ctx.CurrentDeclaration._public_(item.RelatedTypeName, item.Name);

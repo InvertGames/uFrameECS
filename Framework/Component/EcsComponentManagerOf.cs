@@ -1,22 +1,20 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using uFrame.Kernel;
 using UniRx;
 
 namespace uFrame.ECS
 {
-    public class EcsComponentManagerOf<TComponentType> : EcsComponentManager, IEcsComponentManagerOf<TComponentType> where TComponentType : IEcsComponent
+    public class EcsComponentManagerOf<TComponentType> : EcsComponentManager, IEcsComponentManagerOf<TComponentType> where TComponentType : class,IEcsComponent
     {
-        protected List<TComponentType> _items = new List<TComponentType>();
+        Dictionary<int, List<TComponentType>> _components = new Dictionary<int, List<TComponentType>>();
 
         public virtual IEnumerable<TComponentType> Components
         {
             get
             {
-                return _items;
+                return _components.Values.SelectMany(p=>p);
             }
         }
 
@@ -34,27 +32,41 @@ namespace uFrame.ECS
             }
         }
 
-        public override IEnumerable<IEcsComponent> ForEntity(int entityId)
+        public TComponentType this[int entityId]
         {
-            foreach (var item in Components)
+            get
             {
-                if (item.EntityId == entityId)
-                    yield return item;
+                if (_components.ContainsKey(entityId))
+                {
+                    return _components[entityId].FirstOrDefault();
+                }
+                return null;
             }
         }
 
-        public HashSet<int> _entities = new HashSet<int>();
+        public override IEnumerable<IEcsComponent> ForEntity(int entityId)
+        {
+            if (!_components.ContainsKey(entityId)) yield break;
+
+            foreach (var item in _components[entityId])
+            {
+                yield return item;
+            }
+        }
+
         protected override void AddItem(IEcsComponent component)
         {
-            _items.Add((TComponentType)component);
-            if (!_entities.Contains(component.EntityId))
-                _entities.Add(component.EntityId);
+            if (!_components.ContainsKey(component.EntityId))
+            {
+                _components.Add(component.EntityId,new List<TComponentType>());
+            }
+            _components[component.EntityId].Add((TComponentType)component);
         }
 
         protected override void RemoveItem(IEcsComponent component)
         {
-            _items.Remove((TComponentType)component);
-            _entities.Remove(component.EntityId);
+            if (!_components.ContainsKey(component.EntityId)) return;
+            _components[component.EntityId].Remove((TComponentType)component);
         }
     }
 
@@ -357,6 +369,12 @@ namespace uFrame.ECS
     {
         private Entity _entityView;
         public int EntityId { get; set; }
+
+        public int ComponentId
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
 
         public Entity EntityView
         {

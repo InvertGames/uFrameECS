@@ -81,6 +81,8 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<ModuleNode> _Module;
         
+        private Invert.Core.GraphDesigner.NodeConfig<EntityNode> _Entity;
+        
         public Invert.Core.GraphDesigner.NodeConfig<ComponentNode> Component {
             get {
                 return _Component;
@@ -360,6 +362,15 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<EntityNode> Entity {
+            get {
+                return _Entity;
+            }
+            set {
+                _Entity = value;
+            }
+        }
+        
         public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetPropertiesSelectionCommand() {
             return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
         }
@@ -385,7 +396,6 @@ namespace Invert.uFrame.ECS {
             container.RegisterInstance<IEditorCommand>(GetCollectionsSelectionCommand(), typeof(CollectionsChildItem).Name + "TypeSelection");;
             container.AddTypeItem<CollectionsChildItem>();
             container.AddItem<SignalsReference>();
-            container.AddItem<MappingsReference>();
             container.AddItem<WithAnyReference>();
             container.AddItem<SelectReference>();
             container.RegisterInstance<IEditorCommand>(GetInputsSelectionCommand(), typeof(InputsChildItem).Name + "TypeSelection");;
@@ -397,20 +407,10 @@ namespace Invert.uFrame.ECS {
             Component.Color(NodeColor.Orange);
             System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
             System.Color(NodeColor.Black);
-            System.HasSubNode<UserMethodNode>();
+            System.HasSubNode<ComponentNode>();
             System.HasSubNode<HandlerNode>();
-            System.HasSubNode<ComponentGroupNode>();
             System.HasSubNode<ContextNode>();
-            System.HasSubNode<VariableReferenceNode>();
-            System.HasSubNode<Vector3Node>();
-            System.HasSubNode<Vector2Node>();
-            System.HasSubNode<StringNode>();
-            System.HasSubNode<BoolNode>();
-            System.HasSubNode<FloatNode>();
-            System.HasSubNode<IntNode>();
-            System.HasSubNode<ColorNode>();
             System.HasSubNode<CustomActionNode>();
-            System.HasSubNode<SetVariableNode>();
             ItemTypes = container.AddNode<ItemTypesNode,ItemTypesNodeViewModel,ItemTypesNodeDrawer>("ItemTypes");
             ItemTypes.Color(NodeColor.Gray);
             Event = container.AddNode<EventNode,EventNodeViewModel,EventNodeDrawer>("Event");
@@ -428,6 +428,19 @@ namespace Invert.uFrame.ECS {
             Action.Color(NodeColor.Gray);
             Handler = container.AddNode<HandlerNode,HandlerNodeViewModel,HandlerNodeDrawer>("Handler");
             Handler.Color(NodeColor.Red);
+            Handler.HasSubNode<ComponentNode>();
+            Handler.HasSubNode<UserMethodNode>();
+            Handler.HasSubNode<ActionNode>();
+            Handler.HasSubNode<SequenceItemNode>();
+            Handler.HasSubNode<VariableReferenceNode>();
+            Handler.HasSubNode<Vector3Node>();
+            Handler.HasSubNode<Vector2Node>();
+            Handler.HasSubNode<StringNode>();
+            Handler.HasSubNode<BoolNode>();
+            Handler.HasSubNode<FloatNode>();
+            Handler.HasSubNode<IntNode>();
+            Handler.HasSubNode<ColorNode>();
+            Handler.HasSubNode<SetVariableNode>();
             ComponentGroup = container.AddNode<ComponentGroupNode,ComponentGroupNodeViewModel,ComponentGroupNodeDrawer>("ComponentGroup");
             ComponentGroup.Color(NodeColor.Purple);
             ComponentGroup.HasSubNode<VariableNode>();
@@ -488,6 +501,9 @@ namespace Invert.uFrame.ECS {
             Module.HasSubNode<EventNode>();
             Module.HasSubNode<ContextNode>();
             Module.HasSubNode<CustomActionNode>();
+            Module.HasSubNode<EntityNode>();
+            Entity = container.AddNode<EntityNode,EntityNodeViewModel,EntityNodeDrawer>("Entity");
+            Entity.Color(NodeColor.Purple);
             container.Connectable<ComponentNode,ComponentsReference>();
             container.Connectable<ComponentNode,Component>();
             container.Connectable<ComponentNode,FilterBy>();
@@ -496,7 +512,6 @@ namespace Invert.uFrame.ECS {
             container.Connectable<ComponentNode,HandlerNode>();
             container.Connectable<ComponentsReference,Variables>();
             container.Connectable<PropertiesChildItem,Variables>();
-            container.Connectable<PropertiesChildItem,MappingsReference>();
             container.Connectable<CollectionsChildItem,Variables>();
             container.Connectable<Each,ActionNode>();
             container.Connectable<EventNode,Event>();
@@ -510,7 +525,6 @@ namespace Invert.uFrame.ECS {
             container.Connectable<ComponentGroupNode,HandlerNode>();
             container.Connectable<ContextNode,WithAnyReference>();
             container.Connectable<ContextNode,SelectReference>();
-            container.Connectable<ContextNode,MappingsReference>();
             container.Connectable<ContextNode,HandlerNode>();
             container.Connectable<TimerNode,Timer>();
             container.Connectable<LiteralNode,Value>();

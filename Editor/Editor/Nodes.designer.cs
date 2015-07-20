@@ -391,19 +391,6 @@ namespace Invert.uFrame.ECS {
                 return true;
             }
         }
-        
-        public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleMappings {
-            get {
-                return this.Project.AllGraphItems.OfType<IMappingsConnectable>().Cast<IItem>();
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.ReferenceSection("Mappings", SectionVisibility.WhenNodeIsNotFilter, false, false, typeof(IMappingsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=true)]
-        public virtual System.Collections.Generic.IEnumerable<MappingsReference> Mappings {
-            get {
-                return ChildItems.OfType<MappingsReference>();
-            }
-        }
     }
     
     public partial interface IHandlerConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
@@ -473,7 +460,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ContextNodeBase : Invert.Core.GraphDesigner.GenericNode, IWithAnyConnectable, ISelectConnectable, IMappingsConnectable, IHandlerConnectable {
+    public class ContextNodeBase : Invert.Core.GraphDesigner.GenericNode, IWithAnyConnectable, ISelectConnectable, IHandlerConnectable {
         
         public override bool AllowMultipleInputs {
             get {
@@ -956,5 +943,36 @@ namespace Invert.uFrame.ECS {
     }
     
     public partial interface IModuleConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class EntityNodeBase : Invert.Core.GraphDesigner.GenericNode {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+        
+        public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleComponents {
+            get {
+                return this.Project.AllGraphItems.OfType<IComponentsConnectable>().Cast<IItem>();
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.ReferenceSection("Components", SectionVisibility.Always, false, false, typeof(IComponentsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=false)]
+        public virtual System.Collections.Generic.IEnumerable<ComponentsReference> Components {
+            get {
+                return ChildItems.OfType<ComponentsReference>();
+            }
+        }
+    }
+    
+    public partial interface IEntityConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
 }

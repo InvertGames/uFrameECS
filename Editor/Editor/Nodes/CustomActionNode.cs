@@ -8,6 +8,8 @@ namespace Invert.uFrame.ECS {
     
     
     public class CustomActionNode : CustomActionNodeBase {
+        [JsonProperty,InspectorProperty]
+        public string ActionTitle { get; set; }
     }
     
     public partial interface ICustomActionConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

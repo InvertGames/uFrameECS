@@ -17,6 +17,11 @@ namespace Invert.uFrame.ECS {
             set { base.Name = value; }
         }
 
+        public override IEnumerable<string> Tags
+        {
+            get { yield return GraphItem.Name; }
+        }
+
         public override bool IsEditable
         {
             get { return false; }

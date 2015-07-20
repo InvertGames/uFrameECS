@@ -9,12 +9,12 @@ namespace uFrame.ECS
         bool TryGetComponent<TComponent>(int entityId, out TComponent component) where TComponent : class, IEcsComponent;
         bool TryGetComponent<TComponent>(int[] entityIds, out TComponent[] component) where TComponent : class, IEcsComponent;
         bool TryGetComponent<TComponent>(List<int> entityIds, out TComponent[] component) where TComponent : class, IEcsComponent;
-        IEnumerable<TComponent> GetAllComponents<TComponent>() where TComponent : IEcsComponent;
-        IEcsComponentManagerOf<TComponent> RegisterComponent<TComponent>() where TComponent : IEcsComponent;
+        IEnumerable<TComponent> GetAllComponents<TComponent>() where TComponent : class, IEcsComponent;
+        IEcsComponentManagerOf<TComponent> RegisterComponent<TComponent>() where TComponent : class, IEcsComponent;
         IEcsComponentManager RegisterComponent(Type componentType);
         void RegisterComponentInstance(Type componentType, IEcsComponent instance);
         void DestroyComponentInstance(Type componentType, IEcsComponent instance);
         void AddComponent(int entityId, Type componentType);
-        void AddComponent<TComponentType>(int entityId) where TComponentType : IEcsComponent;
+        void AddComponent<TComponentType>(int entityId) where TComponentType : class, IEcsComponent;
     }
 }

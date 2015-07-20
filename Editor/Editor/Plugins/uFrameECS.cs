@@ -2,6 +2,7 @@ using System.Reflection;
 using Invert.IOC;
 using uFrame.Actions;
 using uFrame.Actions.Attributes;
+using uFrame.Attributes;
 using UnityEditor.Graphs;
 using UnityEngine;
 
@@ -18,15 +19,19 @@ namespace Invert.uFrame.ECS {
     {
         private static Dictionary<string, ActionMetaInfo> _actions;
         private static Dictionary<string, EventMetaInfo> _events;
-
+         
         public override void Initialize(UFrameContainer container)
         {
             base.Initialize(container);
-            
+
+            System.HasSubNode<TypeReferenceNode>();
+            Module.HasSubNode<TypeReferenceNode>();
+            System.HasSubNode<ComponentNode>();
+            System.HasSubNode<ContextNode>();
 
             ListenFor<IPrefabNodeProvider>();
             ListenFor<IContextMenuQuery>();
-
+            Module.HasSubNode<ComponentNode>();
             container.RegisterDrawer<ItemViewModel<IContextVariable>, ItemDrawer>();
             container.AddItemFlag<ComponentsReference>("Multiple", UnityEngine.Color.blue);
             container.AddNodeFlag<EventNode>("Dispatcher");
@@ -34,6 +39,7 @@ namespace Invert.uFrame.ECS {
             container.Connectable<IContextVariable, IActionIn>();
             container.Connectable<IActionOut, IContextVariable>();
             container.Connectable<ActionBranch, SequenceItemNode>();
+            container.Connectable<IMappingsConnectable, HandlerIn>();
    
             VariableReference.Name = "Var";
 
@@ -52,8 +58,8 @@ namespace Invert.uFrame.ECS {
         {
             Actions.Clear();
 
-            // Query for the available actions
-            ActionTypes = InvertApplication.GetDerivedTypes<UFAction>(false, false).ToArray();
+            //// Query for the available actions
+            //ActionTypes = InvertApplication.GetDerivedTypes<UFAction>(false, false).ToArray();
 
             foreach (var actionType in ActionTypes)
             {
@@ -63,7 +69,7 @@ namespace Invert.uFrame.ECS {
                 };
                 actionInfo.MetaAttributes =
                     actionType.GetCustomAttributes(typeof (ActionMetaAttribute), true).OfType<ActionMetaAttribute>().ToArray();
-                var fields = actionType.GetFields(BindingFlags.Instance | BindingFlags.Public);
+                var fields = actionType.GetFields(BindingFlags.Instance | BindingFlags.Public );
                 foreach (var field in fields)
                 {
                     var fieldMetaInfo = new ActionFieldInfo()
@@ -151,7 +157,23 @@ namespace Invert.uFrame.ECS {
                 }
             }
         }
+        public IEnumerable<Type> ActionTypes
+        {
+            get
+            {
+                foreach (var assembly in InvertApplication.TypeAssemblies)
+                {
+                    foreach (var type in assembly.GetTypes())
+                    {
 
+                        if (type.IsDefined(typeof(ActionTitle), true))
+                        {
+                            yield return type;
+                        }
+                    }
+                }
+            }
+        }
         public IEnumerable<Type> EventTypes
         {
             get
@@ -160,7 +182,8 @@ namespace Invert.uFrame.ECS {
                 {
                     foreach (var type in assembly.GetTypes())
                     {
-                        if (type.IsDefined(typeof(EventAttribute), true))
+                      
+                        if (type.IsDefined(typeof(uFrameEvent), true))
                         {
                             yield return type;
                         }
@@ -181,10 +204,23 @@ namespace Invert.uFrame.ECS {
                 };
 
                 eventInfo.Attribute =
-                    eventType.GetCustomAttributes(typeof(EventAttribute), true).OfType<EventAttribute>().FirstOrDefault();
+                    eventType.GetCustomAttributes(typeof(uFrameEvent), true).OfType<uFrameEvent>().FirstOrDefault();
 
-                var fields = eventType.GetFields(BindingFlags.Instance | BindingFlags.Public);
-                var properties = eventType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                var fields = eventType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+                var properties = eventType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+
+                if (!eventInfo.SystemEvent && eventInfo.Dispatcher)
+                {
+                    eventInfo.Members.Add(new EventFieldInfo()
+                    {
+                        Type = typeof(int),
+                        Name = "EntityId",
+                        IsProperty = true
+                    });
+                   
+                }
+
+                
 
                 foreach (var field in fields)
                 {
@@ -235,7 +271,6 @@ namespace Invert.uFrame.ECS {
             yield break;
         }
 
-        public Type[] ActionTypes { get; set; }
 
 
         public static Dictionary<string, EventMetaInfo> Events
@@ -273,7 +308,17 @@ namespace Invert.uFrame.ECS {
                                 Handler = currentFilter
                             });
                         }
+
                     }
+                    var systemNode = graph.CurrentFilter as SystemNode;
+                    if (systemNode != null)
+                    {
+                        foreach (var item in Events.Values)
+                        {
+                            commands.Add(new AddHandlerCommand(item));
+                        }
+                    }
+
                 }
             }
 
@@ -286,16 +331,16 @@ namespace Invert.uFrame.ECS {
         private List<EventFieldInfo> _members;
 
         public Type Type { get; set; }
-        public EventAttribute Attribute { get; set; }
+        public uFrameEvent Attribute { get; set; }
 
         public bool Dispatcher
         {
-            get { return Attribute is EventDispatcher; }
+            get { return Attribute is UFrameEventDispatcher; }
         }
 
         public bool SystemEvent
         {
-            get { return Attribute is SystemEvent; }
+            get { return Attribute is SystemUFrameEvent; }
         }
 
         public List<EventFieldInfo> Members
@@ -306,7 +351,7 @@ namespace Invert.uFrame.ECS {
 
         public string SystemEventMethod
         {
-            get { return (Attribute as SystemEvent).SystemMethodName; }
+            get { return (Attribute as SystemUFrameEvent).SystemMethodName; }
         }
     }
 
@@ -447,13 +492,13 @@ namespace Invert.uFrame.ECS {
     }
     public class AddHandlerCommand : EditorCommand<DiagramViewModel>
     {
-        public ActionMetaInfo ActionMetaInfo { get; set; }
+        public EventMetaInfo ActionMetaInfo { get; set; }
         public override string Group
         {
             get { return "Handlers"; }
         }
 
-        public AddHandlerCommand(ActionMetaInfo actionMetaInfo)
+        public AddHandlerCommand(EventMetaInfo actionMetaInfo)
         {
             ActionMetaInfo = actionMetaInfo;
         }
@@ -465,18 +510,18 @@ namespace Invert.uFrame.ECS {
 
         public override string Title
         {
-            get { return ActionMetaInfo.TitleText; }
+            get { return ActionMetaInfo.Attribute.Title; }
             set { base.Title = value; }
         }
 
         public override string Path
         {
-            get { return ActionMetaInfo.TitleText; }
+            get { return "Listen For/" + ActionMetaInfo.Attribute.Title; }
         }
 
         public override void Perform(DiagramViewModel node)
         {
-            var eventNode = new ActionNode()
+            var eventNode = new HandlerNode()
             {
                 Meta = ActionMetaInfo
             };

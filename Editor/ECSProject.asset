@@ -14,19 +14,20 @@ MonoBehaviour:
   _settingsKeys: []
   _settingsValues: 
   _diagrams:
-  - {fileID: 11400000, guid: d24f9108dfe6afa468f17d511bda396f, type: 2}
   - {fileID: 11400000, guid: 25590331d3c0e084c9e7ed86a17b9b67, type: 2}
   - {fileID: 11400000, guid: f78b2bfe73f61534fae47200770f5402, type: 2}
   - {fileID: 11400000, guid: ada50e4776b44794ca3c6e32ce011e40, type: 2}
   - {fileID: 11400000, guid: dec123279186d3a48859d9d03cf57b3d, type: 2}
+  - {fileID: 11400000, guid: 446ded99c657c4c4f85ddf5f88fd3ad9, type: 2}
+  - {fileID: 11400000, guid: d24f9108dfe6afa468f17d511bda396f, type: 2}
   _projectNamespace: Invert.uFrame.ECS
   _currentTabs:
   - _graphIdentifier: 5f0e4e63-96ee-4a23-b1e3-4cfce292bfaf
     _graphName: uFrameECS
     _path: []
+  - _graphIdentifier: 61621135-6915-48d3-916a-ea948d2436af
+    _graphName: Entities
+    _path: []
   - _graphIdentifier: 964b413f-4970-4b96-8ec7-2936b678cbb0
     _graphName: UnityEvents
-    _path: []
-  - _graphIdentifier: 9ab12013-db1b-4421-95c2-89ef46c4b0f0
-    _graphName: ScrollerSystem
     _path: []

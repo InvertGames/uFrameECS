@@ -59,12 +59,12 @@ namespace uFrame.ECS
 
         }
 
-        public void AddComponent<TComponentType>(int entityId) where TComponentType : IEcsComponent
+        public void AddComponent<TComponentType>(int entityId) where TComponentType : class,  IEcsComponent
         {
-            throw new NotImplementedException();
+            
         }
 
-        public IEcsComponentManagerOf<TComponent> RegisterComponent<TComponent>() where TComponent : IEcsComponent
+        public IEcsComponentManagerOf<TComponent> RegisterComponent<TComponent>() where TComponent : class, IEcsComponent
         {
             IEcsComponentManager existing;
             if (!ComponentManagers.TryGetValue(typeof(TComponent), out existing))
@@ -114,7 +114,7 @@ namespace uFrame.ECS
             return true;
         }
 
-        public IEnumerable<T> GetAllComponents<T>() where T : IEcsComponent
+        public IEnumerable<T> GetAllComponents<T>() where T : class, IEcsComponent
         {
             IEcsComponentManager existing;
             if (ComponentManagers.TryGetValue(typeof(T), out existing))

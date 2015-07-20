@@ -1,10 +1,10 @@
+using System;
 using uFrame.Kernel;
 using UniRx;
 using UnityEngine;
 
 namespace uFrame.ECS
 {
-   
     public class EcsComponent : uFrameComponent, IEcsComponent, IDisposableContainer
     {
         //[SerializeField]
@@ -22,6 +22,15 @@ namespace uFrame.ECS
                 _entityId = value;
             }
         }
+
+        public virtual int ComponentId
+        {
+            get
+            {
+                throw new Exception(string.Format("ComponentId is not implement on {0} component.  Make sure you override it and give it a unique integer.", this.GetType().Name));
+            }
+        }
+
         public Entity _Entity;
         private Subject<Unit> _changed;
 
@@ -30,7 +39,7 @@ namespace uFrame.ECS
             var entityComponent = GetComponent<Entity>();
             if (entityComponent == null)
                 entityComponent = gameObject.AddComponent<Entity>();
-            _Entity = entityComponent;
+            Entity = entityComponent;
         }
 
         public override void KernelLoading()
@@ -44,9 +53,9 @@ namespace uFrame.ECS
         public override void KernelLoaded()
         {
             base.KernelLoaded();
-            if (_Entity != null)
+            if (Entity != null)
             {
-                _entityId = _Entity.EntityId;
+                _entityId = Entity.EntityId;
             }
             else
             {
@@ -79,6 +88,12 @@ namespace uFrame.ECS
         public IObservable<Unit> Changed
         {
             get { return _changed ?? (_changed = new Subject<Unit>()); }
+        }
+
+        public Entity Entity
+        {
+            get { return _Entity ?? (_Entity = GetComponent<Entity>()); }
+            set { _Entity = value; }
         }
     }
 }

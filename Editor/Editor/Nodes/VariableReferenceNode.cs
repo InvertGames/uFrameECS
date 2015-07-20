@@ -42,7 +42,7 @@ namespace Invert.uFrame.ECS {
 
             }
         }
-        [JsonProperty]
+        [JsonProperty,InspectorProperty]
         public string VariableName {
             get { return Name; }
             set { Name = value; }

@@ -232,4 +232,11 @@ namespace Invert.uFrame.ECS {
                 base(viewModel) {
         }
     }
+    
+    public class EntityNodeDrawerBase : GenericNodeDrawer<EntityNode,EntityNodeViewModel> {
+        
+        public EntityNodeDrawerBase(EntityNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
 }

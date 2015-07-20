@@ -28,22 +28,24 @@ namespace Invert.uFrame.ECS.Templates
         public void SetName()
         {
             this.Ctx.CurrentDeclaration.Name = Ctx.Data.HandlerMethodName;
-            var inputFilter = Ctx.Data.InputFrom<ContextNode>();
+            var inputFilter = Ctx.Data.InputFrom<IMappingsConnectable>();
             if (inputFilter != null)
             {
                 CreateFilterProperty("EntityId", inputFilter);
             }
-            foreach (var item in  Ctx.Data.Mappings)
+            foreach (var item in  Ctx.Data.HandlerInputs)
             {
+                var context = item.Context;
+                if (context == null) continue;
                 //var a = item.SourceItem as PropertiesChildItem;
-                CreateFilterProperty(item.SourceItem.Name, inputFilter);
+                CreateFilterProperty(item.Name, context );
             }
             
         }
 
-        private void CreateFilterProperty(string mappingId, ContextNode inputFilter)
+        private void CreateFilterProperty(string mappingId, IMappingsConnectable inputFilter)
         {
-            var property = Ctx.CurrentDeclaration._public_(inputFilter.Name + "ContextItem", mappingId + "Item");
+            var property = Ctx.CurrentDeclaration._public_(inputFilter.ContextTypeName, inputFilter.GetContextItemName(mappingId));
 
         }
 

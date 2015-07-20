@@ -2,8 +2,8 @@ using uFrame.Kernel;
 
 namespace uFrame.ECS
 {
-    public class EcsDispatcher : uFrameComponent, IEcsComponent
+    public class EcsDispatcher : EcsComponent
     {
-        public int EntityId { get; set; }
+
     }
 }

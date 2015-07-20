@@ -17,6 +17,11 @@ namespace uFrame.ECS
             set { _entityId = value; }
         }
 
+        public int ComponentId
+        {
+            get { return 0; }
+        }
+
         public override void KernelLoading()
         {
             base.KernelLoading();

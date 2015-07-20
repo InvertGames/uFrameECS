@@ -8,9 +8,22 @@ namespace Invert.uFrame.ECS {
     
     
     public class SystemNode : SystemNodeBase {
+        public override bool AllowInputs
+        {
+            get { return false; }
+        }
+
+        public override bool AllowOutputs
+        {
+            get { return false; }
+        }
+
         public IEnumerable<HandlerNode> EventHandlers
         {
-            get { return this.Graph.NodeItems.OfType<HandlerNode>(); }
+            get
+            {
+                return this.GetContainingNodes(Graph).OfType<HandlerNode>();
+            }
         }
     }
     

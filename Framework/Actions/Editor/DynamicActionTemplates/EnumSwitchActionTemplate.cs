@@ -14,7 +14,6 @@ public class EcsDyanmicActionTemplates : DiagramPlugin
     {
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<EnumNode, EnumSwitchActionTemplate>();
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentNode, AddComponentTemplate>();
-        RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentNode, RemoveComponentTemplate>();
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<EventNode, PublishActionTemplate>();
     }
 }
@@ -52,7 +51,7 @@ public partial class EnumSwitchActionTemplate : UFAction, IClassTemplate<EnumNod
 
 [TemplateClass(TemplateLocation.DesignerFile)]
 [ForceBaseType(typeof(UFAction))]
-
+[RequiresNamespace("UnityEngine")]
 public class ActionTemplate<TNodeType> :  IClassTemplate<TNodeType> where TNodeType : IDiagramNodeItem {
     
     public string OutputPath
@@ -108,9 +107,6 @@ public class ActionTemplate<TNodeType> :  IClassTemplate<TNodeType> where TNodeT
 
 public class AddComponentTemplate : ActionTemplate<ComponentNode>
 {
-
-    
-
     protected override string ClassName
     {
         get { return string.Format("Add{0}Action", Ctx.Data.Name); }
@@ -118,7 +114,7 @@ public class AddComponentTemplate : ActionTemplate<ComponentNode>
 
     protected override string ActionTitle
     {
-        get { return string.Format("Add Component/{0}/{1}",Ctx.Data.Graph.Name,  Ctx.Data.Name); }
+        get { return string.Format("Add {0} Component",  Ctx.Data.Name); }
     }
 
     [GenerateMethod(CallBase = true), AsOverride]
@@ -135,29 +131,27 @@ public class AddComponentTemplate : ActionTemplate<ComponentNode>
         Ctx._("return base.Execute()");
         return false;
     }
-
-
 }
-public class RemoveComponentTemplate : ActionTemplate<ComponentNode>
-{
-    protected override string ClassName
-    {
-        get { return string.Format("Remove{0}Action", Ctx.Data.Name); }
-    }
+//public class RemoveComponentTemplate : ActionTemplate<ComponentNode>
+//{
+//    protected override string ClassName
+//    {
+//        get { return string.Format("Remove{0}Action", Ctx.Data.Name); }
+//    }
 
-    protected override string ActionTitle
-    {
-        get { return string.Format("Remove Component/{0}", Ctx.Data.Name); }
-    }
+//    protected override string ActionTitle
+//    {
+//        get { return string.Format("Remove {0}", Ctx.Data.Name); }
+//    }
 
-    [GenerateMethod(CallBase = true), AsOverride]
-    public bool Execute()
-    {
+//    [GenerateMethod(CallBase = true), AsOverride]
+//    public bool Execute()
+//    {
         
-        Ctx._("return base.Execute()");
-        return false;
-    }
-}
+//        Ctx._("return base.Execute()");
+//        return false;
+//    }
+//}
 
 
 public class PublishActionTemplate : ActionTemplate<EventNode>
@@ -169,7 +163,7 @@ public class PublishActionTemplate : ActionTemplate<EventNode>
 
     protected override string ActionTitle
     {
-        get { return string.Format("Events/{0}/Publish/{1}",Ctx.Data.Graph.Name, Ctx.Data.Name); }
+        get { return string.Format("Publish {0}", Ctx.Data.Name); }
     }
 
     public override bool CanGenerate
@@ -197,4 +191,9 @@ public class PublishActionTemplate : ActionTemplate<EventNode>
         Ctx._("return base.Execute()");
         return false;
     }
+}
+
+public class SpawnEntity : ActionTemplate<EntityNode>
+{
+    
 }

@@ -16,7 +16,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class PropertiesChildItemBase : GenericTypedChildItem, IVariablesConnectable, IMappingsConnectable {
+    public class PropertiesChildItemBase : GenericTypedChildItem, IVariablesConnectable {
         
         public override bool AllowMultipleInputs {
             get {

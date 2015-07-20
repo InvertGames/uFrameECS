@@ -21,35 +21,24 @@ namespace Invert.uFrame.ECS
         private EventNode _eventNode;
         private EventMetaInfo _meta;
         private string _metaType;
+        private HandlerIn[] _contextInputs;
 
         [ProxySection("User Methods", SectionVisibility.WhenNodeIsNotFilter)]
         public IEnumerable<IDiagramNodeItem> UserMethods
         {
             get { return this.Graph.NodeItems.Where(_ => this.Locations.Keys.Contains(_.Identifier)).OfType<UserMethodNode>().Cast<IDiagramNodeItem>(); }
         }
-        public override string Name
-        {
-            get
-            {
-                if (Meta == null)
-                {
-                    return "Event Not Found";
-                }
-                return Meta.Attribute.Title;
-            }
-            set { base.Name = value; }
-        }
 
-        public string HandlerMethodName
+        public string HandlerMethodName 
         {
-            get { return Graph.Name + "_" + InputNames + "_" + Meta.Type.Name + "Handler"; }
+            get { return Name + "Handler"; }
         }
         public string HandlerFilterMethodName
         {
-            get { return InputNames + "_" + Meta.Type.Name + "Filter"; }
+            get { return Name + "Filter"; }
         }
 
-        public IEnumerable<ContextNode> Contexts
+        public IEnumerable<IMappingsConnectable> Contexts
         {
             get
             {
@@ -57,7 +46,7 @@ namespace Invert.uFrame.ECS
                 {
                     yield return this.ContextNode;
                 }
-                foreach (var item in Mappings.Select(p => p.InputFrom<ContextNode>())
+                foreach (var item in HandlerInputs.Select(p => p.Context)
                     .Where(p => p != null))
                 {
                     yield return item;
@@ -88,15 +77,15 @@ namespace Invert.uFrame.ECS
         //    }
         //}
 
-        public override IEnumerable<IItem> PossibleMappings
-        {
-            get
-            {
-                // TODO Make this work or remove it one
-                return Meta.Members.Cast<IItem>();
-                //                return base.PossibleMappings;
-            }
-        }
+        //public override IEnumerable<IItem> PossibleMappings
+        //{
+        //    get
+        //    {
+        //        // TODO Make this work or remove it one
+        //        return Meta.Members.Cast<IItem>();
+        //        //                return base.PossibleMappings;
+        //    }
+        //}
 
         //public EventNode EventNode
         //{
@@ -129,12 +118,12 @@ namespace Invert.uFrame.ECS
                 _metaType = value;
             }
         }
-        public ContextNode ContextNode
+        public IMappingsConnectable ContextNode
         {
-            get { return this.InputFrom<ContextNode>(); }
+            get { return this.InputFrom<IMappingsConnectable>(); }
         }
 
-
+        
         public IEnumerable<IContextVariable> AllContextVariables
         {
             get
@@ -147,10 +136,11 @@ namespace Invert.uFrame.ECS
         {
             get
             {
-                foreach (var item in this.PersistedItems)
-                {
+                foreach (var item in HandlerInputs)
                     yield return item;
-                }
+
+                foreach (var item in this.PersistedItems)
+                    yield return item;
                 //foreach (var item in ContextVariables)
                 //{
                 //    yield return item;
@@ -184,54 +174,24 @@ namespace Invert.uFrame.ECS
                     }
 
                 }
-                var defaultFilter = this.InputFrom<ContextNode>();
+                var defaultFilter = this.InputFrom<IMappingsConnectable>();
                 if (defaultFilter != null)
                 {
-                    foreach (var select in defaultFilter.Select.Select(p => p.SourceItem).OfType<IDiagramNode>())
+                    foreach (var v in defaultFilter.GetVariables(""))
                     {
-
-                        yield return new ContextVariable("EntityIdItem", select.Name)
-                        {
-                            Node = this,
-                            //SourceVariable = select as GenericNode
-                        };
-
-
-                        foreach (var child in select.PersistedItems.OfType<ITypedItem>())
-                        {
-                            yield return new ContextVariable("EntityIdItem", select.Name, child.Name)
-                            {
-                                Node = this,
-                                IsSubVariable = true,
-                                SourceVariable = child
-                            };
-                        }
+                        yield return v;
                     }
+
                 }
-                foreach (var item in Mappings)
+                foreach (var item in HandlerInputs)
                 {
                     var filter = item.Context;
                     if (filter == null) continue;
-                    foreach (var select in filter.Select.Select(p => p.SourceItem).OfType<IDiagramNode>())
+                    foreach (var v in filter.GetVariables(item.Name + "Item"))
                     {
-
-                        yield return new ContextVariable(item.Name + "Item", select.Name)
-                        {
-                            Node = this,
-                            //SourceVariable = select as GenericNode
-                        };
-
-
-                        foreach (var child in select.PersistedItems.OfType<ITypedItem>())
-                        {
-                            yield return new ContextVariable(item.Name + "Item", select.Name, child.Name)
-                            {
-                                Node = this,
-                                IsSubVariable = true,
-                                SourceVariable = child
-                            };
-                        }
+                        yield return v;
                     }
+                    
                 }
         
 
@@ -250,16 +210,25 @@ namespace Invert.uFrame.ECS
                 ctx._("{0}.Event = data", Meta.Type.Name);
             }
 
-            if (defaultFilter != null)
+            if (HandlerInputs.Any())
             {
-                ctx._("{0}.EntityIdItem = {1}", Meta.Type.Name, "entityIdItem");
+                if (defaultFilter != null)
+                {
+                    ctx._("{0}.EntityIdItem = {1}", Meta.Type.Name, "entityIdItem");
+                }
+                foreach (var item in this.HandlerInputs)
+                {
+                    var filter = item.Context;
+                    if (filter == null) continue;
+                    ctx._("{0}.{1} = {2}", Meta.Type.Name, filter.GetContextItemName(item.Name), filter.GetContextItemName(item.Name.ToLower()));
+                }
             }
-            foreach (var item in this.Mappings)
+            else if (defaultFilter != null)
             {
-                var filter = item.Context;
-                if (filter == null) continue;
-                ctx._("{0}.{1}Item = {1}Item", Meta.Type.Name, item.Name.ToLower());
+                ctx._("{0}.{1} = {2}", Meta.Type.Name,defaultFilter.GetContextItemName("EntityId"), defaultFilter.GetContextItemName("entityId"));
             }
+
+            
             ctx._("{0}.Execute()", Meta.Type.Name);
 
             //var seq = this.OutputTo<ActionNode>();
@@ -300,30 +269,25 @@ namespace Invert.uFrame.ECS
                  ));
 
                 ctx.PushStatements(handlerFilterMethod.Statements);
-
-
-
-
                 var invoker = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), HandlerMethodName);
                 invoker.Parameters.Add(new CodeSnippetExpression("data"));
-                if (this.Mappings.Any())
+               
+                if (HandlerInputs.Any())
                 {
-
                     if (defaultFilter != null)
                     {
-                        ctx._("var entityIdItem = {0}Context.MatchAndSelect(data.EntityId)", defaultFilter.Name);
+                        ctx._("var entityIdItem = {0}", defaultFilter.MatchAndSelect("data.EntityId"));
                         ctx._if("entityIdItem== null").TrueStatements._("return");
                         invoker.Parameters.Add(new CodeSnippetExpression("entityIdItem"));
                     }
-                    foreach (var item in this.Mappings)
+                    foreach (var item in this.HandlerInputs)
                     {
                         var filter = item.Context;
                         if (filter == null) continue;
 
-                        ctx._("var {0}Item = {1}Context.MatchAndSelect(data.{2})", item.Name, filter.Name,
-                            item.SourceItem.Name);
-                        ctx._if("{0}Item == null", item.Name).TrueStatements._("return");
-                        invoker.Parameters.Add(new CodeSnippetExpression(string.Format("{0}Item", item.Name)));
+                        ctx._("var {0} = {1}", filter.GetContextItemName(item.Name), filter.MatchAndSelect("data." + item.Name));
+                        ctx._if("{0} == null", filter.GetContextItemName(item.Name)).TrueStatements._("return");
+                        invoker.Parameters.Add(new CodeSnippetExpression(filter.GetContextItemName(item.Name)));
                     }
                     ctx.CurrentStatements.Add(invoker);
                 }
@@ -345,23 +309,23 @@ namespace Invert.uFrame.ECS
 
                 if (Meta.Dispatcher)
                 {
-                    ctx._("EnsureDispatcherOnComponents<{0}>( {1}Context.WithAnyTypes )", Meta.Type.Name,
-                        defaultFilter.Name);
+                    ctx._("EnsureDispatcherOnComponents<{0}>( {1} )", Meta.Type.Name,
+                        defaultFilter.DispatcherTypesExpression());
 
                 }
-                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(defaultFilter.Name + "ContextItem", "entityIdItem"));
+                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(defaultFilter.ContextTypeName, defaultFilter.GetContextItemName("entityId")));
             }
             else
             {
-                foreach (var item in Mappings)
+                foreach (var item in HandlerInputs)
                 {
                     var filter = item.Context;
                     if (filter == null) continue;
                     if (Meta.Dispatcher)
                     {
-                        ctx._("EnsureDispatcherOnComponents<{0}>( {1}Context.WithAnyTypes )", Meta.Type.Name, filter.Name);
+                        ctx._("EnsureDispatcherOnComponents<{0}>( {1} )", Meta.Type.Name, filter.DispatcherTypesExpression());
                     }
-                    handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(filter.Name + "ContextItem", item.Name.ToLower() + "Item"));
+                    handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(filter.ContextTypeName, filter.GetContextItemName(item.Name.ToLower())));
                 }
 
             }
@@ -381,9 +345,9 @@ namespace Invert.uFrame.ECS
 
         private void LoopContextHandler(TemplateContext ctx, bool isAggregatorEvent = false)
         {
-            ctx.PushStatements(ctx._if("{0}Context != null", ContextNode.Name).TrueStatements);
+            ctx.PushStatements(ctx._if("{0} != null", ContextNode.SystemPropertyName).TrueStatements);
 
-            ctx._("var e = {0}Context.Items.GetEnumerator()", ContextNode.Name);
+            ctx._("var e = {0}.GetEnumerator()", ContextNode.EnumeratorExpression);
 
             var iteration = new CodeIterationStatement(
                 new CodeSnippetStatement(string.Empty),
@@ -406,8 +370,60 @@ namespace Invert.uFrame.ECS
             ctx.PopStatements();
         }
 
+        public HandlerIn[] HandlerInputs
+        {
+            get { return _contextInputs ?? (_contextInputs = GetHandlerInputs().ToArray()); }
+            set { _contextInputs = value; }
+        }
+        private IEnumerable<HandlerIn> GetHandlerInputs()
+        {
+            var meta = Meta;
+            if (meta != null)
+            {
+                foreach (var item in Meta.Members)
+                {
+                    if (item.Type != typeof (int)) continue;
+                    var variableIn = new HandlerIn()
+                    {
+                        EventFieldInfo = item,
+                        Node = this,
 
+                        Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name
+                    };
+                    yield return variableIn;
+                }
+            }
+        }
         public IEnumerable<ConnectionData> Connections { get; set; }
+    }
+    public class HandlerIn : SingleInputSlot<IMappingsConnectable>
+    {
+        public IMappingsConnectable Context
+        {
+            get { return this.InputFrom<IMappingsConnectable>(); }
+        }
+
+        public EventFieldInfo EventFieldInfo { get; set; }
+
+        public override string Name
+        {
+            get { return EventFieldInfo.Name; }
+            set { base.Name = value; }
+        }
+    }
+
+    public partial interface IMappingsConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable
+    {
+        System.Collections.Generic.IEnumerable<ComponentNode> WithAnyComponents { get; }
+        System.Collections.Generic.IEnumerable<ComponentNode> SelectComponents { get; }
+        string GetContextItemName(string mappingId);
+        string ContextTypeName { get; }
+        string SystemPropertyName { get; }
+        string EnumeratorExpression { get; }
+        IEnumerable<IContextVariable> GetVariables(string prefix);
+        
+        string MatchAndSelect(string mappingExpression);
+        string DispatcherTypesExpression();
     }
 
     public partial interface IOnEventConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable

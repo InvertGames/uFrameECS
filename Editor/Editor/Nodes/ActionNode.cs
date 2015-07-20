@@ -161,6 +161,11 @@ namespace Invert.uFrame.ECS {
         
         public override void WriteCode(TemplateContext ctx)
         {
+            if (Meta != null)
+            {
+                if (!string.IsNullOrEmpty(Meta.Type.Namespace))
+                ctx.TryAddNamespace(Meta.Type.Namespace);
+            }
             if (Meta.Method == null)
             {
                 var varStatement = ctx.CurrentDeclaration._private_(Meta.Type, VarName);
@@ -309,6 +314,11 @@ namespace Invert.uFrame.ECS {
             {
                 if (string.IsNullOrEmpty(MetaType))
                     return null;
+                if (!uFrameECS.Actions.ContainsKey(MetaType))
+                {
+                    InvertApplication.LogError(string.Format("{0} action was not found.", MetaType));
+                    return null;
+                }
                 return _meta ??(_meta = uFrameECS.Actions[MetaType]);
             }
             set

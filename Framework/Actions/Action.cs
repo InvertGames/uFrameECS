@@ -67,7 +67,22 @@ namespace uFrame.Actions
 
     }
 
+    [ActionLibrary]
+    public static class Objects
+    {
+         [ActionTitle("Destroy Component")]
+        public static void DestroyComponent(MonoBehaviour behaviour)
+        {
+            UnityEngine.Object.Destroy(behaviour);
+        }
+         [ActionTitle("Destroy Entity")]
+        public static void DestroyEntity(int entityId)
+        {
+            UnityEngine.Object.Destroy(EntityService.GetEntityView(entityId).gameObject);
+        }
 
+        
+    }
 
     [ActionLibrary]
     public static class Vector3Library
@@ -102,6 +117,98 @@ namespace uFrame.Actions
             return vector.y;
         }
     
+    }
+    [ActionLibrary]
+    public static class GameObjects
+    {
+        [ActionTitle("Deactivate GameObject")]
+        public static void DeactiateGameObject(GameObject gameObject, MonoBehaviour behaviour)
+        {
+            if (gameObject != null)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+            if (behaviour != null)
+            {
+                behaviour.gameObject.SetActive(false);
+            }
+        }
+        [ActionTitle("Activate GameObject")]
+        public static void ActivateGameObject(GameObject gameObject, MonoBehaviour behaviour)
+        {
+            if (gameObject != null)
+            {
+                gameObject.SetActive(true);
+                return;
+            }
+            if (behaviour != null)
+            {
+                behaviour.gameObject.SetActive(true);
+            }
+        }
+    }
+    [ActionLibrary]
+    public static class EntityTransform
+    {
+        [ActionTitle("Set Position")]
+        public static void SetPosition(Entity entity, Vector3 position)
+        {
+            entity.transform.position = position;
+        }
+
+        [ActionTitle("Set Rotation")]
+        public static void SetRotation(Entity entity, Vector3 rotation)
+        {
+            entity.transform.rotation = Quaternion.Euler(rotation);
+        }
+        [ActionTitle("Set Local Position")]
+        public static void SetLocalPosition(Entity entity, Vector3 position)
+        {
+            entity.transform.localPosition = position;
+        }
+
+        [ActionTitle("Set Local Rotation")]
+        public static void SetLocalRotation(Entity entity, Vector3 rotation)
+        {
+            entity.transform.localRotation = Quaternion.Euler(rotation);
+        }
+
+        [ActionTitle("Set Scale")]
+        public static void SetScale(Entity entity, Vector3 scale)
+        {
+            entity.transform.localScale = scale;
+        }
+
+
+        [ActionTitle("Get Position")]
+        public static Vector3 GetPosition(Entity entity)
+        {
+            return entity.transform.position;
+        }
+
+        [ActionTitle("Get Rotation")]
+        public static Vector3 GetRotation(Entity entity)
+        {
+            return entity.transform.eulerAngles;
+        }
+        [ActionTitle("Get Local Position")]
+        public static Vector3 GetLocalPosition(Entity entity)
+        {
+            return entity.transform.localPosition;
+        }
+
+        [ActionTitle("Get Local Rotation")]
+        public static Vector3 GetLocalRotation(Entity entity)
+        {
+            return entity.transform.localEulerAngles;
+        }
+
+        [ActionTitle("Get Local Scale")]
+        public static Vector3 GetLocalScale(Entity entity)
+        {
+            return entity.transform.localScale;
+        }
     }
     public abstract class UFAction
     {
@@ -163,8 +270,6 @@ namespace uFrame.Actions
             return true;
         }
     }
-
- 
 
     [ActionTitle("Math/Addition/Vector3")]
     public class AddVector3 : UFAction
@@ -240,10 +345,12 @@ namespace uFrame.Actions
         public int Seconds;
         [Out]
         public Action Tick;
+        [Out]
+        public IDisposable Result;
 
         public override bool Execute()
         {
-            Observable.Interval(new TimeSpan(0, 0, Minutes, Seconds, 0)).Subscribe(_ =>
+            Result = Observable.Interval(new TimeSpan(0, 0, Minutes, Seconds, 0)).Subscribe(_ =>
             {
                 Tick();
             }).DisposeWith(System);
@@ -362,45 +469,4 @@ namespace uFrame.Actions.Attributes
     }
 
 
-
-    public class EventAttribute : Attribute
-    {
-        public string Title { get; set; }
-
-        public EventAttribute()
-        {
-        }
-
-        public EventAttribute(string title)
-        {
-            Title = title;
-        }
-
-    }
-
-    public class EventDispatcher : EventAttribute
-    {
-        public EventDispatcher()
-        {
-        }
-
-        public EventDispatcher(string title) : base(title)
-        {
-        }
-    }
-
-    public class SystemEvent : EventAttribute
-    {
-        public SystemEvent(string systemMethodName)
-        {
-            SystemMethodName = systemMethodName;
-        }
-
-        public SystemEvent(string title, string systemMethodName) : base(title)
-        {
-            SystemMethodName = systemMethodName;
-        }
-
-        public string SystemMethodName { get; set; }
-    }
 }
