@@ -106,9 +106,8 @@ namespace uFrame.ECS
     }
     public interface IContext
     {
-        IEcsComponentManager[] WithAnyManagers { get; set; }
         IEcsComponentManager[] SelectManagers { get; set; }
-        Type[] WithAnyTypes { get; set; }
+        Type[] SelectTypes { get; set; }
         bool Match(int entityId);
     }
 
@@ -134,27 +133,17 @@ namespace uFrame.ECS
         {
             
             Initialize();
-            if (WithAnyManagers != null && WithAnyManagers.Length > 0)
-            {
-                WithAnyTypes = WithAnyManagers.Select(p => p.For).ToArray();
-            }
-            else
-            {
-                WithAnyTypes = SelectManagers.Select(p => p.For).ToArray();
-            }
-            
+            SelectTypes = SelectManagers.Select(p => p.For).ToArray();
         }
+
+        public Type[] SelectTypes { get; set; }
 
         protected virtual void Initialize()
         {
-            WithAnyManagers = GetWithAnyManagers().ToArray();
             SelectManagers = GetSelectManagers().ToArray();
         }
 
-        protected virtual IEnumerable<IEcsComponentManager> GetWithAnyManagers()
-        {
-            yield break;
-        }
+
 
         protected virtual IEnumerable<IEcsComponentManager> GetSelectManagers()
         {
@@ -168,17 +157,9 @@ namespace uFrame.ECS
      
             WithAnyManagers = withAny;
             SelectManagers = selectManagers;
-            if (WithAnyManagers != null && WithAnyManagers.Length > 0)
-            {
-                WithAnyTypes = WithAnyManagers.Select(p => p.For).ToArray();
-            }
-            else
-            {
-                WithAnyTypes = SelectManagers.Select(p => p.For).ToArray();
-            }      
         }
 
-        public Type[] WithAnyTypes { get; set; }
+
 
         public IComponentSystem ComponentSystem { get; set; }
 
@@ -215,7 +196,7 @@ namespace uFrame.ECS
         private IEnumerable<IEcsComponent> AnyItems()
         {
             var list = new HashSet<int>();
-            foreach (var manager in WithAnyManagers)
+            foreach (var manager in SelectManagers)
             {
                 foreach (var item in manager.All)
                 {
@@ -254,7 +235,6 @@ namespace uFrame.ECS
         private readonly EcsSystem _system;
 
         private Dictionary<int, TContextItem> _items = new Dictionary<int,TContextItem>();
-        public IEcsComponentManager[] WithAnyManagers { get; set; }
         public IEcsComponentManager[] SelectManagers { get; set; }
         public TContextItem MatchAndSelect(int entityId)
         {
@@ -269,9 +249,9 @@ namespace uFrame.ECS
             get { return _items.Values; }
         }
 
-        public Type[] WithAnyTypes { get; set; }
 
-        public Type[] AllTypes
+
+        public Type[] SelectTypes
         {
             get; set; 
             
@@ -284,8 +264,6 @@ namespace uFrame.ECS
 
         private void Initialize()
         {
-       
-            WithAnyManagers = GetWithAnyManagers().ToArray();
             SelectManagers = GetSelectManagers().ToArray();
         }
 
@@ -303,20 +281,13 @@ namespace uFrame.ECS
             _system = system;
             ComponentSystem = system.ComponentSystem;
             Initialize();
-            AllTypes = WithAnyManagers.Select(p => p.For).Concat(SelectManagers.Select(_ => _.For)).ToArray();
-            if (WithAnyManagers != null && WithAnyManagers.Length > 0)
-            {
-                WithAnyTypes = WithAnyManagers.Select(p => p.For).ToArray();
-            }
-            else
-            {
-                WithAnyTypes = SelectManagers.Select(p => p.For).ToArray();
-            }  
+            SelectTypes = SelectManagers.Select(p => p.For).Concat(SelectManagers.Select(_ => _.For)).ToArray();
+
             system.OnEvent<ComponentCreatedEvent>()
                 .Subscribe(_ =>
                 {
                     var componentType = _.Component.GetType();
-                    if (AllTypes.Contains(componentType))
+                    if (SelectTypes.Contains(componentType))
                     {
                         UpdateItem(_.Component.EntityId);
                     }
@@ -326,7 +297,7 @@ namespace uFrame.ECS
                 .Subscribe(_ =>
                 {
                     var componentType = _.Component.GetType();
-                    if (AllTypes.Contains(componentType))
+                    if (SelectTypes.Contains(componentType))
                     {
                         UpdateItem(_.Component.EntityId);
                     }

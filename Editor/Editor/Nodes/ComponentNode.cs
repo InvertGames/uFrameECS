@@ -8,6 +8,7 @@ namespace Invert.uFrame.ECS {
     
     
     public class ComponentNode : ComponentNodeBase, IComponentsConnectable, IMappingsConnectable {
+ 
 
         public IEnumerable<ComponentNode> WithAnyComponents
         {
@@ -27,6 +28,13 @@ namespace Invert.uFrame.ECS {
         public string ContextTypeName
         {
             get { return Name; }
+        }
+
+        [InspectorProperty]
+        public bool Blackboard
+        {
+            get { return this["Blackboard"]; }
+            set { this["Blackboard"] = value; }
         }
 
         public IEnumerable<IContextVariable> GetVariables(string prefix)

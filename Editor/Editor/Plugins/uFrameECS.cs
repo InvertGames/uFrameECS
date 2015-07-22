@@ -29,6 +29,8 @@ namespace Invert.uFrame.ECS {
             System.HasSubNode<ComponentNode>();
             System.HasSubNode<ContextNode>();
 
+            Component.AddFlag("Blackboard");
+
             ListenFor<IPrefabNodeProvider>();
             ListenFor<IContextMenuQuery>();
             Module.HasSubNode<ComponentNode>();
@@ -40,7 +42,7 @@ namespace Invert.uFrame.ECS {
             container.Connectable<IActionOut, IContextVariable>();
             container.Connectable<ActionBranch, SequenceItemNode>();
             container.Connectable<IMappingsConnectable, HandlerIn>();
-   
+            
             VariableReference.Name = "Var";
 
             LoadActions();

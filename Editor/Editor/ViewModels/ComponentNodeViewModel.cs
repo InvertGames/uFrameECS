@@ -1,3 +1,5 @@
+using Invert.Core.GraphDesigner;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -9,6 +11,18 @@ namespace Invert.uFrame.ECS {
         
         public ComponentNodeViewModel(ComponentNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+
+        public override NodeColor Color
+        {
+            get
+            {
+                if (GraphItem.Blackboard)
+                {
+                    return NodeColor.Black;
+                }
+                return base.Color;
+            }
         }
     }
 }

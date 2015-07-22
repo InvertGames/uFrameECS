@@ -20,8 +20,8 @@ namespace Invert.uFrame.ECS.Templates
         {
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<SystemNode,SystemTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentNode,ComponentTemplate>();
-            RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentGroupNode,ComponentGroupTemplate>();
-            RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentGroupNode,ComponentGroupManagerTemplate>();
+//            RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentGroupNode,ComponentGroupTemplate>();
+  //          RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentGroupNode,ComponentGroupManagerTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<EventNode,EventTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<ContextNode,ContextTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<ContextNode, ContextItemTemplate>();
@@ -198,69 +198,69 @@ namespace Invert.uFrame.ECS.Templates
         public TemplateContext<ComponentNode> Ctx { get; set; }
     }
 
-    [TemplateClass(TemplateLocation.DesignerFile)]
-    [ForceBaseType(typeof(ComponentGroup))]
-    [RequiresNamespace("uFrame.ECS")]
-    [AsPartial]
-    public partial class ComponentGroupTemplate : IClassTemplate<ComponentGroupNode>
-    {
-        public IEnumerable<ComponentNode> Components
-        {
-            get
-            {
-                return Ctx.Data.Components.Select(p => p.SourceItem).OfType<ComponentNode>();
-            }
-        }
-        public string OutputPath
-        {
-            get { return Path2.Combine(Ctx.Data.Graph.Name, "Components"); }
-        }
+    //[TemplateClass(TemplateLocation.DesignerFile)]
+    //[ForceBaseType(typeof(ComponentGroup))]
+    //[RequiresNamespace("uFrame.ECS")]
+    //[AsPartial]
+    //public partial class ComponentGroupTemplate : IClassTemplate<ComponentGroupNode>
+    //{
+    //    public IEnumerable<ComponentNode> Components
+    //    {
+    //        get
+    //        {
+    //            return Ctx.Data.Components.Select(p => p.SourceItem).OfType<ComponentNode>();
+    //        }
+    //    }
+    //    public string OutputPath
+    //    {
+    //        get { return Path2.Combine(Ctx.Data.Graph.Name, "Components"); }
+    //    }
 
-        public bool CanGenerate
-        {
-            get { return true; }
-        }
+    //    public bool CanGenerate
+    //    {
+    //        get { return true; }
+    //    }
 
-        public void TemplateSetup()
-        {
+    //    public void TemplateSetup()
+    //    {
 
-        }
+    //    }
 
-        public TemplateContext<ComponentGroupNode> Ctx { get; set; }
-    }
+    //    public TemplateContext<ComponentGroupNode> Ctx { get; set; }
+    //}
 
 
-    [TemplateClass(TemplateLocation.Both,"{0}Manager")]
-    [RequiresNamespace("uFrame.ECS")]
-    [RequiresNamespace("uFrame.Kernel")]
-    [RequiresNamespace("UniRx")]
-    public partial class ComponentGroupManagerTemplate : IClassTemplate<ComponentGroupNode>
-    {
-        public IEnumerable<ComponentNode> Components
-        {
-            get
-            {
-                return Ctx.Data.Components.Select(p => p.SourceItem).OfType<ComponentNode>();
-            }
-        }
-        public string OutputPath
-        {
-            get { return Path2.Combine(Ctx.Data.Graph.Name, "ComponentGroups"); }
-        }
+    //[TemplateClass(TemplateLocation.Both,"{0}Manager")]
+    //[RequiresNamespace("uFrame.ECS")]
+    //[RequiresNamespace("uFrame.Kernel")]
+    //[RequiresNamespace("UniRx")]
+    //public partial class ComponentGroupManagerTemplate : IClassTemplate<ComponentGroupNode>
+    //{
+    //    public IEnumerable<ComponentNode> Components
+    //    {
+    //        get
+    //        {
+    //            return Ctx.Data.Components.Select(p => p.SourceItem).OfType<ComponentNode>();
+    //        }
+    //    }
+    //    public string OutputPath
+    //    {
+    //        get { return Path2.Combine(Ctx.Data.Graph.Name, "ComponentGroups"); }
+    //    }
 
-        public bool CanGenerate
-        {
-            get { return true; }
-        }
+    //    public bool CanGenerate
+    //    {
+    //        get { return true; }
+    //    }
 
-        public void TemplateSetup()
-        {
-            if (Ctx.IsDesignerFile)
-                Ctx.SetBaseType("FilterSystem<{0}>", Ctx.Data.Name);
-        }
+    //    public void TemplateSetup()
+    //    {
+    //        if (Ctx.IsDesignerFile)
+    //            Ctx.SetBaseType("FilterSystem<{0}>", Ctx.Data.Name);
+    //    }
 
-        public TemplateContext<ComponentGroupNode> Ctx { get; set; }
-    }
+    //    public TemplateContext<ComponentGroupNode> Ctx { get; set; }
+    //}
 
     [TemplateClass(TemplateLocation.DesignerFile, "{0}Context"), AsPartial]
     [RequiresNamespace("uFrame.ECS")]
@@ -268,13 +268,7 @@ namespace Invert.uFrame.ECS.Templates
     [RequiresNamespace("UniRx")]
     public partial class ContextTemplate : IClassTemplate<ContextNode>
     {
-        public IEnumerable<ComponentNode> WithAnyComponents
-        {
-            get
-            {
-                return Ctx.Data.WithAny.Select(p => p.SourceItem).OfType<ComponentNode>();
-            }
-        }
+
         public IEnumerable<ComponentNode> SelectComponents
         {
             get
@@ -307,13 +301,7 @@ namespace Invert.uFrame.ECS.Templates
     [RequiresNamespace("UniRx")]
     public partial class ContextItemTemplate : ContextItem, IClassTemplate<ContextNode>
     {
-        public IEnumerable<ComponentNode> WithAnyComponents
-        {
-            get
-            {
-                return Ctx.Data.WithAny.Select(p => p.SourceItem).OfType<ComponentNode>();
-            }
-        }
+
         public IEnumerable<ComponentNode> SelectComponents
         {
             get

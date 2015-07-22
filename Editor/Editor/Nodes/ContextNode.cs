@@ -7,7 +7,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
 
 
-    public class ContextNode : ContextNodeBase, IWithAnyConnectable, ISelectConnectable, IMappingsConnectable, IHandlerConnectable, ICodeOutput {
+    public class ContextNode : ContextNodeBase,ISelectConnectable, IMappingsConnectable, IHandlerConnectable, ICodeOutput {
 
         public IEnumerable<IContextVariable> AllContextVariables
         {
@@ -35,10 +35,6 @@ namespace Invert.uFrame.ECS {
             
         }
 
-        public IEnumerable<ComponentNode> WithAnyComponents
-        {
-            get { return WithAny.Select(p => p.SourceItem).OfType<ComponentNode>(); }
-        }
 
         public IEnumerable<ComponentNode> SelectComponents { get { return Select.Select(p => p.SourceItem).OfType<ComponentNode>(); } }
 
@@ -104,7 +100,7 @@ namespace Invert.uFrame.ECS {
 
         public string DispatcherTypesExpression()
         {
-            return SystemPropertyName + ".WithAnyTypes";
+            return SystemPropertyName + ".SelectTypes";
         }
     }
     

@@ -396,7 +396,6 @@ namespace Invert.uFrame.ECS {
             container.RegisterInstance<IEditorCommand>(GetCollectionsSelectionCommand(), typeof(CollectionsChildItem).Name + "TypeSelection");;
             container.AddTypeItem<CollectionsChildItem>();
             container.AddItem<SignalsReference>();
-            container.AddItem<WithAnyReference>();
             container.AddItem<SelectReference>();
             container.RegisterInstance<IEditorCommand>(GetInputsSelectionCommand(), typeof(InputsChildItem).Name + "TypeSelection");;
             container.AddTypeItem<InputsChildItem>();
@@ -406,7 +405,7 @@ namespace Invert.uFrame.ECS {
             Component = container.AddNode<ComponentNode,ComponentNodeViewModel,ComponentNodeDrawer>("Component");
             Component.Color(NodeColor.Orange);
             System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
-            System.Color(NodeColor.Black);
+            System.Color(NodeColor.Purple);
             System.HasSubNode<ComponentNode>();
             System.HasSubNode<HandlerNode>();
             System.HasSubNode<ContextNode>();
@@ -508,7 +507,6 @@ namespace Invert.uFrame.ECS {
             container.Connectable<ComponentNode,Component>();
             container.Connectable<ComponentNode,FilterBy>();
             container.Connectable<ComponentNode,SelectReference>();
-            container.Connectable<ComponentNode,WithAnyReference>();
             container.Connectable<ComponentNode,HandlerNode>();
             container.Connectable<ComponentsReference,Variables>();
             container.Connectable<PropertiesChildItem,Variables>();
@@ -520,10 +518,8 @@ namespace Invert.uFrame.ECS {
             container.Connectable<HandlerNode,SequenceItemNode>();
             container.Connectable<ComponentGroupNode,FilterBy>();
             container.Connectable<ComponentGroupNode,ComponentsReference>();
-            container.Connectable<ComponentGroupNode,WithAnyReference>();
             container.Connectable<ComponentGroupNode,SelectReference>();
             container.Connectable<ComponentGroupNode,HandlerNode>();
-            container.Connectable<ContextNode,WithAnyReference>();
             container.Connectable<ContextNode,SelectReference>();
             container.Connectable<ContextNode,HandlerNode>();
             container.Connectable<TimerNode,Timer>();

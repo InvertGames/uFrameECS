@@ -17,7 +17,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class ComponentNodeBase : Invert.Core.GraphDesigner.GenericNode, Invert.Core.GraphDesigner.IClassTypeNode, IComponentsConnectable, IComponentConnectable, IFilterByConnectable, ISelectConnectable, IWithAnyConnectable, IHandlerConnectable {
+    public class ComponentNodeBase : Invert.Core.GraphDesigner.GenericNode, Invert.Core.GraphDesigner.IClassTypeNode, IComponentsConnectable, IComponentConnectable, IFilterByConnectable, ISelectConnectable, IHandlerConnectable {
         
         public virtual string ClassName {
             get {
@@ -396,7 +396,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IHandlerConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ComponentGroupNodeBase : Invert.Core.GraphDesigner.GenericNode, IFilterByConnectable, IComponentsConnectable, IWithAnyConnectable, ISelectConnectable, IHandlerConnectable {
+    public class ComponentGroupNodeBase : Invert.Core.GraphDesigner.GenericNode, IFilterByConnectable, IComponentsConnectable, ISelectConnectable, IHandlerConnectable {
         
         private Filter _Filter;
         
@@ -460,7 +460,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ContextNodeBase : Invert.Core.GraphDesigner.GenericNode, IWithAnyConnectable, ISelectConnectable, IHandlerConnectable {
+    public class ContextNodeBase : Invert.Core.GraphDesigner.GenericNode, ISelectConnectable, IHandlerConnectable {
         
         public override bool AllowMultipleInputs {
             get {
@@ -474,22 +474,9 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleWithAny {
-            get {
-                return this.Project.AllGraphItems.OfType<IWithAnyConnectable>().Cast<IItem>();
-            }
-        }
-        
         public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleSelect {
             get {
                 return this.Project.AllGraphItems.OfType<ISelectConnectable>().Cast<IItem>();
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.ReferenceSection("With Any", SectionVisibility.WhenNodeIsNotFilter, false, false, typeof(IWithAnyConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=true)]
-        public virtual System.Collections.Generic.IEnumerable<WithAnyReference> WithAny {
-            get {
-                return ChildItems.OfType<WithAnyReference>();
             }
         }
         

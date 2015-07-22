@@ -70,24 +70,6 @@ namespace Invert.uFrame.ECS {
     public partial interface ISignalsConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class WithAnyReferenceBase : Invert.Core.GraphDesigner.GenericReferenceItem<IWithAnyConnectable> {
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface IWithAnyConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
     public class SelectReferenceBase : Invert.Core.GraphDesigner.GenericReferenceItem<ISelectConnectable> {
         
         public override bool AllowMultipleInputs {

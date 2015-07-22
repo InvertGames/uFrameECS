@@ -414,7 +414,6 @@ namespace Invert.uFrame.ECS
 
     public partial interface IMappingsConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable
     {
-        System.Collections.Generic.IEnumerable<ComponentNode> WithAnyComponents { get; }
         System.Collections.Generic.IEnumerable<ComponentNode> SelectComponents { get; }
         string GetContextItemName(string mappingId);
         string ContextTypeName { get; }

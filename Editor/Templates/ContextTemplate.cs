@@ -13,16 +13,6 @@ namespace Invert.uFrame.ECS.Templates
 
         }
 
-        [GenerateMethod, AsOverride]
-        protected virtual IEnumerable<IEcsComponentManager> GetWithAnyManagers()
-        {
-            foreach (var item in WithAnyComponents)
-            {
-                Ctx._("yield return ComponentSystem.RegisterComponent<{0}>()", item.Name);
-            }
-            Ctx._("yield break");
-            yield break;
-        }
 
 
         [GenerateMethod, AsOverride]
@@ -39,12 +29,6 @@ namespace Invert.uFrame.ECS.Templates
         [GenerateMethod(CallBase = false), AsOverride]
         public bool Match(int entityId)
         {
-            if (WithAnyComponents.Any())
-            {
-                Ctx._if("!ComponentSystem.HasAny(entityId, WithAnyTypes)")
-                    .TrueStatements._("return false");
-            }
-
             foreach (var item in SelectComponents)
             {
                 Ctx.CurrentDeclaration._private_(item.Name, "_" + item.Name.ToLower());
