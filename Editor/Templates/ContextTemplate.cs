@@ -29,6 +29,8 @@ namespace Invert.uFrame.ECS.Templates
         [GenerateMethod(CallBase = false), AsOverride]
         public bool Match(int entityId)
         {
+            Ctx.CurrentDeclaration._private_(typeof (int), "lastEntityId");
+            Ctx._("lastEntityId = entityId");
             foreach (var item in SelectComponents)
             {
                 Ctx.CurrentDeclaration._private_(item.Name, "_" + item.Name.ToLower());
@@ -43,7 +45,8 @@ namespace Invert.uFrame.ECS.Templates
         [GenerateMethod, AsOverride]
         public _CONTEXTITEM_ Select()
         {
-            Ctx._("var item = new {0}()", new _CONTEXTITEM_().TheType(Ctx));
+            Ctx._("var item = new {0}();", new _CONTEXTITEM_().TheType(Ctx));
+            Ctx._("item.EntityId = lastEntityId");
             foreach (var item in SelectComponents)
             {
                 Ctx._("item.{0} = _{1}", item.Name, item.Name.ToLower());

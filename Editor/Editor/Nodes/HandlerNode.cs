@@ -1,22 +1,20 @@
 using System.CodeDom;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace Invert.uFrame.ECS
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
     using Invert.Core;
     using Invert.Core.GraphDesigner;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public interface ISetupCodeWriter
     {
         void WriteSetupCode(TemplateContext ctx);
     }
+
     public class HandlerNode : HandlerNodeBase, ISetupCodeWriter, ICodeOutput
     {
-
         private string _eventIdentifier;
         private EventNode _eventNode;
         private EventMetaInfo _meta;
@@ -29,10 +27,11 @@ namespace Invert.uFrame.ECS
             get { return this.Graph.NodeItems.Where(_ => this.Locations.Keys.Contains(_.Identifier)).OfType<UserMethodNode>().Cast<IDiagramNodeItem>(); }
         }
 
-        public string HandlerMethodName 
+        public string HandlerMethodName
         {
             get { return Name + "Handler"; }
         }
+
         public string HandlerFilterMethodName
         {
             get { return Name + "Filter"; }
@@ -53,11 +52,11 @@ namespace Invert.uFrame.ECS
                 }
             }
         }
+
         public string InputNames
         {
             get
             {
-
                 return
                     string.Join("_",
                             Contexts.Select(p => p.Name)
@@ -93,13 +92,17 @@ namespace Invert.uFrame.ECS
 
         //}
 
-
         public EventMetaInfo Meta
         {
             get
             {
                 if (string.IsNullOrEmpty(MetaType))
                     return null;
+                if (!uFrameECS.Events.ContainsKey(MetaType))
+                {
+                    InvertApplication.Log(string.Format("{0} type not found.", MetaType));
+                    return null;
+                }
                 return _meta ?? (_meta = uFrameECS.Events[MetaType]);
             }
             set
@@ -118,12 +121,12 @@ namespace Invert.uFrame.ECS
                 _metaType = value;
             }
         }
+
         public IMappingsConnectable ContextNode
         {
             get { return this.InputFrom<IMappingsConnectable>(); }
         }
 
-        
         public IEnumerable<IContextVariable> AllContextVariables
         {
             get
@@ -147,6 +150,7 @@ namespace Invert.uFrame.ECS
                 //}
             }
         }
+
         public override IEnumerable<IContextVariable> ContextVariables
         {
             get
@@ -154,14 +158,11 @@ namespace Invert.uFrame.ECS
                 var evtNode = Meta;
                 if (evtNode != null && !evtNode.SystemEvent)
                 {
-
-
                     yield return new ContextVariable("Event")
                         {
                             Node = this,
                             //SourceVariable = select as GenericNode
                         };
-
 
                     foreach (var child in evtNode.Members)
                     {
@@ -172,7 +173,6 @@ namespace Invert.uFrame.ECS
                             VariableType = child.Type.FullName
                         };
                     }
-
                 }
                 var defaultFilter = this.InputFrom<IMappingsConnectable>();
                 if (defaultFilter != null)
@@ -181,7 +181,6 @@ namespace Invert.uFrame.ECS
                     {
                         yield return v;
                     }
-
                 }
                 foreach (var item in HandlerInputs)
                 {
@@ -191,13 +190,9 @@ namespace Invert.uFrame.ECS
                     {
                         yield return v;
                     }
-                    
                 }
-        
-
             }
         }
-
 
         public override void WriteCode(TemplateContext ctx)
         {
@@ -225,21 +220,20 @@ namespace Invert.uFrame.ECS
             }
             else if (defaultFilter != null)
             {
-                ctx._("{0}.{1} = {2}", Meta.Type.Name,defaultFilter.GetContextItemName("EntityId"), defaultFilter.GetContextItemName("entityId"));
+                ctx._("{0}.{1} = {2}", Meta.Type.Name, defaultFilter.GetContextItemName("EntityId"), defaultFilter.GetContextItemName("entityId"));
             }
 
-            
             ctx._("{0}.Execute()", Meta.Type.Name);
 
             //var seq = this.OutputTo<ActionNode>();
             //foreach (var item in this.Use)
             //{
-
             //}
         }
 
         public void WriteSetupCode(TemplateContext ctx)
         {
+            if (Meta == null) return;
             if (Meta.SystemEvent)
             {
                 var sysMethodName = Meta.SystemEventMethod;
@@ -250,7 +244,6 @@ namespace Invert.uFrame.ECS
                 LoopContextHandler(ctx);
 
                 ctx.PopStatements();
-
             }
             var handlerMethod = ctx.CurrentDeclaration.protected_func(typeof(void), HandlerMethodName);
             var defaultFilter = ContextNode;
@@ -269,51 +262,81 @@ namespace Invert.uFrame.ECS
                  ));
 
                 ctx.PushStatements(handlerFilterMethod.Statements);
-                var invoker = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), HandlerMethodName);
-                invoker.Parameters.Add(new CodeSnippetExpression("data"));
-               
-                if (HandlerInputs.Any())
-                {
-                    if (defaultFilter != null)
-                    {
-                        ctx._("var entityIdItem = {0}", defaultFilter.MatchAndSelect("data.EntityId"));
-                        ctx._if("entityIdItem== null").TrueStatements._("return");
-                        invoker.Parameters.Add(new CodeSnippetExpression("entityIdItem"));
-                    }
-                    foreach (var item in this.HandlerInputs)
-                    {
-                        var filter = item.Context;
-                        if (filter == null) continue;
 
-                        ctx._("var {0} = {1}", filter.GetContextItemName(item.Name), filter.MatchAndSelect("data." + item.Name));
-                        ctx._if("{0} == null", filter.GetContextItemName(item.Name)).TrueStatements._("return");
-                        invoker.Parameters.Add(new CodeSnippetExpression(filter.GetContextItemName(item.Name)));
-                    }
-                    ctx.CurrentStatements.Add(invoker);
-                }
-                else if (defaultFilter != null)
+                var handlerInvoker = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), HandlerMethodName);
+                handlerInvoker.Parameters.Add(new CodeSnippetExpression("data"));
+                if (Meta.CodeWriter != null)
                 {
-                    LoopContextHandler(ctx, true);
+                    Meta.CodeWriter.WriteFilterMethod(this, ctx, handlerFilterMethod, handlerInvoker);
                 }
                 else
                 {
-                    ctx.CurrentStatements.Add(invoker);
-                }
+                    if (HandlerInputs.Any())
+                    {
+                        if (defaultFilter != null)
+                        {
+                            ctx._("var entityIdItem = {0}", defaultFilter.MatchAndSelect("data.EntityId"));
+                            ctx._if("entityIdItem== null").TrueStatements._("return");
+                            handlerInvoker.Parameters.Add(new CodeSnippetExpression("entityIdItem"));
+                        }
+                        foreach (var item in this.HandlerInputs)
+                        {
+                            var filter = item.Context;
+                            if (filter == null) continue;
 
+                            ctx._("var {0} = {1}", filter.GetContextItemName(item.Name), filter.MatchAndSelect("data." + item.Name));
+                            ctx._if("{0} == null", filter.GetContextItemName(item.Name)).TrueStatements._("return");
+                            handlerInvoker.Parameters.Add(new CodeSnippetExpression(filter.GetContextItemName(item.Name)));
+                        }
+                        ctx.CurrentStatements.Add(handlerInvoker);
+                    }
+                    else if (defaultFilter != null)
+                    {
+                        LoopContextHandler(ctx, true);
+                    }
+                    else
+                    {
+                        ctx.CurrentStatements.Add(handlerInvoker);
+                    }
+                }
 
                 ctx.PopStatements();
             }
 
+            WriteEnsureDispatchers(ctx, defaultFilter, handlerMethod);
+
+            if (!Meta.SystemEvent)
+            {
+                if (Meta.CodeWriter != null)
+                {
+                    Meta.CodeWriter.WriteSetupMethod(this, ctx, handlerMethod);
+                }
+                else
+                {
+                    ctx._("this.OnEvent<{0}>().Subscribe(_=>{{ {1}(_); }}).DisposeWith(this)", Meta.Type.FullName, HandlerFilterMethodName);
+                }
+            }
+
+            var prevMethod = ctx.CurrentMethod;
+            ctx.CurrentMember = handlerMethod;
+            ctx.PushStatements(handlerMethod.Statements);
+            WriteCode(ctx);
+            ctx.PopStatements();
+            ctx.CurrentMember = prevMethod;
+        }
+
+        private void WriteEnsureDispatchers(TemplateContext ctx, IMappingsConnectable defaultFilter,
+            CodeMemberMethod handlerMethod)
+        {
             if (defaultFilter != null)
             {
-
                 if (Meta.Dispatcher)
                 {
                     ctx._("EnsureDispatcherOnComponents<{0}>( {1} )", Meta.Type.Name,
                         defaultFilter.DispatcherTypesExpression());
-
                 }
-                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(defaultFilter.ContextTypeName, defaultFilter.GetContextItemName("entityId")));
+                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(defaultFilter.ContextTypeName,
+                    defaultFilter.GetContextItemName("entityId")));
             }
             else
             {
@@ -325,22 +348,10 @@ namespace Invert.uFrame.ECS
                     {
                         ctx._("EnsureDispatcherOnComponents<{0}>( {1} )", Meta.Type.Name, filter.DispatcherTypesExpression());
                     }
-                    handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(filter.ContextTypeName, filter.GetContextItemName(item.Name.ToLower())));
+                    handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(filter.ContextTypeName,
+                        filter.GetContextItemName(item.Name.ToLower())));
                 }
-
             }
-
-            if (!Meta.SystemEvent)
-            {
-                ctx._("this.OnEvent<{0}>().Subscribe(_=>{{ {1}(_); }}).DisposeWith(this)", Meta.Type.FullName, HandlerFilterMethodName);
-            }
-
-            var prevMethod = ctx.CurrentMethod;
-            ctx.CurrentMember = handlerMethod;
-            ctx.PushStatements(handlerMethod.Statements);
-            WriteCode(ctx);
-            ctx.PopStatements();
-            ctx.CurrentMember = prevMethod;
         }
 
         private void LoopContextHandler(TemplateContext ctx, bool isAggregatorEvent = false)
@@ -375,6 +386,7 @@ namespace Invert.uFrame.ECS
             get { return _contextInputs ?? (_contextInputs = GetHandlerInputs().ToArray()); }
             set { _contextInputs = value; }
         }
+
         private IEnumerable<HandlerIn> GetHandlerInputs()
         {
             var meta = Meta;
@@ -382,7 +394,7 @@ namespace Invert.uFrame.ECS
             {
                 foreach (var item in Meta.Members)
                 {
-                    if (item.Type != typeof (int)) continue;
+                    if (item.Type != typeof(int)) continue;
                     var variableIn = new HandlerIn()
                     {
                         EventFieldInfo = item,
@@ -394,8 +406,10 @@ namespace Invert.uFrame.ECS
                 }
             }
         }
+
         public IEnumerable<ConnectionData> Connections { get; set; }
     }
+
     public class HandlerIn : SingleInputSlot<IMappingsConnectable>
     {
         public IMappingsConnectable Context
@@ -415,17 +429,50 @@ namespace Invert.uFrame.ECS
     public partial interface IMappingsConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable
     {
         System.Collections.Generic.IEnumerable<ComponentNode> SelectComponents { get; }
+
         string GetContextItemName(string mappingId);
+
         string ContextTypeName { get; }
+
         string SystemPropertyName { get; }
+
         string EnumeratorExpression { get; }
+
         IEnumerable<IContextVariable> GetVariables(string prefix);
-        
+
         string MatchAndSelect(string mappingExpression);
+
         string DispatcherTypesExpression();
     }
 
     public partial interface IOnEventConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable
     {
+    }
+
+    public interface IHandlerCodeWriter
+    {
+        Type For { get; }
+
+        void WriteFilterMethod(HandlerNode handlerNode, TemplateContext ctx, CodeMemberMethod handlerFilterMethod, CodeMethodInvokeExpression invoker);
+
+        void WriteSetupMethod(HandlerNode handlerNode, TemplateContext ctx, CodeMemberMethod handlerMethod);
+    }
+
+    public interface IHandlerCodeWriterFor<TFor> : IHandlerCodeWriter
+    {
+    }
+
+    public abstract class HandlerCodeWriter<TFor> : IHandlerCodeWriterFor<TFor>
+    {
+        public Type For
+        {
+            get { return typeof(TFor); }
+        }
+
+        public abstract void WriteFilterMethod(HandlerNode handlerNode, TemplateContext ctx, CodeMemberMethod handlerFilterMethod,
+            CodeMethodInvokeExpression invoker);
+
+        public abstract void WriteSetupMethod(HandlerNode handlerNode, TemplateContext ctx, CodeMemberMethod handlerMethod);
+
     }
 }

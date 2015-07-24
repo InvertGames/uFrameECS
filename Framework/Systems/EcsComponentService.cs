@@ -1,4 +1,5 @@
-﻿using uFrame.IOC;
+﻿using uFrame.Attributes;
+using uFrame.IOC;
 using uFrame.Kernel;
 using UniRx;
 
@@ -8,7 +9,6 @@ namespace uFrame.ECS
     {
         [Inject]
         public IComponentSystem ComponentSystem { get; set; }
-
 
         public override void Setup()
         {
@@ -23,13 +23,15 @@ namespace uFrame.ECS
                 ComponentSystem.DestroyComponentInstance(_.Component.GetType(), _.Component);
             }).DisposeWith(this);
         }
-
     }
+
+    [uFrameEvent("Component Created")]
     public class ComponentCreatedEvent
     {
         public IEcsComponent Component { get; set; }
     }
 
+    [uFrameEvent("Component Destroyed")]
     public class ComponentDestroyedEvent
     {
         public IEcsComponent Component { get; set; }

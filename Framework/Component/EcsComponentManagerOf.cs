@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using uFrame.Kernel;
 using UniRx;
+using UnityEngine;
 
 namespace uFrame.ECS
 {
@@ -230,17 +231,17 @@ namespace uFrame.ECS
 
     }
 
-    public class ReactiveContext<TContextItem> : IContext where TContextItem : class, new()
+    public class ReactiveContext<TContextItem> : IContext where TContextItem : ContextItem, new()
     {
-        private readonly EcsSystem _system;
+        protected readonly EcsSystem _system;
 
         private Dictionary<int, TContextItem> _items = new Dictionary<int,TContextItem>();
         public IEcsComponentManager[] SelectManagers { get; set; }
         public TContextItem MatchAndSelect(int entityId)
         {
-            if (Match(entityId))
+            if (_items.ContainsKey(entityId))
             {
-                return Select();
+                return _items[entityId];
             }
             return null;
         }
@@ -322,6 +323,7 @@ namespace uFrame.ECS
                 if (ContextItems.ContainsKey(entityId))
                 {
                     ContextItems.Remove(entityId);
+
                 }
             }
         }
@@ -339,6 +341,7 @@ namespace uFrame.ECS
     public class ContextItem : IEcsComponent
     {
         private Entity _entityView;
+
         public int EntityId { get; set; }
 
         public int ComponentId

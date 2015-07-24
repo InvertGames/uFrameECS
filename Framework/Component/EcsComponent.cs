@@ -53,11 +53,19 @@ namespace uFrame.ECS
         public override void KernelLoaded()
         {
             base.KernelLoaded();
+            if (EntityId != 0)
+            {
+                this.Publish(new ComponentCreatedEvent()
+                {
+                    Component = this
+                });
+                return;
+            }
             if (Entity != null)
             {
                 _entityId = Entity.EntityId;
             }
-            else
+            else if (_entityId == 0)
             {
                 _entityId = GetComponent<Entity>().EntityId;
             }

@@ -289,13 +289,13 @@ namespace Invert.uFrame.ECS.Templates
         public void TemplateSetup()
         {
 
-            this.Ctx.SetBaseType("ReactiveContext<{0}ContextItem>",Ctx.Data.Name);
+            this.Ctx.SetBaseType("ReactiveContext<{0}>",Ctx.Data.Name);
         }
 
         public TemplateContext<ContextNode> Ctx { get; set; }
     }
 
-    [TemplateClass(TemplateLocation.DesignerFile, "{0}ContextItem"), AsPartial]
+    [TemplateClass(TemplateLocation.DesignerFile, "{0}"), AsPartial]
     [RequiresNamespace("uFrame.ECS")]
     [RequiresNamespace("uFrame.Kernel")]
     [RequiresNamespace("UniRx")]
@@ -449,7 +449,7 @@ namespace Invert.uFrame.ECS.Templates
     {
         public override string TheType(TemplateContext context)
         {
-            return base.TheType(context) + "ContextItem";
+            return base.TheType(context);
         }
     }
 

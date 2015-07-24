@@ -12,6 +12,8 @@ namespace Invert.uFrame.ECS.Templates
         {
             get
             {
+                if (Ctx.Data.Meta == null)
+                    return null;
                 this.Ctx.SetType(Ctx.Data.Meta.Type);
                 return null;
             }
@@ -21,6 +23,7 @@ namespace Invert.uFrame.ECS.Templates
             }
         }
 
+   
         [GenerateProperty, WithField]
         public EcsSystem System { get; set; }
 
@@ -38,7 +41,7 @@ namespace Invert.uFrame.ECS.Templates
                 var context = item.Context;
                 if (context == null) continue;
                 //var a = item.SourceItem as PropertiesChildItem;
-                CreateFilterProperty(item.Name, context );
+                CreateFilterProperty( item.Name, context );
             }
             
         }

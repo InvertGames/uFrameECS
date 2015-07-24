@@ -46,7 +46,7 @@ namespace Invert.uFrame.ECS {
 
         public string ContextTypeName
         {
-            get { return Name + "ContextItem"; }
+            get { return Name; }
         }
 
         public string SystemPropertyName

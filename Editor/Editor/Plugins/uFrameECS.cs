@@ -1,5 +1,7 @@
 using System.Reflection;
+using Invert.Core.GraphDesigner.Unity;
 using Invert.IOC;
+using Invert.Windows;
 using uFrame.Actions;
 using uFrame.Actions.Attributes;
 using uFrame.Attributes;
@@ -15,7 +17,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
 
 
-    public class uFrameECS : uFrameECSBase, IPrefabNodeProvider, IContextMenuQuery
+    public class uFrameECS : uFrameECSBase, IPrefabNodeProvider, IContextMenuQuery, IQuickAccessEvents, IOnMouseDoubleClickEvent
     {
         private static Dictionary<string, ActionMetaInfo> _actions;
         private static Dictionary<string, EventMetaInfo> _events;
@@ -23,16 +25,15 @@ namespace Invert.uFrame.ECS {
         public override void Initialize(UFrameContainer container)
         {
             base.Initialize(container);
+    
 
             System.HasSubNode<TypeReferenceNode>();
             Module.HasSubNode<TypeReferenceNode>();
             System.HasSubNode<ComponentNode>();
             System.HasSubNode<ContextNode>();
 
-            Component.AddFlag("Blackboard");
+            Component.AddFlag("Blackboard"); 
 
-            ListenFor<IPrefabNodeProvider>();
-            ListenFor<IContextMenuQuery>();
             Module.HasSubNode<ComponentNode>();
             container.RegisterDrawer<ItemViewModel<IContextVariable>, ItemDrawer>();
             container.AddItemFlag<ComponentsReference>("Multiple", UnityEngine.Color.blue);
@@ -67,7 +68,8 @@ namespace Invert.uFrame.ECS {
             {
                 var actionInfo = new ActionMetaInfo()
                 {
-                    Type = actionType
+                    Type = actionType,
+                    
                 };
                 actionInfo.MetaAttributes =
                     actionType.GetCustomAttributes(typeof (ActionMetaAttribute), true).OfType<ActionMetaAttribute>().ToArray();
@@ -99,12 +101,14 @@ namespace Invert.uFrame.ECS {
                         assembly.GetTypes()
                             .Where(p => p.IsSealed && p.IsSealed && p.IsDefined(typeof (ActionLibrary), true)))
                 {
+                    var category = type.GetCustomAttributes(typeof (uFrameCategory), true).OfType<uFrameCategory>().FirstOrDefault();
                     var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static);
                     foreach (var method in methods)
                     {
                         var actionInfo = new ActionMetaInfo()
                         {
                             Type = type,
+                            Category = category,
                             Method = method,
                         };
                         actionInfo.MetaAttributes =
@@ -194,6 +198,31 @@ namespace Invert.uFrame.ECS {
             }
         }
 
+        private IHandlerCodeWriter[] _codeWriters;
+        public IHandlerCodeWriter[] CodeWriters
+        {
+            get
+            {
+                return _codeWriters ??
+                       (_codeWriters = EventCodeWriterTypes.Select(p => Activator.CreateInstance(p)).Cast<IHandlerCodeWriter>().ToArray());
+            }
+        }
+        public IEnumerable<Type> EventCodeWriterTypes
+        {
+            get
+            {
+                foreach (var assembly in InvertApplication.CachedAssemblies)
+                {
+                    foreach (var type in assembly.GetTypes())
+                    {
+                        if (type.IsClass && !type.IsAbstract && typeof(IHandlerCodeWriter).IsAssignableFrom(type))
+                        {
+                            yield return type;
+                        }
+                    }
+                }
+            }
+        }
         private void LoadEvents()
         {
             
@@ -202,7 +231,8 @@ namespace Invert.uFrame.ECS {
             {
                 var eventInfo = new EventMetaInfo()
                 {
-                    Type = eventType
+                    Type = eventType,
+                    CodeWriter = CodeWriters.FirstOrDefault(p => p.For == eventType)
                 };
 
                 eventInfo.Attribute =
@@ -219,11 +249,7 @@ namespace Invert.uFrame.ECS {
                         Name = "EntityId",
                         IsProperty = true
                     });
-                   
                 }
-
-                
-
                 foreach (var field in fields)
                 {
                     var fieldMetaInfo = new EventFieldInfo()
@@ -273,8 +299,6 @@ namespace Invert.uFrame.ECS {
             yield break;
         }
 
-
-
         public static Dictionary<string, EventMetaInfo> Events
         {
             get { return _events ?? (_events = new Dictionary<string, EventMetaInfo>()); }
@@ -290,42 +314,214 @@ namespace Invert.uFrame.ECS {
         {
             if (contextType == typeof(IDiagramContextCommand))
             {
+      
+                
                 var diagramViewModel = ui.Handler.ContextObjects.OfType<DiagramViewModel>().FirstOrDefault();
                 if (diagramViewModel != null)
                 {
-                    var graph = diagramViewModel.GraphData;
-                    var currentFilter = graph.CurrentFilter as HandlerNode;
-                    if (currentFilter != null)
-                    {
-                        foreach (var action in Actions.Values)
-                        {
-                            commands.Add(new AddActionCommand(action));
-                        }
+                    
+                    //var graph = diagramViewModel.GraphData;
+                    //var currentFilter = graph.CurrentFilter as HandlerNode;
+                    //if (currentFilter != null)
+                    //{
+                    //    foreach (var action in Actions.Values)
+                    //    {
+                    //        commands.Add(new AddActionCommand(action));
+                    //    }
 
-                        foreach (var item in currentFilter.AllContextVariables)
-                        {
-                            commands.Add(new AddVariableReferenceCommand()
-                            {
-                                Variable = item,
-                                Handler = currentFilter
-                            });
-                        }
+                    //    foreach (var item in currentFilter.AllContextVariables)
+                    //    {
+                    //        commands.Add(new AddVariableReferenceCommand()
+                    //        {
+                    //            Variable = item,
+                    //            Handler = currentFilter
+                    //        });
+                    //    }
 
-                    }
-                    var systemNode = graph.CurrentFilter as SystemNode;
-                    if (systemNode != null)
-                    {
-                        foreach (var item in Events.Values)
-                        {
-                            commands.Add(new AddHandlerCommand(item));
-                        }
-                    }
+                    //}
+                    //var systemNode = graph.CurrentFilter as SystemNode;
+                    //if (systemNode != null)
+                    //{
+                    //    foreach (var item in Events.Values)
+                    //    {
+                    //        commands.Add(new AddHandlerCommand(item));
+                    //    }
+                    //}
 
                 }
             }
 
 
         }
+
+        public void QuickAccessItemsEvents(QuickAccessContext context, List<IEnumerable<QuickAccessItem>> items)
+        {
+            InvertApplication.Log(context.ContextType.ToString());
+            if (context.ContextType == typeof (IInsertQuickAccessContext))
+            {
+                items.Clear();
+                items.Add(QueryInsert(context));
+            }
+            if (context.ContextType == typeof (IConnectionQuickAccessContext))
+            {
+                if (InvertApplication.Container.Resolve<ProjectService>().CurrentProject.CurrentFilter is HandlerNode)
+                {
+             
+                    items.Clear();
+                    items.Add(QueryConntectionActions(context));
+                }
+                
+            }
+        }
+
+        private IEnumerable<QuickAccessItem> QueryInsert(QuickAccessContext context)
+        {
+            var currentGraph = InvertApplication.Container.Resolve<ProjectService>().CurrentProject.CurrentGraph;
+            if (currentGraph.CurrentFilter is SystemNode)
+            {
+                foreach (var item in Events)
+                {
+                    var item1 = item;
+                    var qa = new QuickAccessItem("Listen For", item.Value.Attribute.Title, _ =>
+                    {
+                        var eventNode = new HandlerNode()
+                        {
+                            Meta = _ as EventMetaInfo
+                        };
+                        InvertGraphEditor.CurrentDiagramViewModel.AddNode(eventNode, LastMouseEvent.MousePosition);
+                    })
+                    {
+                        Item = item1.Value
+                    };
+                    yield return qa;
+                }
+            }
+            if (currentGraph.CurrentFilter is HandlerNode)
+            {
+                var vm = InvertGraphEditor.CurrentDiagramViewModel;
+
+
+                yield return new QuickAccessItem("Set", "Set Variable", _ => { vm.AddNode(new SetVariableNode(), vm.LastMouseEvent.LastMousePosition); });
+
+                yield return new QuickAccessItem("Create", "Bool Variable", _ => { vm.AddNode(new BoolNode(), vm.LastMouseEvent.LastMousePosition); });
+                yield return new QuickAccessItem("Create", "Vector2 Variable", _ => { vm.AddNode(new Vector2Node(), vm.LastMouseEvent.LastMousePosition); });
+                yield return new QuickAccessItem("Create", "Vector3 Variable", _ => { vm.AddNode(new Vector3Node(), vm.LastMouseEvent.LastMousePosition); });
+                yield return new QuickAccessItem("Create", "String Variable", _ => { vm.AddNode(new StringNode(), vm.LastMouseEvent.LastMousePosition); });
+                yield return new QuickAccessItem("Create", "Float Variable", _ => { vm.AddNode(new FloatNode(), vm.LastMouseEvent.LastMousePosition); });
+                yield return new QuickAccessItem("Create", "Integer Variable", _ => { vm.AddNode(new IntNode(), vm.LastMouseEvent.LastMousePosition); });
+                yield return new QuickAccessItem("Create", "Literal", _ => { vm.AddNode(new LiteralNode(), vm.LastMouseEvent.LastMousePosition); });
+                
+                
+                var currentFilter = currentGraph.CurrentFilter as HandlerNode;
+                foreach (var item in currentFilter.AllContextVariables)
+                {
+                    var item1 = item;
+                    var qa = new QuickAccessItem("Variables", item.Name, _ =>
+                    {
+                        var command = new AddVariableReferenceCommand()
+                        {
+                            Variable = _ as IContextVariable,
+                            Handler = currentFilter
+                        };
+                        InvertGraphEditor.ExecuteCommand(command);
+                    })
+                    {
+                        Item = item1
+                    };
+                    yield return qa;
+                }
+            }
+            foreach (var item in QueryActions(context))
+            {
+                yield return item;
+            }
+
+          
+        }
+        private IEnumerable<QuickAccessItem> QueryActions(QuickAccessContext context)
+        {
+
+            var diagramViewModel = InvertGraphEditor.CurrentDiagramViewModel;
+
+            foreach (var item in Actions)
+            {
+
+                var qaItem = new QuickAccessItem(item.Value.CategoryPath.FirstOrDefault() ?? string.Empty, item.Value.TitleText, item.Value.TitleText, _ =>
+                {
+                    var actionInfo = _ as ActionMetaInfo;
+                    var node = new ActionNode()
+                    {
+                        Meta = actionInfo
+                    };
+                    node.Graph = diagramViewModel.GraphData;
+
+
+                    diagramViewModel.AddNode(node, diagramViewModel.LastMouseEvent.LastMousePosition);
+                 
+                    node.IsSelected = true;
+                    node.Name = "";
+                })
+                {
+                    Item = item.Value
+                };
+                yield return qaItem;
+            }
+        }
+        private IEnumerable<QuickAccessItem> QueryConntectionActions(QuickAccessContext context)
+        {
+            var connectionHandler = context.Data as ConnectionHandler;
+            var diagramViewModel = connectionHandler.DiagramViewModel;
+
+            foreach (var item in Actions)
+            {
+                
+                var qaItem = new QuickAccessItem( item.Value.CategoryPath.FirstOrDefault() ?? string.Empty , item.Value.TitleText,item.Value.TitleText, _ =>
+                {
+                    var actionInfo = _ as ActionMetaInfo;
+                    var node = new ActionNode()
+                    {
+                        Meta = actionInfo
+                    };
+                    node.Graph = diagramViewModel.GraphData;
+
+
+                    diagramViewModel.AddNode(node, context.MouseData.MouseUpPosition);
+                    diagramViewModel.GraphData.AddConnection(connectionHandler.StartConnector.ConnectorFor.DataObject as IConnectable, node);
+                    node.IsSelected = true;
+                    node.Name = "";
+                })
+                {
+                    Item= item.Value
+                };
+                yield return qaItem;
+            }
+        }
+
+        public void OnMouseDoubleClick(Drawer drawer, MouseEvent mouseEvent)
+        {
+            var d = drawer as DiagramDrawer;
+            if (d != null)
+            {
+                // When we've clicked nothing
+                if (d.DrawersAtMouse.Length < 1)
+                {
+                    LastMouseEvent = mouseEvent;
+                    InvertApplication.SignalEvent<IWindowsEvents>(_ =>
+                    {
+                        _.ShowWindow("QuickAccessWindowFactory", "Add Node", null, mouseEvent.LastMousePosition,
+                            new Vector2(225f, 300f));
+                    });
+                }
+                else
+                {
+                    
+                }
+                
+            }
+            
+        }
+
+        public MouseEvent LastMouseEvent { get; set; }
     }
 
     public class EventMetaInfo
@@ -355,6 +551,8 @@ namespace Invert.uFrame.ECS {
         {
             get { return (Attribute as SystemUFrameEvent).SystemMethodName; }
         }
+
+        public IHandlerCodeWriter CodeWriter { get; set; }
     }
 
     public class EventFieldInfo
@@ -370,6 +568,7 @@ namespace Invert.uFrame.ECS {
         private ActionDescription _description;
         private ActionTitle _title;
         private List<ActionFieldInfo> _actionFields;
+        private uFrameCategory _category;
         public Type Type { get; set; }
         public MethodInfo Method { get; set; }
         public ActionTitle Title
@@ -415,7 +614,26 @@ namespace Invert.uFrame.ECS {
             get { return _description ?? (_description = MetaAttributes.OfType<ActionDescription>().FirstOrDefault()); }
             set { _description = value; }
         }
+        public uFrameCategory Category
+        {
+            get { return _category ?? (_category = Type.GetCustomAttributes(typeof(uFrameCategory),true).OfType<uFrameCategory>().FirstOrDefault()); }
+            set { _category = value; }
+        }
 
+        public IEnumerable<string> CategoryPath
+        {
+            get
+            {
+                if (Category == null)
+                {
+                    yield break;
+                }
+                foreach (var item in Category.Title)
+                {
+                    yield return item;
+                }
+            }
+        }
         public List<ActionFieldInfo> ActionFields
         {
             get { return _actionFields ?? (_actionFields = new List<ActionFieldInfo>()); }
@@ -423,6 +641,7 @@ namespace Invert.uFrame.ECS {
         }
 
         public ActionMetaAttribute[] MetaAttributes { get; set; }
+        
     }
 
     public class ActionFieldInfo

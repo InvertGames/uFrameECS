@@ -161,6 +161,7 @@ namespace Invert.uFrame.ECS {
         
         public override void WriteCode(TemplateContext ctx)
         {
+            if (Meta == null) return;
             if (Meta != null)
             {
                 if (!string.IsNullOrEmpty(Meta.Type.Namespace))
@@ -178,13 +179,11 @@ namespace Invert.uFrame.ECS {
                     ctx._("{0}.{1} = {2}", varStatement.Name, item.Name, contextVariable.Name);
                 }
 
+   
+
                 ctx._("{0}.System = System", varStatement.Name);
-                foreach (var item in OutputVars.OfType<ActionOut>())
-                {
-                    var contextVariable = item.OutputTo<IContextVariable>();
-                    if (contextVariable == null) continue;
-                    ctx._("{0} = {1}.{2}", contextVariable.Name, varStatement.Name, item.Name);
-                }
+
+
                 foreach (var item in OutputVars.OfType<ActionBranch>())
                 {
                     var branchOutput = item.OutputTo<SequenceItemNode>();
@@ -196,6 +195,16 @@ namespace Invert.uFrame.ECS {
                     ctx.PopStatements();
                 }
                 ctx._if("!{0}.Execute()", varStatement.Name).TrueStatements._("return");
+
+
+                foreach (var item in OutputVars.OfType<ActionOut>())
+                {
+                    var contextVariable = item.OutputTo<IContextVariable>();
+                    if (contextVariable == null) continue;
+                    ctx._("{0} = {1}.{2}", contextVariable.Name, varStatement.Name, item.Name);
+                }
+
+              
             }
             else
             {
@@ -316,7 +325,7 @@ namespace Invert.uFrame.ECS {
                     return null;
                 if (!uFrameECS.Actions.ContainsKey(MetaType))
                 {
-                    InvertApplication.LogError(string.Format("{0} action was not found.", MetaType));
+                    InvertApplication.LogError(string.Format("{0} action was not found in graph {1}.", MetaType, this.Graph.Name));
                     return null;
                 }
                 return _meta ??(_meta = uFrameECS.Actions[MetaType]);

@@ -1,5 +1,6 @@
 ﻿using System;
 using uFrame.Actions.Attributes;
+using uFrame.Attributes;
 using uFrame.ECS;
 using uFrame.Kernel;
 using UniRx;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace uFrame.Actions
 {
-    [ActionLibrary]
+    [ActionLibrary, uFrameCategory("Condition", "Floats")]
     public static class Comparisons
     {
         [ActionTitle("Compare Floats")]
@@ -64,11 +65,84 @@ namespace uFrame.Actions
             return false;
         }
 
+        [ActionTitle("Equal")]
+        public static bool AreEqual(object a, object b, Action yes, Action no)
+        {
+            var result = false;
+            if ((a == null || b == null))
+            {
+                result = a == b;
+                if (yes != null) yes();
+            }
+            else
+            {
+                if (a.Equals(b))
+                {
+                    if (yes != null) yes();
+                }
+                else
+                {
+                    if (no != null)
+                    {
+                        no();
+                    }
+                }
+            }
+
+            return result;
+        }
 
     }
+    [ActionLibrary, uFrameCategory("Condition", "Floats")]
+    public static class DebugLibrary
+    {
+        [ActionTitle("Log Message")]
+        public static void LogMessage(object message)
+        {
+            UnityEngine.Debug.Log(message);
+        }
 
-    [ActionLibrary]
-    public static class Objects
+
+    }
+    [ActionLibrary, uFrameCategory("Random")]
+    public static class CreateRandoms
+    {
+         [ActionTitle("Random Vector3")]
+        public static Vector3 RandomVector3(int minX, int maxX, int minY, int maxY, int minZ, int maxZ)
+        {
+            return new Vector3(
+                UnityEngine.Random.Range(minX, maxX),
+                UnityEngine.Random.Range(minY, maxY),
+                UnityEngine.Random.Range(minZ, maxZ)
+                );
+        }
+         [ActionTitle("Random Vector2")]
+        public static Vector2 RandomVector2(int minX, int maxX, int minY, int maxY)
+        {
+            return new Vector2(
+                UnityEngine.Random.Range(minX, maxX),
+                UnityEngine.Random.Range(minY, maxY)
+                );
+        }
+         [ActionTitle("Random Float")]
+        public static float RandomFloat(float min, float max)
+        {
+            return UnityEngine.Random.Range(min, max);
+        }
+         [ActionTitle("Random Int")]
+        public static int RandomInt(int min, int max)
+        {
+            return UnityEngine.Random.Range(min, max);
+        }
+         [ActionTitle("Random Bool")]
+        public static bool RandomBool()
+        {
+            return UnityEngine.Random.Range(0, 2) == 1;
+        }
+    }
+
+    [ActionLibrary, uFrameCategory("Destroy", "Component", "Entity")]
+    public static class DestroyLibrary
     {
          [ActionTitle("Destroy Component")]
         public static void DestroyComponent(MonoBehaviour behaviour)
@@ -81,44 +155,60 @@ namespace uFrame.Actions
             UnityEngine.Object.Destroy(EntityService.GetEntityView(entityId).gameObject);
         }
 
-        
+         [ActionTitle("Destroy Timer")]
+         public static void DestroyTimer(IDisposable timer)
+         {
+             timer.Dispose();
+         }
     }
 
-    [ActionLibrary]
+    [ActionLibrary, uFrameCategory("Vector3")]
     public static class Vector3Library
     {
-        [ActionTitle("Vector3/Get X")]
+        [ActionTitle("Get X")]
         public static float GetX(Vector3 vector)
         {
             return vector.x;
         }
-        [ActionTitle("Vector3/Get Y")]
+        
+        [ActionTitle("Get Y")]
         public static float GetY(Vector3 vector)
         {
             return vector.y;
         }
-        [ActionTitle("Vector3/Get Z")]
+        
+        [ActionTitle("Get Z")]
         public static float GetZ(Vector3 vector)
         {
             return vector.z;
         }
+
+        [ActionTitle("Create Vector3")]
+        public static Vector3 Create(float x, float y, float z)
+        {
+            return new Vector3(x,y,z);
+        }
     }
-    [ActionLibrary]
+
+
+
+    [ActionLibrary, uFrameCategory("Vector2")]
     public static class Vector2Library
     {
-        [ActionTitle("Vector3/Get X")]
+        [ActionTitle("Get X")]
         public static float GetX(Vector2 vector)
         {
             return vector.x;
         }
-        [ActionTitle("Vector3/Get Y")]
+        [ActionTitle("Get Y")]
         public static float GetY(Vector2 vector)
         {
             return vector.y;
         }
     
     }
-    [ActionLibrary]
+
+    [ActionLibrary, uFrameCategory("GameObject")]
     public static class GameObjects
     {
         [ActionTitle("Deactivate GameObject")]
@@ -148,7 +238,8 @@ namespace uFrame.Actions
             }
         }
     }
-    [ActionLibrary]
+
+    [ActionLibrary, uFrameCategory("Transform","Entity")]
     public static class EntityTransform
     {
         [ActionTitle("Set Position")]
@@ -210,6 +301,7 @@ namespace uFrame.Actions
             return entity.transform.localScale;
         }
     }
+
     public abstract class UFAction
     {
         public Entity EntityView;
@@ -222,6 +314,7 @@ namespace uFrame.Actions
 
     }
 
+    [ActionLibrary, uFrameCategory("Debug")]
     public class Log : UFAction
     {
         [In] public string Message;
@@ -232,30 +325,7 @@ namespace uFrame.Actions
         }
     }
 
-    [ActionTitle("Conditions/Are Equal")]
-    public class Comparison : UFAction
-    {
-        [In] public object A;
-        [Out(IsNewLine = false)]
-        public object Result;
-        [In] public object B;
-        [Out] public Action True;
-        [Out] public Action False;
-
-        public override bool Execute()
-        {
-            
-            if (A != null && A.Equals(B))
-                if (True != null) 
-                    True();
-            else
-                if (False != null) 
-                    False();
-
-            return true;
-        }
-    }
-
+    
 
     [ActionTitle("Movement/Move Over Time")]
     public class MoveInDirectionOverTime : UFAction
@@ -271,54 +341,8 @@ namespace uFrame.Actions
         }
     }
 
-    [ActionTitle("Math/Addition/Vector3")]
-    public class AddVector3 : UFAction
-    {
-        [In] public Vector3 In;
-        [In] public float X;
-        [In] public float Y;
-        [In] public float Z;
-
-        [Out] public Vector3 Result;
-
-
-        public Action Next;
-
-        public override bool Execute()
-        {
-        
-            Result = In + new Vector3(X, Y, Z);
-            return true;
-        }
-    }
-
-    //[ActionTitle("Components/Add Component")]
-    //public class AddComponent : UFAction
-    //{
-    //    [In] public Type ComponentType;
-
-    //    public override bool Execute()
-    //    {
-
-    //        Entity.gameObject.AddComponent(ComponentType);
-    //        return true;
-    //    }
-    //}
-
-    //[ActionTitle("Components/Remove Component")]
-    //public class RemoveComponent : UFAction
-    //{
-    //    [In] public EcsComponent ComponentType;
-    //    [In] public int Time;
-
-    //    public override bool Execute()
-    //    {
-    //        UnityEngine.Object.Destroy(ComponentType,Time);
-    //        return true;
-    //    }
-    //}
-
-    [ActionTitle("Timers/Timer")]
+    
+    [ActionTitle("Timer"),uFrameCategory("Timers")]
     public class Timer : UFAction
     {
         [In] public int Minutes;
@@ -336,7 +360,7 @@ namespace uFrame.Actions
         }
     }
 
-    [ActionTitle("Timers/Interval")]
+    [ActionTitle("Interval"),uFrameCategory("Timers")]
     public class Interval : UFAction
     {
         [In]
