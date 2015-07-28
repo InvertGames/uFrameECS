@@ -57,7 +57,7 @@ public class ActionTemplate<TNodeType> :  IClassTemplate<TNodeType> where TNodeT
     
     public string OutputPath
     {
-        get { return Path2.Combine(Ctx.Data.Graph.Name, "Actions"); }
+        get { return "Actions"; }
     }
 
     public virtual bool CanGenerate

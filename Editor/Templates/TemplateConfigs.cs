@@ -38,16 +38,6 @@ namespace Invert.uFrame.ECS.Templates
     [RequiresNamespace("UnityEngine")]
     public partial class HandlerTemplate : IClassTemplate<HandlerNode>
     {
-       
-  
-        //public VariableNode Variables
-        //{
-        //    get
-        //    {
-
-        //        return Ctx.Data.
-        //    }
-        //}
         public string OutputPath
         {
             get { return Path2.Combine(Ctx.Data.Graph.Name, "Handlers"); }
@@ -55,7 +45,7 @@ namespace Invert.uFrame.ECS.Templates
 
         public bool CanGenerate
         {
-            get { return true; }
+            get { return Ctx.Data.Meta != null; }
         }
 
         public void TemplateSetup()
@@ -182,7 +172,7 @@ namespace Invert.uFrame.ECS.Templates
         
         public string OutputPath
         {
-            get { return Path2.Combine(Ctx.Data.Graph.Name, "Components"); }
+            get { return Path2.Combine("Extensions", Ctx.Data.Graph.Name, "Components"); }
         }
 
         public bool CanGenerate
@@ -346,7 +336,7 @@ namespace Invert.uFrame.ECS.Templates
         }
         public string OutputPath
         {
-            get { return Path2.Combine(Ctx.Data.Graph.Name, "Events"); }
+            get { return Path2.Combine("Extensions",Ctx.Data.Graph.Name, "Events"); }
         }
 
         public bool CanGenerate
@@ -386,7 +376,7 @@ namespace Invert.uFrame.ECS.Templates
 
         public string OutputPath
         {
-            get { return Path2.Combine(Ctx.Data.Graph.Name, "Actions"); }
+            get { return Path2.Combine("Extensions", Ctx.Data.Graph.Name, "Actions"); }
         }
 
         public bool CanGenerate
@@ -428,7 +418,7 @@ namespace Invert.uFrame.ECS.Templates
 
         public string OutputPath
         {
-            get { return Path2.Combine(Ctx.Data.Graph.Name, "Actions"); }
+            get { return Path2.Combine("Extensions", Ctx.Data.Graph.Name, "Actions"); }
         }
 
         public bool CanGenerate

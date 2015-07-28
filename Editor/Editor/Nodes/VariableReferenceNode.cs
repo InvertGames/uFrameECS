@@ -28,10 +28,11 @@ namespace Invert.uFrame.ECS {
         {
             get
             {
+
                 var handler = HandlerNode;
                 if (handler == null) return null;
 
-                var variable = HandlerNode.AllContextVariables.FirstOrDefault(p => p.Identifier == VariableId);
+                var variable = HandlerNode.GetAllContextVariables().FirstOrDefault(p => p.VariableName == VariableName);
                 if (variable != null)
                     return variable.SourceVariable;
 

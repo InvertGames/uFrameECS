@@ -22,7 +22,7 @@ namespace Invert.uFrame.ECS {
 
         public string GetContextItemName(string mappingId)
         {
-            return Name;
+            return mappingId + Name;
         }
 
         public string ContextTypeName
@@ -37,32 +37,28 @@ namespace Invert.uFrame.ECS {
             set { this["Blackboard"] = value; }
         }
 
-        public IEnumerable<IContextVariable> GetVariables(string prefix)
+        public IEnumerable<IContextVariable> GetVariables(IFilterInput input)
         {
-            yield return new ContextVariable(prefix + this.Name)
+            yield return new ContextVariable(input.HandlerPropertyName)
             {
                 Node = this,
-                //SourceVariable = select as GenericNode
+                VariableType = this.Name
             };
 
-            yield return new ContextVariable(prefix + Name, "EntityId")
+            yield return new ContextVariable(input.HandlerPropertyName, "Entity")
             {
                 Node = this,
-                IsSubVariable = true,
+                VariableType = "uFrameECS.Entity",
+                
             };
-            yield return new ContextVariable(prefix + Name, "Entity")
-            {
-                Node = this,
-                IsSubVariable = true,
 
-            };
-            foreach (var child in PersistedItems.OfType<ITypedItem>())
+            foreach (var item in PersistedItems.OfType<ITypedItem>())
             {
-                yield return new ContextVariable(prefix + Name, child.Name)
+                yield return new ContextVariable(input.HandlerPropertyName,item.Name)
                 {
                     Node = this,
-                    IsSubVariable = true,
-                    SourceVariable = child
+                    SourceVariable = item,
+                    VariableType = item.RelatedTypeName
                 };
             }
         }

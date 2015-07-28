@@ -22,7 +22,7 @@ namespace Invert.uFrame.ECS {
         {
             if (ShowContextVariables)
             {
-                foreach (var item in GraphItem.AllContextVariables)
+                foreach (var item in GraphItem.GetAllContextVariables())
                 {
                     ContentItems.Add(new ItemViewModel<IContextVariable>(item, this));
                 }

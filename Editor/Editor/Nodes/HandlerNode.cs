@@ -13,13 +13,35 @@ namespace Invert.uFrame.ECS
         void WriteSetupCode(TemplateContext ctx);
     }
 
-    public class HandlerNode : HandlerNodeBase, ISetupCodeWriter, ICodeOutput
+    public interface IFilterInput : IDiagramNodeItem
+    {
+        string HandlerPropertyName { get;  }
+        IMappingsConnectable FilterNode { get; }
+        string MappingId { get; }
+        // IEnumerable<IContextVariable> GetVariables();
+    }
+
+    public class HandlerNode : HandlerNodeBase, ISetupCodeWriter, ICodeOutput, IFilterInput
     {
         private string _eventIdentifier;
         private EventNode _eventNode;
         private EventMetaInfo _meta;
         private string _metaType;
         private HandlerIn[] _contextInputs;
+
+        public void Accept(IHandlerNodeVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
+        public override bool AllowInputs
+        {
+            get
+            {
+                return !HandlerInputs.Any();
+                
+            }
+        }
 
         [ProxySection("User Methods", SectionVisibility.WhenNodeIsNotFilter)]
         public IEnumerable<IDiagramNodeItem> UserMethods
@@ -37,32 +59,9 @@ namespace Invert.uFrame.ECS
             get { return Name + "Filter"; }
         }
 
-        public IEnumerable<IMappingsConnectable> Contexts
-        {
-            get
-            {
-                if (this.ContextNode != null)
-                {
-                    yield return this.ContextNode;
-                }
-                foreach (var item in HandlerInputs.Select(p => p.Context)
-                    .Where(p => p != null))
-                {
-                    yield return item;
-                }
-            }
-        }
 
-        public string InputNames
-        {
-            get
-            {
-                return
-                    string.Join("_",
-                            Contexts.Select(p => p.Name)
-                            .ToArray());
-            }
-        }
+
+
 
         //[JsonProperty]
         //public string EventIdentifier
@@ -127,11 +126,17 @@ namespace Invert.uFrame.ECS
             get { return this.InputFrom<IMappingsConnectable>(); }
         }
 
-        public IEnumerable<IContextVariable> AllContextVariables
+        public IEnumerable<IFilterInput> FilterInputs
         {
             get
             {
-                return ContextVariables;
+                if (this.FilterNode != null)
+                yield return this;
+                foreach (var handlerIn in HandlerInputs)
+                {
+                    if (handlerIn.FilterNode != null)
+                    yield return handlerIn;
+                }
             }
         }
 
@@ -151,52 +156,46 @@ namespace Invert.uFrame.ECS
             }
         }
 
-        public override IEnumerable<IContextVariable> ContextVariables
+        public override IEnumerable<IContextVariable> GetContextVariables()
         {
-            get
+            var evtNode = Meta;
+            if (evtNode != null && !evtNode.SystemEvent)
             {
-                var evtNode = Meta;
-                if (evtNode != null && !evtNode.SystemEvent)
+                yield return new ContextVariable("Event")
                 {
-                    yield return new ContextVariable("Event")
-                        {
-                            Node = this,
-                            //SourceVariable = select as GenericNode
-                        };
+                    Node = this,
+                    VariableType = evtNode.Type.FullName
+                    //SourceVariable = select as GenericNode
+                };
 
-                    foreach (var child in evtNode.Members)
-                    {
-                        yield return new ContextVariable("Event", child.Name)
-                        {
-                            Node = this,
-                            IsSubVariable = true,
-                            VariableType = child.Type.FullName
-                        };
-                    }
-                }
-                var defaultFilter = this.InputFrom<IMappingsConnectable>();
-                if (defaultFilter != null)
+                foreach (var child in evtNode.Members)
                 {
-                    foreach (var v in defaultFilter.GetVariables(""))
+                    yield return new ContextVariable("Event", child.Name)
                     {
-                        yield return v;
-                    }
-                }
-                foreach (var item in HandlerInputs)
-                {
-                    var filter = item.Context;
-                    if (filter == null) continue;
-                    foreach (var v in filter.GetVariables(item.Name + "Item"))
-                    {
-                        yield return v;
-                    }
+                        Node = this,
+                        IsSubVariable = true,
+                        VariableType = child.Type.FullName
+                    };
                 }
             }
+            foreach (var input in FilterInputs)
+            {
+                var filter = input.FilterNode;
+                foreach (var item in filter.GetVariables(input))
+                {
+                    yield return item;
+                }
+            }
+            
         }
 
+ 
+        public IEnumerable<IContextVariable> Vars {
+            get { return GetAllContextVariables(); }
+        }
         public override void WriteCode(TemplateContext ctx)
         {
-            var defaultFilter = ContextNode;
+           // var defaultFilter = ContextNode;
             //base.WriteCode(ctx);
             ctx._("var {0} = new {1}()", this.Meta.Type.Name, HandlerMethodName);
             ctx._("{0}.System = this", Meta.Type.Name);
@@ -204,23 +203,12 @@ namespace Invert.uFrame.ECS
             {
                 ctx._("{0}.Event = data", Meta.Type.Name);
             }
-
-            if (HandlerInputs.Any())
+            
+            foreach (var item in this.FilterInputs)
             {
-                if (defaultFilter != null)
-                {
-                    ctx._("{0}.EntityIdItem = {1}", Meta.Type.Name, "entityIdItem");
-                }
-                foreach (var item in this.HandlerInputs)
-                {
-                    var filter = item.Context;
-                    if (filter == null) continue;
-                    ctx._("{0}.{1} = {2}", Meta.Type.Name, filter.GetContextItemName(item.Name), filter.GetContextItemName(item.Name.ToLower()));
-                }
-            }
-            else if (defaultFilter != null)
-            {
-                ctx._("{0}.{1} = {2}", Meta.Type.Name, defaultFilter.GetContextItemName("EntityId"), defaultFilter.GetContextItemName("entityId"));
+                var filter = item.FilterNode;
+                if (filter == null) continue;
+                ctx._("{0}.{1} = {2}", Meta.Type.Name, item.HandlerPropertyName, item.HandlerPropertyName.ToLower());
             }
 
             ctx._("{0}.Execute()", Meta.Type.Name);
@@ -271,26 +259,23 @@ namespace Invert.uFrame.ECS
                 }
                 else
                 {
+
+                 
+
                     if (HandlerInputs.Any())
                     {
-                        if (defaultFilter != null)
+                        foreach (var item in FilterInputs)
                         {
-                            ctx._("var entityIdItem = {0}", defaultFilter.MatchAndSelect("data.EntityId"));
-                            ctx._if("entityIdItem== null").TrueStatements._("return");
-                            handlerInvoker.Parameters.Add(new CodeSnippetExpression("entityIdItem"));
-                        }
-                        foreach (var item in this.HandlerInputs)
-                        {
-                            var filter = item.Context;
+                            var filter = item.FilterNode;
                             if (filter == null) continue;
 
-                            ctx._("var {0} = {1}", filter.GetContextItemName(item.Name), filter.MatchAndSelect("data." + item.Name));
+                            ctx._("var {0} = {1}", filter.GetContextItemName(item.Name), filter.MatchAndSelect("data." + item.MappingId));
                             ctx._if("{0} == null", filter.GetContextItemName(item.Name)).TrueStatements._("return");
                             handlerInvoker.Parameters.Add(new CodeSnippetExpression(filter.GetContextItemName(item.Name)));
                         }
                         ctx.CurrentStatements.Add(handlerInvoker);
                     }
-                    else if (defaultFilter != null)
+                    else if (FilterInputs.Any())
                     {
                         LoopContextHandler(ctx, true);
                     }
@@ -328,30 +313,30 @@ namespace Invert.uFrame.ECS
         private void WriteEnsureDispatchers(TemplateContext ctx, IMappingsConnectable defaultFilter,
             CodeMemberMethod handlerMethod)
         {
-            if (defaultFilter != null)
-            {
-                if (Meta.Dispatcher)
+            //if (defaultFilter != null)
+            //{
+            //    if (Meta.Dispatcher)
+            //    {
+            //        ctx._("EnsureDispatcherOnComponents<{0}>( {1} )", Meta.Type.Name,
+            //            defaultFilter.DispatcherTypesExpression());
+            //    }
+            //    handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(defaultFilter.ContextTypeName,
+            //        defaultFilter.GetContextItemName("entity")));
+            //}
+            //else
+            //{
+                foreach (var item in FilterInputs)
                 {
-                    ctx._("EnsureDispatcherOnComponents<{0}>( {1} )", Meta.Type.Name,
-                        defaultFilter.DispatcherTypesExpression());
-                }
-                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(defaultFilter.ContextTypeName,
-                    defaultFilter.GetContextItemName("entityId")));
-            }
-            else
-            {
-                foreach (var item in HandlerInputs)
-                {
-                    var filter = item.Context;
+                    var filter = item.FilterNode;
                     if (filter == null) continue;
                     if (Meta.Dispatcher)
                     {
                         ctx._("EnsureDispatcherOnComponents<{0}>( {1} )", Meta.Type.Name, filter.DispatcherTypesExpression());
                     }
                     handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(filter.ContextTypeName,
-                        filter.GetContextItemName(item.Name.ToLower())));
+                        item.HandlerPropertyName.ToLower()));
                 }
-            }
+            //}
         }
 
         private void LoopContextHandler(TemplateContext ctx, bool isAggregatorEvent = false)
@@ -408,13 +393,252 @@ namespace Invert.uFrame.ECS
         }
 
         public IEnumerable<ConnectionData> Connections { get; set; }
-    }
 
-    public class HandlerIn : SingleInputSlot<IMappingsConnectable>
-    {
-        public IMappingsConnectable Context
+        public string HandlerPropertyName
+        {
+            get { return "Item"; }
+        }
+
+        public IMappingsConnectable FilterNode
         {
             get { return this.InputFrom<IMappingsConnectable>(); }
+        }
+
+        public string MappingId
+        {
+            get { return "EntityId"; }
+        }
+    }
+
+    public interface IHandlerNodeVisitor
+    {
+        void Visit(IDiagramNodeItem item);
+        
+    }
+
+    public class HandlerNodeVisitor : IHandlerNodeVisitor
+    {
+        private List<ActionNode> outputtedNodes = new List<ActionNode>();
+
+        public void Visit(IDiagramNodeItem item)
+        {
+            var handlerNode = item as HandlerNode;
+            var actionNode = item as ActionNode;
+            var actionBranch = item as ActionBranch;
+            var actionOut = item as IActionOut;
+            var actionIn = item as IActionIn;
+            var setVariableNode = item as SetVariableNode;
+            var handlerIn = item as HandlerIn;
+            if (handlerIn != null)
+            {
+                BeforeVisitHandlerIn(handlerIn);
+                VisitHandlerIn(handlerIn);
+                AfterVisitHandlerIn(handlerIn);
+            }
+            if (setVariableNode != null)
+            {
+                BeforeSetVariableHandler(setVariableNode);
+                VisitSetVariable(setVariableNode);
+                AfterVisitSetVariable(setVariableNode);
+            }
+            if (handlerNode != null)
+            {
+                BeforeVisitHandler(handlerNode);
+                VisitHandler(handlerNode);
+                AfterVisitHandler(handlerNode);
+            }
+
+            if (actionNode != null)
+            {
+                BeforeVisitAction(actionNode);
+                VisitAction(actionNode);
+                AfterVisitAction(actionNode);
+            }
+                
+            if (actionBranch != null)
+            {
+                BeforeVisitBranch(actionBranch);
+                VisitBranch(actionBranch);
+                AfterVisitBranch(actionBranch);
+            }
+                
+            if (actionOut != null)
+            {
+                BeforeVisitOutput(actionOut);
+                VisitOutput(actionOut);
+                AfterVisitOutput(actionOut);
+            }
+                
+            if (actionIn != null)
+            {
+                BeforeVisitInput(actionIn);
+                VisitInput(actionIn);
+                AfterVisitInput(actionIn);
+            }
+                
+        }
+
+        public virtual void AfterVisitHandlerIn(HandlerIn handlerIn)
+        {
+            
+        }
+
+        public virtual void VisitHandlerIn(HandlerIn handlerIn)
+        {
+                
+        }
+
+        public virtual void BeforeVisitHandlerIn(HandlerIn handlerIn)
+        {
+                
+        }
+
+        public virtual void BeforeSetVariableHandler(SetVariableNode setVariableNode)
+        {
+            Visit(setVariableNode.VariableInputSlot);
+            Visit(setVariableNode.ValueInputSlot);
+        }
+
+        public virtual void VisitSetVariable(SetVariableNode setVariableNode)
+        {
+   
+        }
+
+        private void AfterVisitSetVariable(SetVariableNode setVariableNode)
+        {
+
+        }
+
+        public virtual void AfterVisitInput(IActionIn actionIn)
+        {
+            
+        }
+
+        public virtual void BeforeVisitHandler(HandlerNode handlerNode)
+        {
+            foreach (var item in handlerNode.HandlerInputs)
+            {
+                Visit(item);
+            }
+        }
+
+        public virtual void AfterVisitHandler(HandlerNode handlerNode)
+        {
+            
+        }
+
+
+        public virtual void BeforeVisitBranch(ActionBranch actionBranch)
+        {
+                    
+        }
+
+        public virtual void AfterVisitBranch(ActionBranch actionBranch)
+        {
+                
+        }
+
+        public virtual void BeforeVisitOutput(IActionOut actionOut)
+        {
+                
+        }
+
+        public virtual void AfterVisitOutput(IActionOut actionIn)
+        {
+                
+        }
+
+        public virtual void BeforeVisitInput(IActionIn actionIn)
+        {
+            var actionOutput = actionIn.InputFrom<ActionOut>();
+            if (actionOutput == null) return;
+            var actionNode = actionOutput.Node as ActionNode;
+
+            if (actionNode != null)
+            {
+                if (outputtedNodes.Contains(actionNode)) return;
+
+                Visit(actionNode);
+                outputtedNodes.Add(actionNode);
+            }
+        }
+
+        public virtual void BeforeVisitAction(ActionNode actionNode)
+        {
+            var outputtedNodes = new List<ActionNode>();
+
+            
+
+            foreach (var input in actionNode.InputVars)
+            {
+                Visit(input);
+            }
+       
+        }
+
+        public virtual void AfterVisitAction(ActionNode actionNode)
+        {
+
+            
+            var hasInferredOutput = false;
+            foreach (var output in actionNode.OutputVars.OfType<ActionOut>())
+            {
+                Visit(output);
+            }
+            foreach (var output in actionNode.OutputVars.OfType<ActionBranch>())
+            {
+                Visit(output);
+                if (output.OutputTo<ActionNode>() != null)
+                {
+                    hasInferredOutput = true;
+                }
+
+            }
+            if (!hasInferredOutput & actionNode.Right != null)
+            {
+                Visit(actionNode.Right);
+            }
+        }
+        public virtual void VisitAction(ActionNode actionNode)
+        {
+
+        }
+
+        public virtual void VisitBranch(ActionBranch output)
+        {
+            var item = output.OutputTo<SequenceItemNode>();
+            if (item != null)
+            {
+                Visit(item);
+            }
+        }
+
+        public virtual void VisitOutput(IActionOut output)
+        {
+                
+        }
+
+        public virtual void VisitInput(IActionIn input)
+        {
+            
+        }
+
+        public virtual void VisitHandler(HandlerNode handlerNode)
+        {
+            Visit(handlerNode.Right);
+        }
+    }
+
+    public class HandlerIn : SingleInputSlot<IMappingsConnectable>, IFilterInput
+    {
+        public IMappingsConnectable FilterNode
+        {
+            get { return this.InputFrom<IMappingsConnectable>(); }
+        }
+
+        public string MappingId
+        {
+            get { return EventFieldInfo.Name; }
         }
 
         public EventFieldInfo EventFieldInfo { get; set; }
@@ -424,9 +648,14 @@ namespace Invert.uFrame.ECS
             get { return EventFieldInfo.Name; }
             set { base.Name = value; }
         }
+
+        public string HandlerPropertyName
+        {
+            get { return Name; }
+        }
     }
 
-    public partial interface IMappingsConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable
+    public partial interface IMappingsConnectable : Invert.Core.GraphDesigner.IDiagramNode, Invert.Core.GraphDesigner.IConnectable
     {
         System.Collections.Generic.IEnumerable<ComponentNode> SelectComponents { get; }
 
@@ -438,7 +667,7 @@ namespace Invert.uFrame.ECS
 
         string EnumeratorExpression { get; }
 
-        IEnumerable<IContextVariable> GetVariables(string prefix);
+        IEnumerable<IContextVariable> GetVariables(IFilterInput filterInput);
 
         string MatchAndSelect(string mappingExpression);
 

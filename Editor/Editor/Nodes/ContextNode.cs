@@ -8,28 +8,27 @@ namespace Invert.uFrame.ECS {
 
 
     public class ContextNode : ContextNodeBase,ISelectConnectable, IMappingsConnectable, IHandlerConnectable, ICodeOutput {
-
-        public IEnumerable<IContextVariable> AllContextVariables
+        public IEnumerable<IContextVariable> GetAllContextVariables()
         {
-            get { return ContextVariables; }
+            return GetContextVariables();
         }
 
-        public virtual IEnumerable<IContextVariable> ContextVariables
+        public virtual IEnumerable<IContextVariable> GetContextVariables()
         {
-            get {
-                foreach (var item in SelectComponents)
-                {
-                    foreach (var property in item.PersistedItems.OfType<ITypedItem>())
-                    {
-                        yield return new ContextVariable(string.Format("{0}", property.Name))
-                        {
-                            SourceVariable = property,
-                            Node = this
-                        };
-                    }
-                } 
-            }
+            //foreach (var item in SelectComponents)
+            //{
+            //    foreach (var property in item.PersistedItems.OfType<ITypedItem>())
+            //    {
+            //        yield return new ContextVariable(string.Format("{0}", property.Name))
+            //        {
+            //            SourceVariable = property,
+            //            Node = this
+            //        };
+            //    }
+            //}
+            yield break;
         }
+
         public void WriteCode(TemplateContext ctx)
         {
             
@@ -59,35 +58,22 @@ namespace Invert.uFrame.ECS {
             get { return string.Format("{0}.Items", SystemPropertyName); }
         }
 
-        public IEnumerable<IContextVariable> GetVariables(string prefix)
+        public IEnumerable<IContextVariable> GetVariables(IFilterInput input)
         {
             foreach (var select in SelectComponents)
             {
+       
+                yield return new ContextVariable(input.HandlerPropertyName, select.Name) {Node = this, VariableType = this.Name };
+                yield return new ContextVariable(input.HandlerPropertyName, select.Name, "EntityId") { Node = this, VariableType = "int"};
+                yield return new ContextVariable(input.HandlerPropertyName, select.Name, "Entity") {Node = this, VariableType = "uFrame.ECS.Entity"};
 
-                yield return new ContextVariable(prefix, select.Name)
+                foreach (var item in select.PersistedItems.OfType<ITypedItem>())
                 {
-                    Node = this,
-                    //SourceVariable = select as GenericNode
-                };
-                yield return new ContextVariable(prefix, select.Name, "EntityId")
-                {
-                    Node = this,
-                    IsSubVariable = true,
-                    
-                };
-                yield return new ContextVariable(prefix, select.Name, "Entity")
-                {
-                    Node = this,
-                    IsSubVariable = true,
-
-                };
-                foreach (var child in select.PersistedItems.OfType<ITypedItem>())
-                {
-                    yield return new ContextVariable(prefix , select.Name, child.Name)
+                    yield return new ContextVariable(input.HandlerPropertyName, select.Name, item.Name)
                     {
-                        Node = this,
-                        IsSubVariable = true,
-                        SourceVariable = child
+                        SourceVariable = item,
+                        VariableType = item.RelatedTypeName,
+                        Node = this
                     };
                 }
             }

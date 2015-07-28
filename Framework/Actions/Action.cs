@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using uFrame.Actions.Attributes;
 using uFrame.Attributes;
 using uFrame.ECS;
@@ -104,6 +105,18 @@ namespace uFrame.Actions
 
 
     }
+
+    [ActionLibrary, uFrameCategory("Set")]
+    public static class SetLibrary
+    {
+        [ActionTitle("Set Value")]
+        public static void SetValue( ref object a, object value)
+        {
+            if (a == null) throw new ArgumentNullException("a");
+            a = value;
+        }
+    }
+
     [ActionLibrary, uFrameCategory("Random")]
     public static class CreateRandoms
     {
@@ -165,6 +178,15 @@ namespace uFrame.Actions
     [ActionLibrary, uFrameCategory("Vector3")]
     public static class Vector3Library
     {
+
+
+        [ActionTitle("Get Indices")]
+        public static void GetIndices(Vector3 vector,out float x, out float y, out float z)
+        {
+            x = vector.x;
+            y = vector.y;
+            z = vector.z;
+        }
         [ActionTitle("Get X")]
         public static float GetX(Vector3 vector)
         {

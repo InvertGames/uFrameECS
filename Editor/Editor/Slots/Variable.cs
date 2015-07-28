@@ -7,6 +7,21 @@ namespace Invert.uFrame.ECS {
     
     
     public class Variable : VariableBase {
+        public ActionFieldInfo ActionFieldInfo { get; set; }
+        public string VariableName
+        {
+            get
+            {
+                var actionNode = Node as SetVariableNode;
+                var str = actionNode.Name + "_";
+         
+                return str + Name;
+            }
+            set
+            {
+
+            }
+        }
     }
     
     public partial interface IVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

@@ -35,7 +35,7 @@ namespace Invert.uFrame.ECS
 
         public string ShortName
         {
-            get { throw new NotImplementedException(); }
+            get { return Name; }
         }
 
         public ITypedItem SourceVariable

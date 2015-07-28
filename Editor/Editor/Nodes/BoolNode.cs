@@ -16,7 +16,7 @@ namespace Invert.uFrame.ECS {
         {
             get { return typeof(bool).FullName; }
         }
-
+        
         public override CodeExpression GetCreateExpression()
         {
             return new CodePrimitiveExpression(Value);

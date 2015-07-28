@@ -41,6 +41,7 @@ namespace Invert.uFrame.ECS {
             System.HasSubNode<EnumNode>();
             container.Connectable<IContextVariable, IActionIn>();
             container.Connectable<IActionOut, IContextVariable>();
+           // container.Connectable<ActionOut, ActionIn>(UnityEngine.Color.blue);
             container.Connectable<ActionBranch, SequenceItemNode>();
             container.Connectable<IMappingsConnectable, HandlerIn>();
             
@@ -147,7 +148,8 @@ namespace Invert.uFrame.ECS {
                         {
                             var result = new ActionFieldInfo()
                             {
-                                Type = actionInfo.Type,
+                                Type = method.ReturnType,
+                                
                                 Name = "Result"
                             };
                             result.MetaAttributes =
@@ -376,6 +378,7 @@ namespace Invert.uFrame.ECS {
 
         private IEnumerable<QuickAccessItem> QueryInsert(QuickAccessContext context)
         {
+            var mousePosition = UnityEngine.Event.current.mousePosition;
             var currentGraph = InvertApplication.Container.Resolve<ProjectService>().CurrentProject.CurrentGraph;
             if (currentGraph.CurrentFilter is SystemNode)
             {
@@ -410,18 +413,19 @@ namespace Invert.uFrame.ECS {
                 yield return new QuickAccessItem("Create", "Float Variable", _ => { vm.AddNode(new FloatNode(), vm.LastMouseEvent.LastMousePosition); });
                 yield return new QuickAccessItem("Create", "Integer Variable", _ => { vm.AddNode(new IntNode(), vm.LastMouseEvent.LastMousePosition); });
                 yield return new QuickAccessItem("Create", "Literal", _ => { vm.AddNode(new LiteralNode(), vm.LastMouseEvent.LastMousePosition); });
-                
-                
+
+
                 var currentFilter = currentGraph.CurrentFilter as HandlerNode;
-                foreach (var item in currentFilter.AllContextVariables)
+                foreach (var item in currentFilter.GetAllContextVariables())
                 {
                     var item1 = item;
-                    var qa = new QuickAccessItem("Variables", item.Name, _ =>
+                    var qa = new QuickAccessItem("Variables", item.VariableName ?? "Unknown", _ =>
                     {
                         var command = new AddVariableReferenceCommand()
                         {
                             Variable = _ as IContextVariable,
-                            Handler = currentFilter
+                            Handler = currentFilter,
+                            Position = mousePosition
                         };
                         InvertGraphEditor.ExecuteCommand(command);
                     })
@@ -440,7 +444,7 @@ namespace Invert.uFrame.ECS {
         }
         private IEnumerable<QuickAccessItem> QueryActions(QuickAccessContext context)
         {
-
+            var mousePosition = UnityEngine.Event.current.mousePosition;
             var diagramViewModel = InvertGraphEditor.CurrentDiagramViewModel;
 
             foreach (var item in Actions)
@@ -456,7 +460,7 @@ namespace Invert.uFrame.ECS {
                     node.Graph = diagramViewModel.GraphData;
 
 
-                    diagramViewModel.AddNode(node, diagramViewModel.LastMouseEvent.LastMousePosition);
+                    diagramViewModel.AddNode(node,mousePosition);
                  
                     node.IsSelected = true;
                     node.Name = "";
@@ -759,7 +763,7 @@ namespace Invert.uFrame.ECS {
     {
         public IContextVariable Variable { get; set; }
         public HandlerNode Handler { get; set; }
-
+        public Vector2 Position { get; set; }
         public override string Name
         {
             get { return Variable.ShortName; }
@@ -779,7 +783,7 @@ namespace Invert.uFrame.ECS {
                 HandlerId = Handler.Identifier
             };
 
-            node.AddNode(referenceNode, node.LastMouseEvent.LastMousePosition);
+            node.AddNode(referenceNode ,Position);
         }
 
         public override string CanPerform(DiagramViewModel node)

@@ -55,27 +55,25 @@ namespace Invert.uFrame.ECS {
         }
 
 
-        public IEnumerable<IContextVariable> AllContextVariables
+        public IEnumerable<IContextVariable> GetAllContextVariables()
         {
-            get
+            var left = Left;
+            if (left != null)
             {
-                var left = Left;
-                if (left != null)
+                foreach (var contextVar in left.GetAllContextVariables())
                 {
-                    foreach (var contextVar in left.AllContextVariables)
-                    {
-                        yield return contextVar;
-                    }
-                }
-                foreach (var item in ContextVariables)
-                {
-                    yield return item;
+                    yield return contextVar;
                 }
             }
+            foreach (var item in GetContextVariables())
+            {
+                yield return item;
+            }
         }
-        public virtual IEnumerable<IContextVariable> ContextVariables
+
+        public virtual IEnumerable<IContextVariable> GetContextVariables()
         {
-            get { yield break; }
+            yield break;
         }
 
         public virtual void WriteCode(TemplateContext ctx)
