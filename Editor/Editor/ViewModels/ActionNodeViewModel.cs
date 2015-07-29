@@ -1,5 +1,5 @@
 using Invert.Core.GraphDesigner;
-using uFrame.Actions.Attributes;
+using uFrame.Attributes;
 
 namespace Invert.uFrame.ECS {
     using System;

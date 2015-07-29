@@ -2,10 +2,7 @@ using System.Reflection;
 using Invert.Core.GraphDesigner.Unity;
 using Invert.IOC;
 using Invert.Windows;
-using uFrame.Actions;
-using uFrame.Actions.Attributes;
 using uFrame.Attributes;
-using UnityEditor.Graphs;
 using UnityEngine;
 
 namespace Invert.uFrame.ECS {
@@ -25,8 +22,10 @@ namespace Invert.uFrame.ECS {
         public override void Initialize(UFrameContainer container)
         {
             base.Initialize(container);
-    
 
+            Context.Name = "Entity Group";
+            CustomAction.Name = "Custom Action";
+            System.Name = "System";
             System.HasSubNode<TypeReferenceNode>();
             Module.HasSubNode<TypeReferenceNode>();
             System.HasSubNode<ComponentNode>();

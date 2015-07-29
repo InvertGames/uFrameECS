@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1328937199, guid: 019118f6de8965947b2d943bbe59c84b, type: 3}
+  m_Name: Restart
+  m_EditorClassIdentifier: 
+  _jsonData: '{"Name":"Restart", "Version":"1.501", "Identifier":"d8ee12e5-a734-4a83-898b-a5818a8c8d8e",
+    "Type":"Invert.uFrame.ECS.ModuleGraph", "DocumentationMode":"false", "RootNode":{"_CLRType":"Invert.uFrame.ECS.ModuleNode,
+    Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Name":"Restart", "IsCollapsed":"false", "Identifier":"d3f3d595-aa31-4508-8e4e-f9c50df9372e",
+    "Items":[  ], "CollapsedValues":{"bdafcbbb-2c7a-40f2-b9a1-1a712735c2e7":"true",
+    "055344cf-9624-4ffa-b6ad-0d1f22f9b59e":"true", "058a7ec7-975e-4ed3-b55a-c3e9c134660b":"true"},
+    "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "b2e56a8d-b5b9-4ba5-ab8a-c81d2fecd09c":""}, "IsNewNode":"true"}, "Nodes":[ {"_CLRType":"Invert.uFrame.ECS.ComponentNode,
+    Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Name":"ResetPosition", "IsCollapsed":"true", "Identifier":"bdafcbbb-2c7a-40f2-b9a1-1a712735c2e7",
+    "Items":[  ], "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "b2e56a8d-b5b9-4ba5-ab8a-c81d2fecd09c":""}, "IsNewNode":"true"}, {"_CLRType":"Invert.uFrame.ECS.ComponentNode,
+    Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Name":"ResetRotation", "IsCollapsed":"true", "Identifier":"055344cf-9624-4ffa-b6ad-0d1f22f9b59e",
+    "Items":[  ], "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "b2e56a8d-b5b9-4ba5-ab8a-c81d2fecd09c":""}, "IsNewNode":"true"}, {"_CLRType":"Invert.uFrame.ECS.ComponentNode,
+    Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "Name":"ResetDestroy", "IsCollapsed":"true", "Identifier":"058a7ec7-975e-4ed3-b55a-c3e9c134660b",
+    "Items":[  ], "CollapsedValues":{}, "Flags":{"_CLRType":"true"}, "DataBag":{"_CLRType":"Invert.Core.GraphDesigner.DataBag,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "b2e56a8d-b5b9-4ba5-ab8a-c81d2fecd09c":""}, "IsNewNode":"true"} ], "ConnectedItems":[  ],
+    "PositionData":{"_CLRType":"FilterPositionData, Invert.Core.GraphDesigner, Version=1.1.0.0,
+    Culture=neutral, PublicKeyToken=null", "d3f3d595-aa31-4508-8e4e-f9c50df9372e":{"d3f3d595-aa31-4508-8e4e-f9c50df9372e":{"x":"30",
+    "y":"40"}, "bdafcbbb-2c7a-40f2-b9a1-1a712735c2e7":{"x":"200", "y":"210"}, "055344cf-9624-4ffa-b6ad-0d1f22f9b59e":{"x":"200",
+    "y":"280"}, "058a7ec7-975e-4ed3-b55a-c3e9c134660b":{"x":"200", "y":"350"}}}, "FilterState":{"_CLRType":"FilterState,
+    Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "FilterStack":[  ]}, "Settings":{"_CLRType":"ElementDiagramSettings, Invert.Core.GraphDesigner,
+    Version=1.1.0.0, Culture=neutral, PublicKeyToken=null", "CodeGenDisabled":"false",
+    "SnapSize":"10", "Snap":"true", "CodePathStrategyName":"Default", "GridLinesColor":{"r":"0.271",
+    "g":"0.271", "b":"0.271", "a":"1"}, "GridLinesColorSecondary":{"r":"0.169", "g":"0.169",
+    "b":"0.169", "a":"1"}, "AssociationLinkColor":{"r":"1", "g":"1", "b":"1", "a":"1"},
+    "DefinitionLinkColor":{"r":"0", "g":"1", "b":"1", "a":"1"}, "InheritanceLinkColor":{"r":"0",
+    "g":"1", "b":"0", "a":"1"}, "SceneManagerLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5",
+    "a":"1"}, "SubSystemLinkColor":{"r":"0.5", "g":"0.5", "b":"0.5", "a":"1"}, "TransitionLinkColor":{"r":"1",
+    "g":"0.9215686", "b":"0.01568628", "a":"1"}, "ViewLinkColor":{"r":"0", "g":"0",
+    "b":"1", "a":"1"}, "RootNamespace":""}, "Changes":[  ]}'

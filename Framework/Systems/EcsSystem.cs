@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace uFrame.ECS
 {
-    public abstract class EcsSystem : SystemServiceMonoBehavior, IEcsSystem
+    public abstract partial class EcsSystem : SystemServiceMonoBehavior, IEcsSystem
     {
         [Inject]
         public IComponentSystem ComponentSystem { get; set; }

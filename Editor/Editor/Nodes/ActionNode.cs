@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
-using uFrame.Actions.Attributes;
+using uFrame.Attributes;
 
 namespace Invert.uFrame.ECS
 {

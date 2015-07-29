@@ -10,5 +10,5 @@ using Invert.ICSharpCode.NRefactory.Utils.CompositeFormatStringParser;
 using Invert.IOC;
 using Invert.uFrame.ECS;
 using uFrame.Actions;
-using uFrame.Actions.Attributes;
+using uFrame.Attributes;
 using UnityEditor;

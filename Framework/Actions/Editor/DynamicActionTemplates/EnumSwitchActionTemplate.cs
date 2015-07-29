@@ -5,11 +5,15 @@ using Invert.Core.GraphDesigner;
 using Invert.IOC;
 using Invert.uFrame.ECS;
 using uFrame.Actions;
-using uFrame.Actions.Attributes;
+using uFrame.Attributes;
 using uFrame.ECS;
 
 public class EcsDyanmicActionTemplates : DiagramPlugin
 {
+    public override bool Required
+    {
+        get { return true; }
+    }
     public override void Initialize(UFrameContainer container)
     {
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<EnumNode, EnumSwitchActionTemplate>();
@@ -54,10 +58,10 @@ public partial class EnumSwitchActionTemplate : UFAction, IClassTemplate<EnumNod
 [ForceBaseType(typeof(UFAction))]
 [RequiresNamespace("UnityEngine")]
 public class ActionTemplate<TNodeType> :  IClassTemplate<TNodeType> where TNodeType : IDiagramNodeItem {
-    
+
     public string OutputPath
     {
-        get { return "Actions"; }
+        get { return Path2.Combine("Library", Ctx.Data.Graph.Name, "Actions"); }
     }
 
     public virtual bool CanGenerate
@@ -104,6 +108,7 @@ public class ActionTemplate<TNodeType> :  IClassTemplate<TNodeType> where TNodeT
         result.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(Out))));
         return result;
     }
+
 }
 
 public class AddComponentTemplate : ActionTemplate<ComponentNode>

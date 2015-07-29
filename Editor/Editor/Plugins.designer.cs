@@ -388,7 +388,7 @@ namespace Invert.uFrame.ECS {
         }
         
         public override void Initialize(Invert.IOC.UFrameContainer container) {
-            container.RegisterInstance<IDocumentationProvider>(new uFrameECSDocumentationProvider(), "uFrameECS");
+            //container.RegisterInstance<IDocumentationProvider>(new uFrameECSDocumentationProvider(), "uFrameECS");
             container.AddItem<ComponentsReference>();
             container.AddItem<EventsReference>();
             container.RegisterInstance<IEditorCommand>(GetPropertiesSelectionCommand(), typeof(PropertiesChildItem).Name + "TypeSelection");;
