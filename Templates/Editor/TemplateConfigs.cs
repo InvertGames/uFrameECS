@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.IOC;
 using Invert.uFrame.ECS;
@@ -12,11 +13,19 @@ using uFrame.Actions;
 using uFrame.Attributes;
 using uFrame.ECS;
 using uFrame.Kernel;
+using UnityEditor;
 
 namespace Invert.uFrame.ECS.Templates
 {
+    [InitializeOnLoad]
     public class EcsTemplates : DiagramPlugin
     {
+        static EcsTemplates()
+        {
+            InvertApplication.CachedAssemblies.Add(typeof(EcsTemplates).Assembly);
+            InvertApplication.CachedAssemblies.Add(typeof(UFAction).Assembly);
+            InvertApplication.TypeAssemblies.Add(typeof(UFAction).Assembly);
+        }
         public override void Initialize(UFrameContainer container)
         {
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<SystemNode,SystemTemplate>();

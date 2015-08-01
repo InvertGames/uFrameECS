@@ -253,6 +253,10 @@ public class BeginFlappingHandler : object {
     
     private AddFlappingAction dffcdaffecdbb = new AddFlappingAction();
     
+    private UnityEngine.MonoBehaviour Comparisons_behaviour = default( UnityEngine.MonoBehaviour );
+    
+    private UnityEngine.Rigidbody Comparisons_GetRigidBody_Result = default( UnityEngine.Rigidbody );
+    
     public StartPlaying Event {
         get {
             return _Event;
@@ -281,6 +285,10 @@ public class BeginFlappingHandler : object {
             return;
         }
         // CALL EXECUTE ON AddFlappingAction CLASS
+        // Before visit uFrame.Actions.Comparisons.GetRigidBody
+        Comparisons_behaviour = Item;
+        // Visit uFrame.Actions.Comparisons.GetRigidBody
+        Comparisons_GetRigidBody_Result = uFrame.Actions.Comparisons.GetRigidBody(Comparisons_behaviour);
         // HANDLER: BeginFlapping
     }
 }

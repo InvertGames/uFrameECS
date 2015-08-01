@@ -66,6 +66,7 @@ namespace Invert.uFrame.ECS {
 
             foreach (var actionType in ActionTypes)
             {
+                if (Actions.ContainsKey(actionType.FullName)) continue;
                 var actionInfo = new ActionMetaInfo()
                 {
                     Type = actionType,
@@ -101,6 +102,7 @@ namespace Invert.uFrame.ECS {
                         assembly.GetTypes()
                             .Where(p => p.IsSealed && p.IsSealed && p.IsDefined(typeof (ActionLibrary), true)))
                 {
+                 
                     var category = type.GetCustomAttributes(typeof (uFrameCategory), true).OfType<uFrameCategory>().FirstOrDefault();
                     var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static);
                     foreach (var method in methods)
@@ -111,6 +113,7 @@ namespace Invert.uFrame.ECS {
                             Category = category,
                             Method = method,
                         };
+                
                         actionInfo.MetaAttributes =
                             method.GetCustomAttributes(typeof (ActionMetaAttribute), true)
                                 .OfType<ActionMetaAttribute>()
@@ -159,6 +162,8 @@ namespace Invert.uFrame.ECS {
                             result.DisplayType = new Out("Result", "Result");
                             actionInfo.ActionFields.Add(result);
                         }
+                        if (Actions.ContainsKey(actionInfo.FullName)) 
+                            continue;
                         Actions.Add(actionInfo.FullName, actionInfo);
                     }
                 }
@@ -230,6 +235,7 @@ namespace Invert.uFrame.ECS {
             Events.Clear();
             foreach (var eventType in EventTypes)
             {
+                if (Events.ContainsKey(eventType.FullName)) continue;
                 var eventInfo = new EventMetaInfo()
                 {
                     Type = eventType,
@@ -357,7 +363,7 @@ namespace Invert.uFrame.ECS {
 
         public void QuickAccessItemsEvents(QuickAccessContext context, List<IEnumerable<QuickAccessItem>> items)
         {
-            InvertApplication.Log(context.ContextType.ToString());
+
             if (context.ContextType == typeof (IInsertQuickAccessContext))
             {
                 items.Clear();

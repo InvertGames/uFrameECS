@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using uFrame.Actions.Attributes;
 using uFrame.Attributes;
 using uFrame.ECS;
@@ -16,6 +15,11 @@ namespace uFrame.Actions
         public static bool CompareFloats(float a, float b)
         {
             return a == b;
+        }
+        [ActionTitle("GetRigidBody")]
+        public static Rigidbody GetRigidBody(MonoBehaviour behaviour)
+        {
+            return behaviour.GetComponent<Rigidbody>();
         }
 
         [ActionTitle("Less Than")]
@@ -94,6 +98,16 @@ namespace uFrame.Actions
         }
 
     }
+
+    [ActionLibrary, uFrameCategory("uGUI")]
+    public static class uGUILibrary
+    {
+        public static void SetLabel(string text)
+        {
+            
+        }
+    }
+
     [ActionLibrary, uFrameCategory("Condition", "Floats")]
     public static class DebugLibrary
     {
@@ -102,8 +116,6 @@ namespace uFrame.Actions
         {
             UnityEngine.Debug.Log(message);
         }
-
-
     }
 
     [ActionLibrary, uFrameCategory("Set")]
@@ -178,8 +190,6 @@ namespace uFrame.Actions
     [ActionLibrary, uFrameCategory("Vector3")]
     public static class Vector3Library
     {
-
-
         [ActionTitle("Get Indices")]
         public static void GetIndices(Vector3 vector,out float x, out float y, out float z)
         {
@@ -211,8 +221,6 @@ namespace uFrame.Actions
             return new Vector3(x,y,z);
         }
     }
-
-
 
     [ActionLibrary, uFrameCategory("Vector2")]
     public static class Vector2Library
@@ -347,8 +355,6 @@ namespace uFrame.Actions
         }
     }
 
-    
-
     [ActionTitle("Movement/Move Over Time")]
     public class MoveInDirectionOverTime : UFAction
     {
@@ -363,7 +369,6 @@ namespace uFrame.Actions
         }
     }
 
-    
     [ActionTitle("Timer"),uFrameCategory("Timers")]
     public class Timer : UFAction
     {
