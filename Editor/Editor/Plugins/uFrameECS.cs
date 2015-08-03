@@ -26,6 +26,7 @@ namespace Invert.uFrame.ECS {
             Context.Name = "Entity Group";
             CustomAction.Name = "Custom Action";
             System.Name = "System";
+            Action.NodeColor.Literal = NodeColor.Green;
             System.HasSubNode<TypeReferenceNode>();
             Module.HasSubNode<TypeReferenceNode>();
             System.HasSubNode<ComponentNode>();
