@@ -1,3 +1,5 @@
+using Invert.Json;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -16,7 +18,7 @@ namespace Invert.uFrame.ECS {
 
         public HandlerNode HandlerNode
         {
-            get { return Graph.NodeItems.OfType<HandlerNode>().FirstOrDefault(p => p.Identifier == HandlerId); }
+            get { return Repository.GetSingle<HandlerNode>(HandlerId); }
         }
 
         public string ShortName
@@ -43,6 +45,7 @@ namespace Invert.uFrame.ECS {
 
             }
         }
+
         [JsonProperty,InspectorProperty]
         public string VariableName {
             get { return Name; }

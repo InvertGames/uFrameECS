@@ -40,7 +40,7 @@ namespace Invert.uFrame.ECS.Templates
                 Ctx._("{0}Context = new {0}Context(this)", item.Name);
                 
             }
-            foreach (var item in Ctx.Data.GetContainingNodes(Ctx.Data.Graph).OfType<ISetupCodeWriter>())
+            foreach (var item in Ctx.Data.GetContainingNodes().OfType<ISetupCodeWriter>())
             {
                 item.WriteSetupCode(Ctx);
             }

@@ -41,17 +41,20 @@ namespace Invert.uFrame.ECS {
         {
             yield return new ContextVariable(input.HandlerPropertyName)
             {
+                Repository = this.Repository,
                 Node = this,
                 VariableType = this.Name
             };
             yield return new ContextVariable(input.HandlerPropertyName, "EntityId")
             {
+                Repository = this.Repository,
                 Node = this,
                 VariableType = "int",
 
             };
             yield return new ContextVariable(input.HandlerPropertyName, "Entity")
             {
+                Repository = this.Repository,
                 Node = this,
                 VariableType = "uFrameECS.Entity",
                 
@@ -61,6 +64,7 @@ namespace Invert.uFrame.ECS {
             {
                 yield return new ContextVariable(input.HandlerPropertyName,item.Name)
                 {
+                    Repository = this.Repository,
                     Node = this,
                     SourceVariable = item,
                     VariableType = item.RelatedTypeName

@@ -52,14 +52,14 @@ namespace Invert.uFrame.ECS.Templates
     {
         public string OutputPath
         {
-            get { return Path2.Combine("Modules", Ctx.Data.Graph.Name, Ctx.Data.Name); }
+            get { return Path2.Combine("Modules", Ctx.Data.Name, Ctx.Data.Name); }
         }
 
         public string Filename
         {
             get
             {
-                return Path2.Combine("Modules", Ctx.Data.Graph.Name, Ctx.Data.Name + ".cs"); 
+                return Path2.Combine("Modules", Ctx.Data.Name, Ctx.Data.Name + ".cs"); 
             }
         }
 
@@ -193,7 +193,7 @@ namespace Invert.uFrame.ECS.Templates
         {
             get
             {
-                foreach (var item in Ctx.Data.Project.NodeItems.OfType<ContextNode>())
+                foreach (var item in Ctx.Data.Repository.All<ContextNode>())
                 {
 
                     if (item.Graph.Identifier == Ctx.Data.Graph.Identifier)

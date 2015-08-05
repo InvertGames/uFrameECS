@@ -13,16 +13,16 @@ namespace Invert.uFrame.ECS {
     using Invert.Core;
     using Invert.Core.GraphDesigner;
 
-
+     
     public class uFrameECS : uFrameECSBase, IPrefabNodeProvider, IContextMenuQuery, IQuickAccessEvents, IOnMouseDoubleClickEvent
     {
         private static Dictionary<string, ActionMetaInfo> _actions;
         private static Dictionary<string, EventMetaInfo> _events;
-         
+            
         public override void Initialize(UFrameContainer container)
         {
             base.Initialize(container);
-
+               
             Context.Name = "Entity Group";
             CustomAction.Name = "Custom Action";
             System.Name = "System";
@@ -30,8 +30,8 @@ namespace Invert.uFrame.ECS {
             System.HasSubNode<TypeReferenceNode>();
             Module.HasSubNode<TypeReferenceNode>();
             System.HasSubNode<ComponentNode>();
-            System.HasSubNode<ContextNode>();
-
+            System.HasSubNode<ContextNode>(); 
+              
             Component.AddFlag("Blackboard"); 
 
             Module.HasSubNode<ComponentNode>();
@@ -372,7 +372,7 @@ namespace Invert.uFrame.ECS {
             }
             if (context.ContextType == typeof (IConnectionQuickAccessContext))
             {
-                if (InvertApplication.Container.Resolve<ProjectService>().CurrentProject.CurrentFilter is HandlerNode)
+                if (InvertApplication.Container.Resolve<WorkspaceService>().CurrentWorkspace.CurrentGraph.CurrentFilter is HandlerNode)
                 {
              
                     items.Clear();
@@ -385,7 +385,7 @@ namespace Invert.uFrame.ECS {
         private IEnumerable<QuickAccessItem> QueryInsert(QuickAccessContext context)
         {
             var mousePosition = UnityEngine.Event.current.mousePosition;
-            var currentGraph = InvertApplication.Container.Resolve<ProjectService>().CurrentProject.CurrentGraph;
+            var currentGraph = InvertApplication.Container.Resolve<WorkspaceService>().CurrentWorkspace.CurrentGraph;
             if (currentGraph.CurrentFilter is SystemNode)
             {
                 foreach (var item in Events)
@@ -782,14 +782,16 @@ namespace Invert.uFrame.ECS {
 
         public override void Perform(DiagramViewModel node)
         {
+            
             var referenceNode = new VariableReferenceNode()
             {
-                Name = Variable.VariableName,
+                
                 VariableId = Variable.Identifier,
                 HandlerId = Handler.Identifier
             };
 
             node.AddNode(referenceNode ,Position);
+            referenceNode.Name = Variable.VariableName;
         }
 
         public override string CanPerform(DiagramViewModel node)

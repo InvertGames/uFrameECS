@@ -1,4 +1,5 @@
 using System.CodeDom;
+using Invert.Json;
 
 namespace Invert.uFrame.ECS
 {
@@ -43,12 +44,7 @@ namespace Invert.uFrame.ECS
             }
         }
 
-        [ProxySection("User Methods", SectionVisibility.WhenNodeIsNotFilter)]
-        public IEnumerable<IDiagramNodeItem> UserMethods
-        {
-            get { return this.Graph.NodeItems.Where(_ => this.Locations.Keys.Contains(_.Identifier)).OfType<UserMethodNode>().Cast<IDiagramNodeItem>(); }
-        }
-
+     
         public string HandlerMethodName
         {
             get { return Name + "Handler"; }
@@ -163,6 +159,7 @@ namespace Invert.uFrame.ECS
             {
                 yield return new ContextVariable("Event")
                 {
+                    Repository = this.Repository,
                     Node = this,
                     VariableType = evtNode.Type.FullName
                     //SourceVariable = select as GenericNode
@@ -172,6 +169,7 @@ namespace Invert.uFrame.ECS
                 {
                     yield return new ContextVariable("Event", child.Name)
                     {
+                        Repository = this.Repository,
                         Node = this,
                         IsSubVariable = true,
                         VariableType = child.Type.FullName

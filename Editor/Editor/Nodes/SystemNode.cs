@@ -22,7 +22,7 @@ namespace Invert.uFrame.ECS {
         {
             get
             {
-                return this.GetContainingNodes(Graph).OfType<HandlerNode>();
+                return this.GetContainingNodes().OfType<HandlerNode>();
             }
         }
     }

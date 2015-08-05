@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
+using Invert.Json;
 using uFrame.Attributes;
 
 namespace Invert.uFrame.ECS
@@ -494,6 +495,7 @@ namespace Invert.uFrame.ECS
                 {
                     var variableIn = new ActionIn()
                     {
+                        Repository = Repository,
                         ActionFieldInfo = item,
                         Node = this,
                         Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name
@@ -530,6 +532,7 @@ namespace Invert.uFrame.ECS
                     {
                         var variableOut = new ActionBranch()
                         {
+                            Repository = Repository,
                             ActionFieldInfo = item,
                             Node = this,
                             Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name
@@ -540,6 +543,7 @@ namespace Invert.uFrame.ECS
                     {
                         var variableOut = new ActionOut()
                         {
+                            Repository = Repository,
                             ActionFieldInfo = item,
                             Node = this,
                             Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name

@@ -1,3 +1,5 @@
+using Invert.Json;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;

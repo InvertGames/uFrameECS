@@ -40,14 +40,14 @@ namespace Invert.uFrame.ECS {
         [Invert.Core.GraphDesigner.Section("Properties", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<PropertiesChildItem> Properties {
             get {
-                return ChildItems.OfType<PropertiesChildItem>();
+                return PersistedItems.OfType<PropertiesChildItem>();
             }
         }
         
         [Invert.Core.GraphDesigner.Section("Collections", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<CollectionsChildItem> Collections {
             get {
-                return ChildItems.OfType<CollectionsChildItem>();
+                return PersistedItems.OfType<CollectionsChildItem>();
             }
         }
     }
@@ -71,14 +71,14 @@ namespace Invert.uFrame.ECS {
         
         public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleComponents {
             get {
-                return this.Project.AllGraphItems.OfType<IComponentsConnectable>().Cast<IItem>();
+                return this.Repository.AllOf<IComponentsConnectable>().Cast<IItem>();
             }
         }
         
         [Invert.Core.GraphDesigner.ReferenceSection("Components", SectionVisibility.Always, false, false, typeof(IComponentsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=false)]
         public virtual System.Collections.Generic.IEnumerable<ComponentsReference> Components {
             get {
-                return ChildItems.OfType<ComponentsReference>();
+                return PersistedItems.OfType<ComponentsReference>();
             }
         }
     }
@@ -116,54 +116,54 @@ namespace Invert.uFrame.ECS {
         
         public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleComponents {
             get {
-                return this.Project.AllGraphItems.OfType<IComponentsConnectable>().Cast<IItem>();
+                return this.Repository.AllOf<IComponentsConnectable>().Cast<IItem>();
             }
         }
         
         public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleEvents {
             get {
-                return this.Project.AllGraphItems.OfType<IEventsConnectable>().Cast<IItem>();
+                return this.Repository.AllOf<IEventsConnectable>().Cast<IItem>();
             }
         }
         
         public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleSignals {
             get {
-                return this.Project.AllGraphItems.OfType<ISignalsConnectable>().Cast<IItem>();
+                return this.Repository.AllOf<ISignalsConnectable>().Cast<IItem>();
             }
         }
         
         [Invert.Core.GraphDesigner.Section("Properties", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<PropertiesChildItem> Properties {
             get {
-                return ChildItems.OfType<PropertiesChildItem>();
+                return PersistedItems.OfType<PropertiesChildItem>();
             }
         }
         
         [Invert.Core.GraphDesigner.Section("Collections", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<CollectionsChildItem> Collections {
             get {
-                return ChildItems.OfType<CollectionsChildItem>();
+                return PersistedItems.OfType<CollectionsChildItem>();
             }
         }
         
         [Invert.Core.GraphDesigner.ReferenceSection("Components", SectionVisibility.Always, false, false, typeof(IComponentsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=false)]
         public virtual System.Collections.Generic.IEnumerable<ComponentsReference> Components {
             get {
-                return ChildItems.OfType<ComponentsReference>();
+                return PersistedItems.OfType<ComponentsReference>();
             }
         }
         
         [Invert.Core.GraphDesigner.ReferenceSection("Events", SectionVisibility.Always, false, false, typeof(IEventsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<EventsReference> Events {
             get {
-                return ChildItems.OfType<EventsReference>();
+                return PersistedItems.OfType<EventsReference>();
             }
         }
         
         [Invert.Core.GraphDesigner.ReferenceSection("Signals", SectionVisibility.Always, false, false, typeof(ISignalsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<SignalsReference> Signals {
             get {
-                return ChildItems.OfType<SignalsReference>();
+                return PersistedItems.OfType<SignalsReference>();
             }
         }
         
@@ -279,14 +279,14 @@ namespace Invert.uFrame.ECS {
         [Invert.Core.GraphDesigner.Section("Properties", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<PropertiesChildItem> Properties {
             get {
-                return ChildItems.OfType<PropertiesChildItem>();
+                return PersistedItems.OfType<PropertiesChildItem>();
             }
         }
         
         [Invert.Core.GraphDesigner.Section("Collections", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<CollectionsChildItem> Collections {
             get {
-                return ChildItems.OfType<CollectionsChildItem>();
+                return PersistedItems.OfType<CollectionsChildItem>();
             }
         }
     }
@@ -414,14 +414,14 @@ namespace Invert.uFrame.ECS {
         
         public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleComponents {
             get {
-                return this.Project.AllGraphItems.OfType<IComponentsConnectable>().Cast<IItem>();
+                return this.Repository.AllOf<IComponentsConnectable>().Cast<IItem>();
             }
         }
         
         [Invert.Core.GraphDesigner.ReferenceSection("Components", SectionVisibility.Always, false, false, typeof(IComponentsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=false)]
         public virtual System.Collections.Generic.IEnumerable<ComponentsReference> Components {
             get {
-                return ChildItems.OfType<ComponentsReference>();
+                return PersistedItems.OfType<ComponentsReference>();
             }
         }
         
@@ -476,14 +476,14 @@ namespace Invert.uFrame.ECS {
         
         public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleSelect {
             get {
-                return this.Project.AllGraphItems.OfType<ISelectConnectable>().Cast<IItem>();
+                return this.Repository.AllOf<ISelectConnectable>().Cast<IItem>();
             }
         }
         
         [Invert.Core.GraphDesigner.ReferenceSection("Select", SectionVisibility.WhenNodeIsNotFilter, false, false, typeof(ISelectConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<SelectReference> Select {
             get {
-                return ChildItems.OfType<SelectReference>();
+                return PersistedItems.OfType<SelectReference>();
             }
         }
     }
@@ -808,21 +808,21 @@ namespace Invert.uFrame.ECS {
         [Invert.Core.GraphDesigner.Section("Inputs", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<InputsChildItem> Inputs {
             get {
-                return ChildItems.OfType<InputsChildItem>();
+                return PersistedItems.OfType<InputsChildItem>();
             }
         }
         
         [Invert.Core.GraphDesigner.Section("Outputs", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<OutputsChildItem> Outputs {
             get {
-                return ChildItems.OfType<OutputsChildItem>();
+                return PersistedItems.OfType<OutputsChildItem>();
             }
         }
         
         [Invert.Core.GraphDesigner.Section("Branches", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<BranchesChildItem> Branches {
             get {
-                return ChildItems.OfType<BranchesChildItem>();
+                return PersistedItems.OfType<BranchesChildItem>();
             }
         }
     }
@@ -948,14 +948,14 @@ namespace Invert.uFrame.ECS {
         
         public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleComponents {
             get {
-                return this.Project.AllGraphItems.OfType<IComponentsConnectable>().Cast<IItem>();
+                return this.Repository.AllOf<IComponentsConnectable>().Cast<IItem>();
             }
         }
         
         [Invert.Core.GraphDesigner.ReferenceSection("Components", SectionVisibility.Always, false, false, typeof(IComponentsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=false)]
         public virtual System.Collections.Generic.IEnumerable<ComponentsReference> Components {
             get {
-                return ChildItems.OfType<ComponentsReference>();
+                return PersistedItems.OfType<ComponentsReference>();
             }
         }
     }

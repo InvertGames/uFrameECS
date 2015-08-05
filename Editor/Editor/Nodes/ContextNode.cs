@@ -62,15 +62,16 @@ namespace Invert.uFrame.ECS {
         {
             foreach (var select in SelectComponents)
             {
-       
-                yield return new ContextVariable(input.HandlerPropertyName, select.Name) {Node = this, VariableType = this.Name };
-                yield return new ContextVariable(input.HandlerPropertyName, select.Name, "EntityId") { Node = this, VariableType = "int"};
-                yield return new ContextVariable(input.HandlerPropertyName, select.Name, "Entity") {Node = this, VariableType = "uFrame.ECS.Entity"};
+
+                yield return new ContextVariable(input.HandlerPropertyName, select.Name) { Repository = this.Repository, Node = this, VariableType = this.Name };
+                yield return new ContextVariable(input.HandlerPropertyName, select.Name, "EntityId") { Repository = this.Repository, Node = this, VariableType = "int" };
+                yield return new ContextVariable(input.HandlerPropertyName, select.Name, "Entity") { Repository = this.Repository, Node = this, VariableType = "uFrame.ECS.Entity" };
 
                 foreach (var item in select.PersistedItems.OfType<ITypedItem>())
                 {
                     yield return new ContextVariable(input.HandlerPropertyName, select.Name, item.Name)
                     {
+                        Repository = this.Repository,
                         SourceVariable = item,
                         VariableType = item.RelatedTypeName,
                         Node = this
