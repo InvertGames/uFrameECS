@@ -87,7 +87,7 @@ namespace Invert.uFrame.ECS {
             {
                 foreach (var item in Action.InputVars)
                 {
-                    ContentItems.Add(new InputOutputViewModel()
+                    var vm = new InputOutputViewModel()
                     {
                         Name = item.Name,
                         IsOutput = false,
@@ -95,18 +95,30 @@ namespace Invert.uFrame.ECS {
                         DataObject = item,
                         IsNewLine = item.ActionFieldInfo.DisplayType.IsNewLine,
                         DiagramViewModel = DiagramViewModel
-                    });
+                    };
+                    ContentItems.Add(vm);
+                    vm.InputConnector.Style = ConnectorStyle.Circle;
+                    vm.InputConnector.TintColor = UnityEngine.Color.green;
                 }
                 foreach (var item in Action.OutputVars)
                 {
-                    ContentItems.Add(new InputOutputViewModel()
+                    var vm = new InputOutputViewModel()
                     {
                         Name = item.Name,
                         DataObject = item,
                         IsOutput = true,
                         IsNewLine = item.ActionFieldInfo.DisplayType.IsNewLine,
                         DiagramViewModel = DiagramViewModel
-                    });
+                    };
+                    ContentItems.Add(vm);
+
+                    if (item.ActionFieldInfo.Type != typeof (Action))
+                    {
+                        vm.OutputConnector.Style = ConnectorStyle.Circle;
+                        vm.OutputConnector.TintColor = UnityEngine.Color.green;
+                    }
+                    
+
                 }
                
             }

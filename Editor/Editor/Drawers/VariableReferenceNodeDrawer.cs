@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -12,9 +14,9 @@ namespace Invert.uFrame.ECS {
                 base(viewModel) {
         }
 
-        public override float HeaderPadding
+        public override Vector2 HeaderPadding
         {
-            get { return 1; }
+            get { return Vector2.zero; }
         }
         public override float MinWidth
         {
