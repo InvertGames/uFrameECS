@@ -15,7 +15,7 @@ namespace Invert.uFrame.ECS {
 
      
     public class uFrameECS : uFrameECSBase, IPrefabNodeProvider, IContextMenuQuery, IQuickAccessEvents, IOnMouseDoubleClickEvent
-    {
+    { 
         private static Dictionary<string, ActionMetaInfo> _actions;
         private static Dictionary<string, EventMetaInfo> _events;
             

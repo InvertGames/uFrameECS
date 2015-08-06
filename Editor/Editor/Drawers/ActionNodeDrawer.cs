@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -11,12 +13,11 @@ namespace Invert.uFrame.ECS {
         public ActionNodeDrawer(ActionNodeViewModel viewModel) : 
                 base(viewModel) {
         }
-        
-        public override float HeaderPadding
-        {
-            get { return 3; }
-        }
 
+        public override Vector2 HeaderPadding
+        {
+            get { return Vector2.zero; }
+        }
         public override float MinWidth
         {
             get { return 100f; }
