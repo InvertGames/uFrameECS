@@ -380,9 +380,9 @@ namespace Invert.uFrame.ECS
                     if (item.Type != typeof(int)) continue;
                     var variableIn = new HandlerIn()
                     {
+                        Repository = Repository,
                         EventFieldInfo = item,
                         Node = this,
-
                         Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name
                     };
                     yield return variableIn;

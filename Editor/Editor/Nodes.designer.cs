@@ -171,7 +171,7 @@ namespace Invert.uFrame.ECS {
         public virtual Component ComponentInputSlot {
             get {
                 if (_Component == null) {
-                    _Component = new Component() { Node = this };
+                    _Component = new Component() { Repository = Repository, Node = this };
                 }
                 return _Component;
             }
@@ -184,7 +184,7 @@ namespace Invert.uFrame.ECS {
         public virtual Variables VariablesInputSlot {
             get {
                 if (_Variables == null) {
-                    _Variables = new Variables() { Node = this };
+                    _Variables = new Variables() { Repository = Repository, Node = this };
                 }
                 return _Variables;
             }
@@ -197,7 +197,7 @@ namespace Invert.uFrame.ECS {
         public virtual FilterBy FilterByInputSlot {
             get {
                 if (_FilterBy == null) {
-                    _FilterBy = new FilterBy() { Node = this };
+                    _FilterBy = new FilterBy() { Repository = Repository, Node = this };
                 }
                 return _FilterBy;
             }
@@ -210,7 +210,7 @@ namespace Invert.uFrame.ECS {
         public virtual Event EventInputSlot {
             get {
                 if (_Event == null) {
-                    _Event = new Event() { Node = this };
+                    _Event = new Event() { Repository = Repository, Node = this };
                 }
                 return _Event;
             }
@@ -223,7 +223,7 @@ namespace Invert.uFrame.ECS {
         public virtual VariableInput VariableInputInputSlot {
             get {
                 if (_VariableInput == null) {
-                    _VariableInput = new VariableInput() { Node = this };
+                    _VariableInput = new VariableInput() { Repository = Repository, Node = this };
                 }
                 return _VariableInput;
             }
@@ -236,7 +236,7 @@ namespace Invert.uFrame.ECS {
         public virtual Each EachOutputSlot {
             get {
                 if (_Each == null) {
-                    _Each = new Each() { Node = this };
+                    _Each = new Each() { Repository = Repository, Node = this };
                 }
                 return _Each;
             }
@@ -249,7 +249,7 @@ namespace Invert.uFrame.ECS {
         public virtual VariableOutput VariableOutputOutputSlot {
             get {
                 if (_VariableOutput == null) {
-                    _VariableOutput = new VariableOutput() { Node = this };
+                    _VariableOutput = new VariableOutput() { Repository = Repository, Node = this };
                 }
                 return _VariableOutput;
             }
@@ -316,7 +316,7 @@ namespace Invert.uFrame.ECS {
         public virtual Variables VariablesInputSlot {
             get {
                 if (_Variables == null) {
-                    _Variables = new Variables() { Node = this };
+                    _Variables = new Variables() { Repository = Repository, Node = this };
                 }
                 return _Variables;
             }
@@ -329,7 +329,7 @@ namespace Invert.uFrame.ECS {
         public virtual Event EventInputSlot {
             get {
                 if (_Event == null) {
-                    _Event = new Event() { Node = this };
+                    _Event = new Event() { Repository = Repository, Node = this };
                 }
                 return _Event;
             }
@@ -429,7 +429,7 @@ namespace Invert.uFrame.ECS {
         public virtual Filter FilterOutputSlot {
             get {
                 if (_Filter == null) {
-                    _Filter = new Filter() { Node = this };
+                    _Filter = new Filter() { Repository = Repository, Node = this };
                 }
                 return _Filter;
             }
@@ -529,7 +529,7 @@ namespace Invert.uFrame.ECS {
         public virtual Timer TimerInputSlot {
             get {
                 if (_Timer == null) {
-                    _Timer = new Timer() { Node = this };
+                    _Timer = new Timer() { Repository = Repository, Node = this };
                 }
                 return _Timer;
             }
@@ -562,7 +562,7 @@ namespace Invert.uFrame.ECS {
         public virtual Timer TimerInputSlot {
             get {
                 if (_Timer == null) {
-                    _Timer = new Timer() { Node = this };
+                    _Timer = new Timer() { Repository = Repository, Node = this };
                 }
                 return _Timer;
             }
@@ -888,7 +888,7 @@ namespace Invert.uFrame.ECS {
         public virtual Variable VariableInputSlot {
             get {
                 if (_Variable == null) {
-                    _Variable = new Variable() { Node = this };
+                    _Variable = new Variable() { Repository = Repository, Node = this };
                 }
                 return _Variable;
             }
@@ -901,7 +901,7 @@ namespace Invert.uFrame.ECS {
         public virtual Value ValueInputSlot {
             get {
                 if (_Value == null) {
-                    _Value = new Value() { Node = this };
+                    _Value = new Value() { Repository = Repository, Node = this };
                 }
                 return _Value;
             }

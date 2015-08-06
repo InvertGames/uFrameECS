@@ -321,7 +321,7 @@ namespace Invert.uFrame.ECS.Templates
 
     [TemplateClass(TemplateLocation.DesignerFile), AsPartial]
     [RequiresNamespace("uFrame.ECS")]
-    public partial class EventTemplate : IClassTemplate<EventNode>, ITemplateCustomFilename
+    public partial class EventTemplate : IClassTemplate<EventNode>
     {
         public IEnumerable<PropertiesChildItem> Properties
         {
@@ -338,12 +338,12 @@ namespace Invert.uFrame.ECS.Templates
         {
             get
             {
-                return Path2.Combine("Library",Ctx.Data.Graph.Name, "Events", Ctx.Data.Name + ".cs");
+                return Path2.Combine("Library",Ctx.Data.Graph.Name, "Events.cs");
             }
         }
         public string OutputPath
         {
-            get { return Path2.Combine("Extensions",Ctx.Data.Graph.Name, "Events"); }
+            get { return Path2.Combine("Library", Ctx.Data.Graph.Name, "Events"); }
         }
 
         public bool CanGenerate

@@ -10,8 +10,8 @@ namespace Invert.uFrame.ECS {
         [InspectorProperty]
         public bool Multiple
         {
-            get { return Flags["Multiple"]; }
-            set { Flags["Multiple"] = value; }
+            get { return this["Multiple"]; }
+            set { this["Multiple"] = value; }
         }
     }
     
