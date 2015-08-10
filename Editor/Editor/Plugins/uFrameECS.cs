@@ -14,7 +14,9 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
 
      
-    public class uFrameECS : uFrameECSBase, IPrefabNodeProvider, IContextMenuQuery, IQuickAccessEvents, IOnMouseDoubleClickEvent
+    public class uFrameECS : uFrameECSBase, 
+        IPrefabNodeProvider, 
+        IContextMenuQuery, IQuickAccessEvents, IOnMouseDoubleClickEvent
     { 
         private static Dictionary<string, ActionMetaInfo> _actions;
         private static Dictionary<string, EventMetaInfo> _events;
@@ -318,49 +320,45 @@ namespace Invert.uFrame.ECS {
             set { _actions = value; }
         }
 
-        public void QueryCommands(ICommandUI ui, List<IEditorCommand> commands, Type contextType)
+        public void QueryContextMenu(ContextMenuUI ui, MouseEvent evt, object obj)
         {
-            if (contextType == typeof(IDiagramContextCommand))
+            
+            if (obj is InputOutputViewModel)
             {
-      
-                
-                var diagramViewModel = ui.Handler.ContextObjects.OfType<DiagramViewModel>().FirstOrDefault();
-                if (diagramViewModel != null)
+                QuerySlotMenu(ui, (InputOutputViewModel) obj);
+            }
+        }
+
+        private void QuerySlotMenu(ContextMenuUI ui, InputOutputViewModel slot)
+        {
+            var diagramViewModel = slot.DiagramViewModel;
+            var actionIn = slot.DataObject as IActionIn;
+            if (diagramViewModel != null && actionIn != null)
+            {
+                var graph = diagramViewModel.GraphData;
+                var currentFilter = graph.CurrentFilter as HandlerNode;
+                if (currentFilter != null)
                 {
-                    
-                    //var graph = diagramViewModel.GraphData;
-                    //var currentFilter = graph.CurrentFilter as HandlerNode;
-                    //if (currentFilter != null)
-                    //{
-                    //    foreach (var action in Actions.Values)
-                    //    {
-                    //        commands.Add(new AddActionCommand(action));
-                    //    }
-
-                    //    foreach (var item in currentFilter.AllContextVariables)
-                    //    {
-                    //        commands.Add(new AddVariableReferenceCommand()
-                    //        {
-                    //            Variable = item,
-                    //            Handler = currentFilter
-                    //        });
-                    //    }
-
-                    //}
-                    //var systemNode = graph.CurrentFilter as SystemNode;
-                    //if (systemNode != null)
-                    //{
-                    //    foreach (var item in Events.Values)
-                    //    {
-                    //        commands.Add(new AddHandlerCommand(item));
-                    //    }
-                    //}
-
+                    foreach (var item in currentFilter.GetAllContextVariables())
+                    {
+                        var cmd = new AddSlotInputNodeCommand()
+                        {
+                            Input = slot.DataObject as ActionIn,
+                            Position = new Vector2(slot.ConnectorBounds.x - 200f, slot.ConnectorBounds.y - 10f),
+                            Variable = item,
+                            Handler = currentFilter
+                        };
+                        ui.AddCommand(new ContextMenuItem()
+                        {
+                            //Command = cmd,
+                            Title = cmd.Title
+                        });
+                    }
                 }
             }
-
-
         }
+
+      
 
         public void QuickAccessItemsEvents(QuickAccessContext context, List<IEnumerable<QuickAccessItem>> items)
         {
@@ -532,7 +530,7 @@ namespace Invert.uFrame.ECS {
         }
 
         public MouseEvent LastMouseEvent { get; set; }
-    }
+    } 
 
     public class EventMetaInfo
     {
@@ -758,6 +756,45 @@ namespace Invert.uFrame.ECS {
             };
 
             node.AddNode(eventNode, node.LastMouseEvent.LastMousePosition);
+        }
+
+        public override string CanPerform(DiagramViewModel node)
+        {
+            return null;
+        }
+    }
+    public class AddSlotInputNodeCommand : EditorCommand<DiagramViewModel>
+    {
+        public IContextVariable Variable { get; set; }
+        public HandlerNode Handler { get; set; }
+        public Vector2 Position { get; set; }
+        public ActionIn Input { get; set; }
+        public override string Name
+        {
+            get { return Variable.ShortName; }
+        }
+
+        public override string Group
+        {
+            get { return "Variables"; }
+        }
+
+      
+
+        public override void Perform(DiagramViewModel node)
+        {
+
+            var referenceNode = new VariableReferenceNode()
+            {
+
+                VariableId = Variable.Identifier,
+                HandlerId = Handler.Identifier
+            };
+            node.AddNode(referenceNode, Position);
+            var connectionData = node.CurrentRepository.Create<ConnectionData>();
+            connectionData.InputIdentifier = Input.Identifier;
+            connectionData.OutputIdentifier = referenceNode.Identifier;
+            referenceNode.Name = Variable.VariableName;
         }
 
         public override string CanPerform(DiagramViewModel node)
