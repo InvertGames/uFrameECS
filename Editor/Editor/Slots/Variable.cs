@@ -6,7 +6,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class Variable : VariableBase {
+    public class Variable : VariableBase, IActionIn {
         public ActionFieldInfo ActionFieldInfo { get; set; }
         public string VariableName
         {

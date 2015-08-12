@@ -18,6 +18,11 @@ namespace Invert.uFrame.ECS {
             get { return false; }
         }
 
+        public override IEnumerable<ComponentsReference> Components
+        {
+            get { return base.Components; }
+        }
+
         public IEnumerable<HandlerNode> EventHandlers
         {
             get

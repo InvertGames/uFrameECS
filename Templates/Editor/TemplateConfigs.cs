@@ -169,7 +169,7 @@ namespace Invert.uFrame.ECS.Templates
             get
             {
                 return Ctx.Data.Components.Select(p => p.SourceItem).OfType<ComponentNode>()
-                    .Concat(Ctx.Data.Graph.NodeItems.OfType<ComponentNode>());
+                    .Concat(Ctx.Data.Graph.NodeItems.OfType<ComponentNode>()).Distinct();
             }
         }
 

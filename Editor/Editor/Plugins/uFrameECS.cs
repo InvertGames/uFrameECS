@@ -16,7 +16,8 @@ namespace Invert.uFrame.ECS {
      
     public class uFrameECS : uFrameECSBase, 
         IPrefabNodeProvider, 
-        IContextMenuQuery, IQuickAccessEvents, IOnMouseDoubleClickEvent
+        IContextMenuQuery, IQuickAccessEvents, IOnMouseDoubleClickEvent,
+        IExecuteCommand<AddSlotInputNodeCommand>
     { 
         private static Dictionary<string, ActionMetaInfo> _actions;
         private static Dictionary<string, EventMetaInfo> _events;
@@ -24,7 +25,12 @@ namespace Invert.uFrame.ECS {
         public override void Initialize(UFrameContainer container)
         {
             base.Initialize(container);
-               
+            Handler.AllowAddingInMenu = false;
+            ComponentGroup.AllowAddingInMenu = false;
+            UserMethod.AllowAddingInMenu = false;
+            Action.AllowAddingInMenu = false;
+            SequenceItem.AllowAddingInMenu = false;
+            VariableReference.AllowAddingInMenu = false;
             Context.Name = "Entity Group";
             CustomAction.Name = "Custom Action";
             System.Name = "System";
@@ -346,16 +352,18 @@ namespace Invert.uFrame.ECS {
                             Input = slot.DataObject as ActionIn,
                             Position = new Vector2(slot.ConnectorBounds.x - 200f, slot.ConnectorBounds.y - 10f),
                             Variable = item,
-                            Handler = currentFilter
+                            Handler = currentFilter,
+                            DiagramViewModel = diagramViewModel
                         };
                         ui.AddCommand(new ContextMenuItem()
                         {
-                            //Command = cmd,
-                            Title = cmd.Title
+                            Command = cmd,
+                            Title = item.FullLabel
                         });
                     }
                 }
             }
+          
         }
 
       
@@ -517,7 +525,7 @@ namespace Invert.uFrame.ECS {
                     InvertApplication.SignalEvent<IWindowsEvents>(_ =>
                     {
                         _.ShowWindow("QuickAccessWindowFactory", "Add Node", null, mouseEvent.LastMousePosition,
-                            new Vector2(225f, 300f));
+                            new Vector2(500, 600));
                     });
                 }
                 else
@@ -530,6 +538,21 @@ namespace Invert.uFrame.ECS {
         }
 
         public MouseEvent LastMouseEvent { get; set; }
+        public void Execute(AddSlotInputNodeCommand command)
+        {
+            var referenceNode = new VariableReferenceNode()
+            {
+
+                VariableId = command.Variable.Identifier,
+                HandlerId = command.Handler.Identifier
+            };
+            
+            command.DiagramViewModel.AddNode(referenceNode, command.Position);
+            var connectionData = command.DiagramViewModel.CurrentRepository.Create<ConnectionData>();
+            connectionData.InputIdentifier = command.Input.Identifier;
+            connectionData.OutputIdentifier = referenceNode.Identifier;
+            referenceNode.Name = command.Variable.VariableName;
+        }
     } 
 
     public class EventMetaInfo
@@ -763,44 +786,13 @@ namespace Invert.uFrame.ECS {
             return null;
         }
     }
-    public class AddSlotInputNodeCommand : EditorCommand<DiagramViewModel>
+    public class AddSlotInputNodeCommand : Command
     {
         public IContextVariable Variable { get; set; }
         public HandlerNode Handler { get; set; }
         public Vector2 Position { get; set; }
         public ActionIn Input { get; set; }
-        public override string Name
-        {
-            get { return Variable.ShortName; }
-        }
-
-        public override string Group
-        {
-            get { return "Variables"; }
-        }
-
-      
-
-        public override void Perform(DiagramViewModel node)
-        {
-
-            var referenceNode = new VariableReferenceNode()
-            {
-
-                VariableId = Variable.Identifier,
-                HandlerId = Handler.Identifier
-            };
-            node.AddNode(referenceNode, Position);
-            var connectionData = node.CurrentRepository.Create<ConnectionData>();
-            connectionData.InputIdentifier = Input.Identifier;
-            connectionData.OutputIdentifier = referenceNode.Identifier;
-            referenceNode.Name = Variable.VariableName;
-        }
-
-        public override string CanPerform(DiagramViewModel node)
-        {
-            return null;
-        }
+        public DiagramViewModel DiagramViewModel     { get; set; }
     }
     public class AddVariableReferenceCommand : EditorCommand<DiagramViewModel>
     {
