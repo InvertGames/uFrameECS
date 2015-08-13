@@ -397,7 +397,7 @@ namespace Invert.uFrame.ECS {
                 foreach (var item in Events)
                 {
                     var item1 = item;
-                    var qa = new QuickAccessItem("Listen For", item.Value.Attribute.Title, _ =>
+                    var qa = new QuickAccessItem(item.Value.Category, item.Value.Attribute.Title, _ =>
                     {
                         var eventNode = new HandlerNode()
                         {
@@ -446,12 +446,13 @@ namespace Invert.uFrame.ECS {
                     };
                     yield return qa;
                 }
-            }
-            foreach (var item in QueryActions(context))
-            {
-                yield return item;
-            }
+                foreach (var item in QueryActions(context))
+                {
+                    yield return item;
+                }
 
+            }
+          
           
         }
         private IEnumerable<QuickAccessItem> QueryActions(QuickAccessContext context)
@@ -558,10 +559,28 @@ namespace Invert.uFrame.ECS {
     public class EventMetaInfo
     {
         private List<EventFieldInfo> _members;
+        private uFrameCategory _categoryAttribute;
 
         public Type Type { get; set; }
         public uFrameEvent Attribute { get; set; }
 
+        public uFrameCategory CategoryAttribute
+        {
+            get { return _categoryAttribute ?? (_categoryAttribute = Type.GetCustomAttributes(typeof(uFrameCategory),true).OfType<uFrameCategory>().FirstOrDefault()); }
+            set { _categoryAttribute = value; }
+        }
+
+        public string Category
+        {
+            get
+            {
+                if (CategoryAttribute != null)
+                {
+                    return CategoryAttribute.Title.FirstOrDefault() ?? "Listen For";
+                }
+                return "Listen For";
+            }
+        }
         public bool Dispatcher
         {
             get { return Attribute is UFrameEventDispatcher; }
