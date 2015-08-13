@@ -43,14 +43,7 @@ namespace Invert.uFrame.ECS {
                 base(viewModel) {
         }
     }
-    
-    public class ComponentGroupNodeDrawerBase : GenericNodeDrawer<ComponentGroupNode,ComponentGroupNodeViewModel> {
-        
-        public ComponentGroupNodeDrawerBase(ComponentGroupNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
+
     public class BoolNodeDrawerBase : GenericNodeDrawer<BoolNode,BoolNodeViewModel> {
         
         public BoolNodeDrawerBase(BoolNodeViewModel viewModel) : 
@@ -100,13 +93,7 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class ComponentsNodeDrawerBase : GenericNodeDrawer<ComponentsNode,ComponentsNodeViewModel> {
-        
-        public ComponentsNodeDrawerBase(ComponentsNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
+
     public class ContextNodeDrawerBase : GenericNodeDrawer<ContextNode,ContextNodeViewModel> {
         
         public ContextNodeDrawerBase(ContextNodeViewModel viewModel) : 
@@ -156,13 +143,7 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class ActionLibraryNodeDrawerBase : GenericNodeDrawer<ActionLibraryNode,ActionLibraryNodeViewModel> {
-        
-        public ActionLibraryNodeDrawerBase(ActionLibraryNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
+
     public class PublishNodeDrawerBase : GenericNodeDrawer<PublishNode,PublishNodeViewModel> {
         
         public PublishNodeDrawerBase(PublishNodeViewModel viewModel) : 
@@ -177,12 +158,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class TimerNodeDrawerBase : GenericNodeDrawer<TimerNode,TimerNodeViewModel> {
-        
-        public TimerNodeDrawerBase(TimerNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
     
     public class ItemTypesNodeDrawerBase : GenericNodeDrawer<ItemTypesNode,ItemTypesNodeViewModel> {
         

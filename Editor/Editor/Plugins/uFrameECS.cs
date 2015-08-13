@@ -26,7 +26,7 @@ namespace Invert.uFrame.ECS {
         {
             base.Initialize(container);
             Handler.AllowAddingInMenu = false;
-            ComponentGroup.AllowAddingInMenu = false;
+//            ComponentGroup.AllowAddingInMenu = false;
             UserMethod.AllowAddingInMenu = false;
             Action.AllowAddingInMenu = false;
             SequenceItem.AllowAddingInMenu = false;

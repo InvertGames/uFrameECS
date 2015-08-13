@@ -110,52 +110,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IStringConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ComponentGroupNodeBase : Invert.Core.GraphDesigner.GenericNode, IComponentsConnectable, IFilterByConnectable, ISelectConnectable, IHandlerConnectable {
-        
-        private Filter _Filter;
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-        
-        public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleComponents {
-            get {
-                return this.Repository.AllOf<IComponentsConnectable>().Cast<IItem>();
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.ReferenceSection("Components", SectionVisibility.Always, false, false, typeof(IComponentsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=false)]
-        public virtual System.Collections.Generic.IEnumerable<ComponentsReference> Components {
-            get {
-                return PersistedItems.OfType<ComponentsReference>();
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.OutputSlot("Filter", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual Filter FilterOutputSlot {
-            get {
-                if (_Filter == null) {
-                    _Filter = new Filter() { Repository = Repository, Node = this };
-                }
-                return _Filter;
-            }
-            set {
-                _Filter = value;
-            }
-        }
-    }
-    
-    public partial interface IComponentGroupConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
+
     public class BoolNodeBase : LiteralNode {
         
         public override bool AllowMultipleInputs {
@@ -639,7 +594,7 @@ namespace Invert.uFrame.ECS {
         
         private FilterBy _FilterBy;
         
-        private VariableInput _VariableInput;
+    
         
         private Variables _Variables;
         
@@ -647,8 +602,7 @@ namespace Invert.uFrame.ECS {
         
         private Component _Component;
         
-        private VariableOutput _VariableOutput;
-        
+    
         private Each _Each;
         
         public override bool AllowMultipleInputs {
@@ -702,19 +656,7 @@ namespace Invert.uFrame.ECS {
                 _FilterBy = value;
             }
         }
-        
-        [Invert.Core.GraphDesigner.InputSlot("VariableInput", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual VariableInput VariableInputInputSlot {
-            get {
-                if (_VariableInput == null) {
-                    _VariableInput = new VariableInput() { Repository = Repository, Node = this };
-                }
-                return _VariableInput;
-            }
-            set {
-                _VariableInput = value;
-            }
-        }
+
         
         [Invert.Core.GraphDesigner.InputSlot("Variables", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual Variables VariablesInputSlot {
@@ -752,19 +694,6 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _Component = value;
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.OutputSlot("VariableOutput", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual VariableOutput VariableOutputOutputSlot {
-            get {
-                if (_VariableOutput == null) {
-                    _VariableOutput = new VariableOutput() { Repository = Repository, Node = this };
-                }
-                return _VariableOutput;
-            }
-            set {
-                _VariableOutput = value;
             }
         }
         

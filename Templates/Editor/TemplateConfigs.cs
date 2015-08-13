@@ -173,14 +173,14 @@ namespace Invert.uFrame.ECS.Templates
             }
         }
 
-        public IEnumerable<ComponentGroupNode> ComponentGroups
-        {
-            get
-            {
-                return Ctx.Data.Components.Select(p => p.SourceItem).OfType<ComponentGroupNode>()
-                    .Concat(Ctx.Data.Graph.NodeItems.OfType<ComponentGroupNode>()).Distinct();
-            }
-        }
+        //public IEnumerable<ComponentGroupNode> ComponentGroups
+        //{
+        //    get
+        //    {
+        //        return Ctx.Data.Components.Select(p => p.SourceItem).OfType<ComponentGroupNode>()
+        //            .Concat(Ctx.Data.Graph.NodeItems.OfType<ComponentGroupNode>()).Distinct();
+        //    }
+        //}
         public IEnumerable<HandlerNode> EventHandlers
         {
             get

@@ -31,10 +31,10 @@ namespace Invert.uFrame.ECS.Templates
             {
                 Ctx._("{0}Manager = ComponentSystem.RegisterComponent<{0}>()", item.Name);
             }
-            foreach (var item in ComponentGroups)
-            {
-                Ctx._("{0}Manager = ComponentSystem.RegisterComponent<{0}>()", item.Name);
-            }
+            //foreach (var item in ComponentGroups)
+            //{
+            //    Ctx._("{0}Manager = ComponentSystem.RegisterComponent<{0}>()", item.Name);
+            //}
             foreach (var item in FilterNodes)
             {
                 Ctx._("{0}Context = new {0}Context(this)", item.Name);
