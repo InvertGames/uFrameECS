@@ -141,13 +141,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class PublishNodeViewModelBase : ActionNodeViewModel {
-        
-        public PublishNodeViewModelBase(PublishNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
-                base(graphItemObject, diagramViewModel) {
-        }
-    }
-    
     public class StartTimerNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<StartTimerNode> {
         
         public StartTimerNodeViewModelBase(StartTimerNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 

@@ -55,8 +55,6 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<Vector2Node> _Vector2;
         
-        private Invert.Core.GraphDesigner.NodeConfig<PublishNode> _Publish;
-        
         private Invert.Core.GraphDesigner.NodeConfig<StartTimerNode> _StartTimer;
         
         private Invert.Core.GraphDesigner.NodeConfig<ItemTypesNode> _ItemTypes;
@@ -237,15 +235,6 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<PublishNode> Publish {
-            get {
-                return _Publish;
-            }
-            set {
-                _Publish = value;
-            }
-        }
-        
         public Invert.Core.GraphDesigner.NodeConfig<StartTimerNode> StartTimer {
             get {
                 return _StartTimer;
@@ -360,9 +349,10 @@ namespace Invert.uFrame.ECS {
             CustomAction.Color(NodeColor.DarkGray);
             StringLiteral = container.AddNode<StringLiteralNode,StringLiteralNodeViewModel,StringLiteralNodeDrawer>("StringLiteral");
             StringLiteral.Color(NodeColor.Gray);
-            Library = container.AddNode<LibraryNode,LibraryNodeViewModel,LibraryNodeDrawer>("Library");
+            Library = container.AddGraph<LibraryGraph, LibraryNode>("LibraryGraph");
             Library.Color(NodeColor.Gray);
             Library.HasSubNode<CustomActionNode>();
+            Library.HasSubNode<ComponentNode>();
             Library.HasSubNode<LibraryNode>();
             Library.HasSubNode<EventNode>();
             String = container.AddNode<StringNode,StringNodeViewModel,StringNodeDrawer>("String");
@@ -398,7 +388,6 @@ namespace Invert.uFrame.ECS {
             Event.HasSubNode<ActionNode>();
             Event.HasSubNode<EventNode>();
             Event.HasSubNode<UserMethodNode>();
-            Event.HasSubNode<PublishNode>();
             Event.HasSubNode<ComponentNode>();
             Literal = container.AddNode<LiteralNode,LiteralNodeViewModel,LiteralNodeDrawer>("Literal");
             Literal.Color(NodeColor.Purple);
@@ -409,9 +398,6 @@ namespace Invert.uFrame.ECS {
             Int.Color(NodeColor.Purple);
             Vector2 = container.AddNode<Vector2Node,Vector2NodeViewModel,Vector2NodeDrawer>("Vector2");
             Vector2.Color(NodeColor.Purple);
-            Publish = container.AddNode<PublishNode,PublishNodeViewModel,PublishNodeDrawer>("Publish");
-            Publish.Color(NodeColor.Gray);
-            Publish.HasSubNode<PublishNode>();
             StartTimer = container.AddNode<StartTimerNode,StartTimerNodeViewModel,StartTimerNodeDrawer>("StartTimer");
             StartTimer.Color(NodeColor.Gray);
             ItemTypes = container.AddNode<ItemTypesNode,ItemTypesNodeViewModel,ItemTypesNodeDrawer>("ItemTypes");
@@ -462,21 +448,13 @@ namespace Invert.uFrame.ECS {
             container.Connectable<VariableReferenceNode,Variable>();
             container.Connectable<ContextNode,SelectReference>();
             container.Connectable<ContextNode,HandlerNode>();
-            container.Connectable<EventNode,Event>();
             container.Connectable<LiteralNode,Value>();
-            container.Connectable<ComponentNode,Component>();
             container.Connectable<ComponentNode,SelectReference>();
-            container.Connectable<ComponentNode,FilterBy>();
             container.Connectable<ComponentNode,HandlerNode>();
             container.Connectable<ComponentNode,ComponentsReference>();
-            container.Connectable<ActionNode,PublishNode>();
             container.Connectable<ActionNode,ActionNode>();
             container.Connectable<HandlerNode,SequenceItemNode>();
             container.Connectable<SequenceItemNode,SequenceItemNode>();
-            container.Connectable<Each,ActionNode>();
-            container.Connectable<ComponentsReference,Variables>();
-            container.Connectable<PropertiesChildItem,Variables>();
-            container.Connectable<CollectionsChildItem,Variables>();
         }
     }
 }

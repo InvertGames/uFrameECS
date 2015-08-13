@@ -142,13 +142,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class PublishNodeDrawerBase : GenericNodeDrawer<PublishNode,PublishNodeViewModel> {
-        
-        public PublishNodeDrawerBase(PublishNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
     public class StartTimerNodeDrawerBase : GenericNodeDrawer<StartTimerNode,StartTimerNodeViewModel> {
         
         public StartTimerNodeDrawerBase(StartTimerNodeViewModel viewModel) : 

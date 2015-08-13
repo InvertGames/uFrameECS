@@ -330,7 +330,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IVector3Connectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class EventNodeBase : Invert.Core.GraphDesigner.GenericInheritableNode, Invert.Core.GraphDesigner.IClassTypeNode, IEventConnectable {
+    public class EventNodeBase : Invert.Core.GraphDesigner.GenericInheritableNode, Invert.Core.GraphDesigner.IClassTypeNode {
         
         public virtual string ClassName {
             get {
@@ -380,7 +380,7 @@ namespace Invert.uFrame.ECS {
     public partial interface ILiteralConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ComponentNodeBase : Invert.Core.GraphDesigner.GenericNode, Invert.Core.GraphDesigner.IClassTypeNode, IComponentConnectable, ISelectConnectable, IFilterByConnectable, IHandlerConnectable, IComponentsConnectable {
+    public class ComponentNodeBase : Invert.Core.GraphDesigner.GenericNode, Invert.Core.GraphDesigner.IClassTypeNode, ISelectConnectable, IHandlerConnectable, IComponentsConnectable {
         
         public virtual string ClassName {
             get {
@@ -454,54 +454,6 @@ namespace Invert.uFrame.ECS {
     public partial interface IVector2Connectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class PublishNodeBase : ActionNode {
-        
-        private Variables _Variables;
-        
-        private Event _Event;
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.InputSlot("Variables", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual Variables VariablesInputSlot {
-            get {
-                if (_Variables == null) {
-                    _Variables = new Variables() { Repository = Repository, Node = this };
-                }
-                return _Variables;
-            }
-            set {
-                _Variables = value;
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.InputSlot("Event", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual Event EventInputSlot {
-            get {
-                if (_Event == null) {
-                    _Event = new Event() { Repository = Repository, Node = this };
-                }
-                return _Event;
-            }
-            set {
-                _Event = value;
-            }
-        }
-    }
-    
-    public partial interface IPublishConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
     public class StartTimerNodeBase : Invert.Core.GraphDesigner.GenericNode {
         
         private Timer _Timer;
@@ -536,16 +488,6 @@ namespace Invert.uFrame.ECS {
     }
     
     public class ItemTypesNodeBase : Invert.Core.GraphDesigner.GenericNode {
-        
-        private FilterBy _FilterBy;
-        
-        private Variables _Variables;
-        
-        private Event _Event;
-        
-        private Component _Component;
-        
-        private Each _Each;
         
         public override bool AllowMultipleInputs {
             get {
@@ -585,77 +527,12 @@ namespace Invert.uFrame.ECS {
                 return PersistedItems.OfType<ComponentsReference>();
             }
         }
-        
-        [Invert.Core.GraphDesigner.InputSlot("Filter By", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual FilterBy FilterByInputSlot {
-            get {
-                if (_FilterBy == null) {
-                    _FilterBy = new FilterBy() { Repository = Repository, Node = this };
-                }
-                return _FilterBy;
-            }
-            set {
-                _FilterBy = value;
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.InputSlot("Variables", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual Variables VariablesInputSlot {
-            get {
-                if (_Variables == null) {
-                    _Variables = new Variables() { Repository = Repository, Node = this };
-                }
-                return _Variables;
-            }
-            set {
-                _Variables = value;
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.InputSlot("Event", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual Event EventInputSlot {
-            get {
-                if (_Event == null) {
-                    _Event = new Event() { Repository = Repository, Node = this };
-                }
-                return _Event;
-            }
-            set {
-                _Event = value;
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.InputSlot("Component", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual Component ComponentInputSlot {
-            get {
-                if (_Component == null) {
-                    _Component = new Component() { Repository = Repository, Node = this };
-                }
-                return _Component;
-            }
-            set {
-                _Component = value;
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.OutputSlot("Each", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual Each EachOutputSlot {
-            get {
-                if (_Each == null) {
-                    _Each = new Each() { Repository = Repository, Node = this };
-                }
-                return _Each;
-            }
-            set {
-                _Each = value;
-            }
-        }
     }
     
     public partial interface IItemTypesConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ActionNodeBase : SequenceItemNode, IPublishConnectable, IActionConnectable {
+    public class ActionNodeBase : SequenceItemNode, IActionConnectable {
         
         public override bool AllowMultipleInputs {
             get {

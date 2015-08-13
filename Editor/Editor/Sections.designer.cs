@@ -34,7 +34,7 @@ namespace Invert.uFrame.ECS {
     public partial interface ISelectConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ComponentsReferenceBase : Invert.Core.GraphDesigner.GenericReferenceItem<IComponentsConnectable>, IVariablesConnectable {
+    public class ComponentsReferenceBase : Invert.Core.GraphDesigner.GenericReferenceItem<IComponentsConnectable> {
         
         public override bool AllowMultipleInputs {
             get {
