@@ -16,18 +16,9 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class SystemGraphBase : GenericGraphData<SystemNode> {
-    }
-    
-    public class ComponentsGraphBase : GenericGraphData<ComponentsNode> {
-    }
-    
-    public class ActionLibraryGraphBase : GenericGraphData<ActionLibraryNode> {
-    }
-    
-    public class LibraryGraphBase : GenericGraphData<LibraryNode> {
-    }
-    
     public class ModuleGraphBase : GenericGraphData<ModuleNode> {
+    }
+    
+    public class SystemGraphBase : GenericGraphData<SystemNode> {
     }
 }

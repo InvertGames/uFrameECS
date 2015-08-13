@@ -19,94 +19,202 @@ namespace Invert.uFrame.ECS {
     
     public class uFrameECSBase : Invert.Core.GraphDesigner.DiagramPlugin {
         
-        private Invert.Core.GraphDesigner.NodeConfig<ComponentNode> _Component;
+        private Invert.Core.GraphDesigner.NodeConfig<CustomActionNode> _CustomAction;
         
-        private Invert.Core.GraphDesigner.NodeConfig<SystemNode> _System;
+        private Invert.Core.GraphDesigner.NodeConfig<StringLiteralNode> _StringLiteral;
         
-        private Invert.Core.GraphDesigner.NodeConfig<ItemTypesNode> _ItemTypes;
+        private Invert.Core.GraphDesigner.NodeConfig<LibraryNode> _Library;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<StringNode> _String;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ComponentGroupNode> _ComponentGroup;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<BoolNode> _Bool;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<VariableReferenceNode> _VariableReference;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<StopTimerNode> _StopTimer;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<FloatNode> _Float;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<UserMethodNode> _UserMethod;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<SetVariableNode> _SetVariable;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<VariableNode> _Variable;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ComponentsNode> _Components;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ContextNode> _Context;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<Vector3Node> _Vector3;
         
         private Invert.Core.GraphDesigner.NodeConfig<EventNode> _Event;
         
+        private Invert.Core.GraphDesigner.NodeConfig<LiteralNode> _Literal;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ComponentNode> _Component;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<IntNode> _Int;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<Vector2Node> _Vector2;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ActionLibraryNode> _ActionLibrary;
+        
         private Invert.Core.GraphDesigner.NodeConfig<PublishNode> _Publish;
         
-        private Invert.Core.GraphDesigner.NodeConfig<UserMethodNode> _UserMethod;
+        private Invert.Core.GraphDesigner.NodeConfig<StartTimerNode> _StartTimer;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<TimerNode> _Timer;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ItemTypesNode> _ItemTypes;
         
         private Invert.Core.GraphDesigner.NodeConfig<ActionNode> _Action;
         
         private Invert.Core.GraphDesigner.NodeConfig<HandlerNode> _Handler;
         
-        private Invert.Core.GraphDesigner.NodeConfig<ComponentGroupNode> _ComponentGroup;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<VariableNode> _Variable;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<ContextNode> _Context;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<TimerNode> _Timer;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<StartTimerNode> _StartTimer;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<StopTimerNode> _StopTimer;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<ComponentsNode> _Components;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<LiteralNode> _Literal;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<StringLiteralNode> _StringLiteral;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<SequenceItemNode> _SequenceItem;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<VariableReferenceNode> _VariableReference;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<Vector3Node> _Vector3;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<Vector2Node> _Vector2;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<StringNode> _String;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<BoolNode> _Bool;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<FloatNode> _Float;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<IntNode> _Int;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<ColorNode> _Color;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<CustomActionNode> _CustomAction;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<ActionLibraryNode> _ActionLibrary;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<LibraryNode> _Library;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<SetVariableNode> _SetVariable;
-        
         private Invert.Core.GraphDesigner.NodeConfig<ModuleNode> _Module;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<SystemNode> _System;
         
         private Invert.Core.GraphDesigner.NodeConfig<EntityNode> _Entity;
         
-        public Invert.Core.GraphDesigner.NodeConfig<ComponentNode> Component {
+        private Invert.Core.GraphDesigner.NodeConfig<ColorNode> _Color;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<SequenceItemNode> _SequenceItem;
+        
+        public Invert.Core.GraphDesigner.NodeConfig<CustomActionNode> CustomAction {
             get {
-                return _Component;
+                return _CustomAction;
             }
             set {
-                _Component = value;
+                _CustomAction = value;
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<SystemNode> System {
+        public Invert.Core.GraphDesigner.NodeConfig<StringLiteralNode> StringLiteral {
             get {
-                return _System;
+                return _StringLiteral;
             }
             set {
-                _System = value;
+                _StringLiteral = value;
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<ItemTypesNode> ItemTypes {
+        public Invert.Core.GraphDesigner.NodeConfig<LibraryNode> Library {
             get {
-                return _ItemTypes;
+                return _Library;
             }
             set {
-                _ItemTypes = value;
+                _Library = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<StringNode> String {
+            get {
+                return _String;
+            }
+            set {
+                _String = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ComponentGroupNode> ComponentGroup {
+            get {
+                return _ComponentGroup;
+            }
+            set {
+                _ComponentGroup = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<BoolNode> Bool {
+            get {
+                return _Bool;
+            }
+            set {
+                _Bool = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<VariableReferenceNode> VariableReference {
+            get {
+                return _VariableReference;
+            }
+            set {
+                _VariableReference = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<StopTimerNode> StopTimer {
+            get {
+                return _StopTimer;
+            }
+            set {
+                _StopTimer = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<FloatNode> Float {
+            get {
+                return _Float;
+            }
+            set {
+                _Float = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<UserMethodNode> UserMethod {
+            get {
+                return _UserMethod;
+            }
+            set {
+                _UserMethod = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<SetVariableNode> SetVariable {
+            get {
+                return _SetVariable;
+            }
+            set {
+                _SetVariable = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<VariableNode> Variable {
+            get {
+                return _Variable;
+            }
+            set {
+                _Variable = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ComponentsNode> Components {
+            get {
+                return _Components;
+            }
+            set {
+                _Components = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ContextNode> Context {
+            get {
+                return _Context;
+            }
+            set {
+                _Context = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<Vector3Node> Vector3 {
+            get {
+                return _Vector3;
+            }
+            set {
+                _Vector3 = value;
             }
         }
         
@@ -119,6 +227,51 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<LiteralNode> Literal {
+            get {
+                return _Literal;
+            }
+            set {
+                _Literal = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ComponentNode> Component {
+            get {
+                return _Component;
+            }
+            set {
+                _Component = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<IntNode> Int {
+            get {
+                return _Int;
+            }
+            set {
+                _Int = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<Vector2Node> Vector2 {
+            get {
+                return _Vector2;
+            }
+            set {
+                _Vector2 = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ActionLibraryNode> ActionLibrary {
+            get {
+                return _ActionLibrary;
+            }
+            set {
+                _ActionLibrary = value;
+            }
+        }
+        
         public Invert.Core.GraphDesigner.NodeConfig<PublishNode> Publish {
             get {
                 return _Publish;
@@ -128,12 +281,30 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<UserMethodNode> UserMethod {
+        public Invert.Core.GraphDesigner.NodeConfig<StartTimerNode> StartTimer {
             get {
-                return _UserMethod;
+                return _StartTimer;
             }
             set {
-                _UserMethod = value;
+                _StartTimer = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<TimerNode> Timer {
+            get {
+                return _Timer;
+            }
+            set {
+                _Timer = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ItemTypesNode> ItemTypes {
+            get {
+                return _ItemTypes;
+            }
+            set {
+                _ItemTypes = value;
             }
         }
         
@@ -155,210 +326,21 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<ComponentGroupNode> ComponentGroup {
-            get {
-                return _ComponentGroup;
-            }
-            set {
-                _ComponentGroup = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<VariableNode> Variable {
-            get {
-                return _Variable;
-            }
-            set {
-                _Variable = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<ContextNode> Context {
-            get {
-                return _Context;
-            }
-            set {
-                _Context = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<TimerNode> Timer {
-            get {
-                return _Timer;
-            }
-            set {
-                _Timer = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<StartTimerNode> StartTimer {
-            get {
-                return _StartTimer;
-            }
-            set {
-                _StartTimer = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<StopTimerNode> StopTimer {
-            get {
-                return _StopTimer;
-            }
-            set {
-                _StopTimer = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<ComponentsNode> Components {
-            get {
-                return _Components;
-            }
-            set {
-                _Components = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<LiteralNode> Literal {
-            get {
-                return _Literal;
-            }
-            set {
-                _Literal = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<StringLiteralNode> StringLiteral {
-            get {
-                return _StringLiteral;
-            }
-            set {
-                _StringLiteral = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<SequenceItemNode> SequenceItem {
-            get {
-                return _SequenceItem;
-            }
-            set {
-                _SequenceItem = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<VariableReferenceNode> VariableReference {
-            get {
-                return _VariableReference;
-            }
-            set {
-                _VariableReference = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<Vector3Node> Vector3 {
-            get {
-                return _Vector3;
-            }
-            set {
-                _Vector3 = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<Vector2Node> Vector2 {
-            get {
-                return _Vector2;
-            }
-            set {
-                _Vector2 = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<StringNode> String {
-            get {
-                return _String;
-            }
-            set {
-                _String = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<BoolNode> Bool {
-            get {
-                return _Bool;
-            }
-            set {
-                _Bool = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<FloatNode> Float {
-            get {
-                return _Float;
-            }
-            set {
-                _Float = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<IntNode> Int {
-            get {
-                return _Int;
-            }
-            set {
-                _Int = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<ColorNode> Color {
-            get {
-                return _Color;
-            }
-            set {
-                _Color = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<CustomActionNode> CustomAction {
-            get {
-                return _CustomAction;
-            }
-            set {
-                _CustomAction = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<ActionLibraryNode> ActionLibrary {
-            get {
-                return _ActionLibrary;
-            }
-            set {
-                _ActionLibrary = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<LibraryNode> Library {
-            get {
-                return _Library;
-            }
-            set {
-                _Library = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<SetVariableNode> SetVariable {
-            get {
-                return _SetVariable;
-            }
-            set {
-                _SetVariable = value;
-            }
-        }
-        
         public Invert.Core.GraphDesigner.NodeConfig<ModuleNode> Module {
             get {
                 return _Module;
             }
             set {
                 _Module = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<SystemNode> System {
+            get {
+                return _System;
+            }
+            set {
+                _System = value;
             }
         }
         
@@ -371,6 +353,32 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<ColorNode> Color {
+            get {
+                return _Color;
+            }
+            set {
+                _Color = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<SequenceItemNode> SequenceItem {
+            get {
+                return _SequenceItem;
+            }
+            set {
+                _SequenceItem = value;
+            }
+        }
+        
+        public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetOutputsSelectionCommand() {
+            return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
+        }
+        
+        public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetInputsSelectionCommand() {
+            return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
+        }
+        
         public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetPropertiesSelectionCommand() {
             return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
         }
@@ -379,154 +387,159 @@ namespace Invert.uFrame.ECS {
             return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
         }
         
-        public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetInputsSelectionCommand() {
-            return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
-        }
-        
-        public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetOutputsSelectionCommand() {
-            return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
-        }
-        
         public override void Initialize(Invert.IOC.UFrameContainer container) {
-            //container.RegisterInstance<IDocumentationProvider>(new uFrameECSDocumentationProvider(), "uFrameECS");
+            container.RegisterInstance<IDocumentationProvider>(new uFrameECSDocumentationProvider(), "uFrameECS");
             container.AddItem<ComponentsReference>();
-            container.AddItem<EventsReference>();
+            container.AddItem<SelectReference>();
+            container.RegisterInstance<IEditorCommand>(GetOutputsSelectionCommand(), typeof(OutputsChildItem).Name + "TypeSelection");;
+            container.AddTypeItem<OutputsChildItem>();
+            container.RegisterInstance<IEditorCommand>(GetInputsSelectionCommand(), typeof(InputsChildItem).Name + "TypeSelection");;
+            container.AddTypeItem<InputsChildItem>();
             container.RegisterInstance<IEditorCommand>(GetPropertiesSelectionCommand(), typeof(PropertiesChildItem).Name + "TypeSelection");;
             container.AddTypeItem<PropertiesChildItem>();
             container.RegisterInstance<IEditorCommand>(GetCollectionsSelectionCommand(), typeof(CollectionsChildItem).Name + "TypeSelection");;
             container.AddTypeItem<CollectionsChildItem>();
-            container.AddItem<SignalsReference>();
-            container.AddItem<SelectReference>();
-            container.RegisterInstance<IEditorCommand>(GetInputsSelectionCommand(), typeof(InputsChildItem).Name + "TypeSelection");;
-            container.AddTypeItem<InputsChildItem>();
-            container.RegisterInstance<IEditorCommand>(GetOutputsSelectionCommand(), typeof(OutputsChildItem).Name + "TypeSelection");;
-            container.AddTypeItem<OutputsChildItem>();
             container.AddItem<BranchesChildItem>();
-            Component = container.AddNode<ComponentNode,ComponentNodeViewModel,ComponentNodeDrawer>("Component");
-            Component.Color(NodeColor.Orange);
-            System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
-            System.Color(NodeColor.Purple);
-            System.HasSubNode<ComponentNode>();
-            System.HasSubNode<HandlerNode>();
-            System.HasSubNode<ContextNode>();
-            System.HasSubNode<CustomActionNode>();
-            ItemTypes = container.AddNode<ItemTypesNode,ItemTypesNodeViewModel,ItemTypesNodeDrawer>("ItemTypes");
-            ItemTypes.Color(NodeColor.Gray);
-            Event = container.AddNode<EventNode,EventNodeViewModel,EventNodeDrawer>("Event");
-            Event.Inheritable();
-            Event.Color(NodeColor.YellowGreen);
-            Event.HasSubNode<ComponentNode>();
-            Event.HasSubNode<PublishNode>();
-            Event.HasSubNode<UserMethodNode>();
-            Event.HasSubNode<ActionNode>();
-            Publish = container.AddNode<PublishNode,PublishNodeViewModel,PublishNodeDrawer>("Publish");
-            Publish.Color(NodeColor.Green);
-            UserMethod = container.AddNode<UserMethodNode,UserMethodNodeViewModel,UserMethodNodeDrawer>("UserMethod");
-            UserMethod.Color(NodeColor.Purple);
-            Action = container.AddNode<ActionNode,ActionNodeViewModel,ActionNodeDrawer>("Action");
-            Action.Color(NodeColor.Gray);
-            Handler = container.AddNode<HandlerNode,HandlerNodeViewModel,HandlerNodeDrawer>("Handler");
-            Handler.Color(NodeColor.Red);
-            Handler.HasSubNode<ComponentNode>();
-            Handler.HasSubNode<UserMethodNode>();
-            Handler.HasSubNode<ActionNode>();
-            Handler.HasSubNode<SequenceItemNode>();
-            Handler.HasSubNode<VariableReferenceNode>();
-            Handler.HasSubNode<Vector3Node>();
-            Handler.HasSubNode<Vector2Node>();
-            Handler.HasSubNode<StringNode>();
-            Handler.HasSubNode<BoolNode>();
-            Handler.HasSubNode<FloatNode>();
-            Handler.HasSubNode<IntNode>();
-            Handler.HasSubNode<ColorNode>();
-            Handler.HasSubNode<SetVariableNode>();
-            ComponentGroup = container.AddNode<ComponentGroupNode,ComponentGroupNodeViewModel,ComponentGroupNodeDrawer>("ComponentGroup");
-            ComponentGroup.Color(NodeColor.Purple);
-            ComponentGroup.HasSubNode<VariableNode>();
-            Variable = container.AddNode<VariableNode,VariableNodeViewModel,VariableNodeDrawer>("Variable");
-            Variable.Color(NodeColor.Gray);
-            Context = container.AddNode<ContextNode,ContextNodeViewModel,ContextNodeDrawer>("Context");
-            Context.Color(NodeColor.Gray);
-            Context.HasSubNode<ComponentNode>();
-            Context.HasSubNode<VariableNode>();
-            Context.HasSubNode<LiteralNode>();
-            Context.HasSubNode<StringLiteralNode>();
-            Timer = container.AddNode<TimerNode,TimerNodeViewModel,TimerNodeDrawer>("Timer");
-            Timer.Color(NodeColor.Purple);
-            StartTimer = container.AddNode<StartTimerNode,StartTimerNodeViewModel,StartTimerNodeDrawer>("StartTimer");
-            StartTimer.Color(NodeColor.Gray);
-            StopTimer = container.AddNode<StopTimerNode,StopTimerNodeViewModel,StopTimerNodeDrawer>("StopTimer");
-            StopTimer.Color(NodeColor.Gray);
-            Components = container.AddGraph<ComponentsGraph, ComponentsNode>("ComponentsGraph");
-            Components.Color(NodeColor.Green);
-            Components.HasSubNode<ComponentNode>();
-            Components.HasSubNode<ContextNode>();
-            Literal = container.AddNode<LiteralNode,LiteralNodeViewModel,LiteralNodeDrawer>("Literal");
-            Literal.Color(NodeColor.Gray);
+            CustomAction = container.AddNode<CustomActionNode,CustomActionNodeViewModel,CustomActionNodeDrawer>("CustomAction");
+            CustomAction.Color(NodeColor.Gray);
             StringLiteral = container.AddNode<StringLiteralNode,StringLiteralNodeViewModel,StringLiteralNodeDrawer>("StringLiteral");
             StringLiteral.Color(NodeColor.Gray);
+            Library = container.AddNode<LibraryNode,LibraryNodeViewModel,LibraryNodeDrawer>("Library");
+            Library.Color(NodeColor.Gray);
+            Library.HasSubNode<CustomActionNode>();
+            Library.HasSubNode<LibraryNode>();
+            Library.HasSubNode<EventNode>();
+            String = container.AddNode<StringNode,StringNodeViewModel,StringNodeDrawer>("String");
+            String.Color(NodeColor.Gray);
+            ComponentGroup = container.AddNode<ComponentGroupNode,ComponentGroupNodeViewModel,ComponentGroupNodeDrawer>("ComponentGroup");
+            ComponentGroup.Color(NodeColor.Gray);
+            ComponentGroup.HasSubNode<ComponentGroupNode>();
+            ComponentGroup.HasSubNode<VariableNode>();
+            Bool = container.AddNode<BoolNode,BoolNodeViewModel,BoolNodeDrawer>("Bool");
+            Bool.Color(NodeColor.Gray);
+            VariableReference = container.AddNode<VariableReferenceNode,VariableReferenceNodeViewModel,VariableReferenceNodeDrawer>("VariableReference");
+            VariableReference.Color(NodeColor.Gray);
+            VariableReference.HasSubNode<VariableReferenceNode>();
+            StopTimer = container.AddNode<StopTimerNode,StopTimerNodeViewModel,StopTimerNodeDrawer>("StopTimer");
+            StopTimer.Color(NodeColor.Gray);
+            Float = container.AddNode<FloatNode,FloatNodeViewModel,FloatNodeDrawer>("Float");
+            Float.Color(NodeColor.Gray);
+            UserMethod = container.AddNode<UserMethodNode,UserMethodNodeViewModel,UserMethodNodeDrawer>("UserMethod");
+            UserMethod.Color(NodeColor.Gray);
+            UserMethod.HasSubNode<UserMethodNode>();
+            SetVariable = container.AddNode<SetVariableNode,SetVariableNodeViewModel,SetVariableNodeDrawer>("SetVariable");
+            SetVariable.Color(NodeColor.Gray);
+            Variable = container.AddNode<VariableNode,VariableNodeViewModel,VariableNodeDrawer>("Variable");
+            Variable.Color(NodeColor.Gray);
+            Components = container.AddNode<ComponentsNode,ComponentsNodeViewModel,ComponentsNodeDrawer>("Components");
+            Components.Color(NodeColor.Gray);
+            Components.HasSubNode<ComponentNode>();
+            Components.HasSubNode<ContextNode>();
+            Components.HasSubNode<ComponentsNode>();
+            Context = container.AddNode<ContextNode,ContextNodeViewModel,ContextNodeDrawer>("Context");
+            Context.Color(NodeColor.Gray);
+            Context.HasSubNode<ContextNode>();
+            Context.HasSubNode<StringLiteralNode>();
+            Context.HasSubNode<LiteralNode>();
+            Context.HasSubNode<VariableNode>();
+            Context.HasSubNode<ComponentNode>();
+            Vector3 = container.AddNode<Vector3Node,Vector3NodeViewModel,Vector3NodeDrawer>("Vector3");
+            Vector3.Color(NodeColor.Gray);
+            Event = container.AddNode<EventNode,EventNodeViewModel,EventNodeDrawer>("Event");
+            Event.Inheritable();
+            Event.Color(NodeColor.Green);
+            Event.HasSubNode<ActionNode>();
+            Event.HasSubNode<EventNode>();
+            Event.HasSubNode<UserMethodNode>();
+            Event.HasSubNode<PublishNode>();
+            Event.HasSubNode<ComponentNode>();
+            Literal = container.AddNode<LiteralNode,LiteralNodeViewModel,LiteralNodeDrawer>("Literal");
+            Literal.Color(NodeColor.Gray);
+            Component = container.AddNode<ComponentNode,ComponentNodeViewModel,ComponentNodeDrawer>("Component");
+            Component.Color(NodeColor.Gray);
+            Component.HasSubNode<ComponentNode>();
+            Int = container.AddNode<IntNode,IntNodeViewModel,IntNodeDrawer>("Int");
+            Int.Color(NodeColor.Gray);
+            Vector2 = container.AddNode<Vector2Node,Vector2NodeViewModel,Vector2NodeDrawer>("Vector2");
+            Vector2.Color(NodeColor.Gray);
+            ActionLibrary = container.AddNode<ActionLibraryNode,ActionLibraryNodeViewModel,ActionLibraryNodeDrawer>("ActionLibrary");
+            ActionLibrary.Color(NodeColor.Gray);
+            ActionLibrary.HasSubNode<ActionLibraryNode>();
+            Publish = container.AddNode<PublishNode,PublishNodeViewModel,PublishNodeDrawer>("Publish");
+            Publish.Color(NodeColor.Gray);
+            Publish.HasSubNode<PublishNode>();
+            StartTimer = container.AddNode<StartTimerNode,StartTimerNodeViewModel,StartTimerNodeDrawer>("StartTimer");
+            StartTimer.Color(NodeColor.Gray);
+            Timer = container.AddNode<TimerNode,TimerNodeViewModel,TimerNodeDrawer>("Timer");
+            Timer.Color(NodeColor.Gray);
+            ItemTypes = container.AddNode<ItemTypesNode,ItemTypesNodeViewModel,ItemTypesNodeDrawer>("ItemTypes");
+            ItemTypes.Color(NodeColor.Gray);
+            ItemTypes.HasSubNode<ItemTypesNode>();
+            Action = container.AddNode<ActionNode,ActionNodeViewModel,ActionNodeDrawer>("Action");
+            Action.Color(NodeColor.Gray);
+            Action.HasSubNode<ActionNode>();
+            Handler = container.AddNode<HandlerNode,HandlerNodeViewModel,HandlerNodeDrawer>("Handler");
+            Handler.Color(NodeColor.Gray);
+            Handler.HasSubNode<SetVariableNode>();
+            Handler.HasSubNode<ColorNode>();
+            Handler.HasSubNode<UserMethodNode>();
+            Handler.HasSubNode<ActionNode>();
+            Handler.HasSubNode<ComponentNode>();
+            Handler.HasSubNode<VariableReferenceNode>();
+            Handler.HasSubNode<IntNode>();
+            Handler.HasSubNode<Vector2Node>();
+            Handler.HasSubNode<FloatNode>();
+            Handler.HasSubNode<BoolNode>();
+            Handler.HasSubNode<HandlerNode>();
+            Handler.HasSubNode<SequenceItemNode>();
+            Handler.HasSubNode<Vector3Node>();
+            Handler.HasSubNode<StringNode>();
+            Module = container.AddGraph<ModuleGraph, ModuleNode>("ModuleGraph");
+            Module.Color(NodeColor.Gray);
+            Module.HasSubNode<EntityNode>();
+            Module.HasSubNode<CustomActionNode>();
+            Module.HasSubNode<ContextNode>();
+            Module.HasSubNode<ComponentNode>();
+            Module.HasSubNode<ModuleNode>();
+            Module.HasSubNode<EventNode>();
+            Module.HasSubNode<SystemNode>();
+            System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
+            System.Color(NodeColor.Gray);
+            System.HasSubNode<ComponentNode>();
+            System.HasSubNode<CustomActionNode>();
+            System.HasSubNode<HandlerNode>();
+            System.HasSubNode<SystemNode>();
+            System.HasSubNode<ContextNode>();
+            Entity = container.AddNode<EntityNode,EntityNodeViewModel,EntityNodeDrawer>("Entity");
+            Entity.Color(NodeColor.Gray);
+            Color = container.AddNode<ColorNode,ColorNodeViewModel,ColorNodeDrawer>("Color");
+            Color.Color(NodeColor.Gray);
             SequenceItem = container.AddNode<SequenceItemNode,SequenceItemNodeViewModel,SequenceItemNodeDrawer>("SequenceItem");
             SequenceItem.Color(NodeColor.Gray);
-            VariableReference = container.AddNode<VariableReferenceNode,VariableReferenceNodeViewModel,VariableReferenceNodeDrawer>("VariableReference");
-            VariableReference.Color(NodeColor.Green);
-            Vector3 = container.AddNode<Vector3Node,Vector3NodeViewModel,Vector3NodeDrawer>("Vector3");
-            Vector3.Color(NodeColor.DarkGray);
-            Vector2 = container.AddNode<Vector2Node,Vector2NodeViewModel,Vector2NodeDrawer>("Vector2");
-            Vector2.Color(NodeColor.DarkGray);
-            String = container.AddNode<StringNode,StringNodeViewModel,StringNodeDrawer>("String");
-            String.Color(NodeColor.DarkGray);
-            Bool = container.AddNode<BoolNode,BoolNodeViewModel,BoolNodeDrawer>("Bool");
-            Bool.Color(NodeColor.DarkGray);
-            Float = container.AddNode<FloatNode,FloatNodeViewModel,FloatNodeDrawer>("Float");
-            Float.Color(NodeColor.DarkGray);
-            Int = container.AddNode<IntNode,IntNodeViewModel,IntNodeDrawer>("Int");
-            Int.Color(NodeColor.DarkGray);
-            Color = container.AddNode<ColorNode,ColorNodeViewModel,ColorNodeDrawer>("Color");
-            Color.Color(NodeColor.DarkGray);
-            CustomAction = container.AddNode<CustomActionNode,CustomActionNodeViewModel,CustomActionNodeDrawer>("CustomAction");
-            CustomAction.Color(NodeColor.Red);
-            ActionLibrary = container.AddGraph<ActionLibraryGraph, ActionLibraryNode>("ActionLibraryGraph");
-            ActionLibrary.Color(NodeColor.DarkDarkGray);
-            Library = container.AddGraph<LibraryGraph, LibraryNode>("LibraryGraph");
-            Library.Color(NodeColor.DarkDarkGray);
-            Library.HasSubNode<EventNode>();
-            Library.HasSubNode<CustomActionNode>();
-            SetVariable = container.AddNode<SetVariableNode,SetVariableNodeViewModel,SetVariableNodeDrawer>("SetVariable");
-            SetVariable.Color(NodeColor.Blue);
-            Module = container.AddGraph<ModuleGraph, ModuleNode>("ModuleGraph");
-            Module.Color(NodeColor.Blue);
-            Module.HasSubNode<ComponentNode>();
-            Module.HasSubNode<SystemNode>();
-            Module.HasSubNode<EventNode>();
-            Module.HasSubNode<ContextNode>();
-            Module.HasSubNode<CustomActionNode>();
-            Module.HasSubNode<EntityNode>();
-            Entity = container.AddNode<EntityNode,EntityNodeViewModel,EntityNodeDrawer>("Entity");
-            Entity.Color(NodeColor.Purple);
-            container.Connectable<ComponentNode,ComponentsReference>();
-            container.Connectable<ComponentNode,Component>();
-            container.Connectable<ComponentNode,FilterBy>();
-            container.Connectable<ComponentNode,SelectReference>();
-            container.Connectable<ComponentNode,HandlerNode>();
-            container.Connectable<ComponentsReference,Variables>();
-            container.Connectable<PropertiesChildItem,Variables>();
-            container.Connectable<CollectionsChildItem,Variables>();
-            container.Connectable<Each,ActionNode>();
+            container.Connectable<ComponentGroupNode,ComponentsReference>();
+            container.Connectable<ComponentGroupNode,FilterBy>();
+            container.Connectable<ComponentGroupNode,SelectReference>();
+            container.Connectable<ComponentGroupNode,HandlerNode>();
+            container.Connectable<VariableReferenceNode,Value>();
+            container.Connectable<VariableReferenceNode,Variable>();
+            container.Connectable<ContextNode,SelectReference>();
+            container.Connectable<ContextNode,HandlerNode>();
             container.Connectable<EventNode,Event>();
+            container.Connectable<LiteralNode,Value>();
+            container.Connectable<ComponentNode,Component>();
+            container.Connectable<ComponentNode,SelectReference>();
+            container.Connectable<ComponentNode,FilterBy>();
+            container.Connectable<ComponentNode,HandlerNode>();
+            container.Connectable<ComponentNode,ComponentsReference>();
+            container.Connectable<TimerNode,Timer>();
             container.Connectable<ActionNode,PublishNode>();
             container.Connectable<ActionNode,ActionNode>();
             container.Connectable<HandlerNode,SequenceItemNode>();
-            container.Connectable<ComponentGroupNode,FilterBy>();
-            container.Connectable<ComponentGroupNode,ComponentsReference>();
-            container.Connectable<ComponentGroupNode,SelectReference>();
-            container.Connectable<ComponentGroupNode,HandlerNode>();
-            container.Connectable<ContextNode,SelectReference>();
-            container.Connectable<ContextNode,HandlerNode>();
-            container.Connectable<TimerNode,Timer>();
-            container.Connectable<LiteralNode,Value>();
             container.Connectable<SequenceItemNode,SequenceItemNode>();
-            container.Connectable<VariableReferenceNode,Variable>();
-            container.Connectable<VariableReferenceNode,Value>();
+            container.Connectable<Each,ActionNode>();
+            container.Connectable<ComponentsReference,Variables>();
+            container.Connectable<PropertiesChildItem,Variables>();
+            container.Connectable<CollectionsChildItem,Variables>();
         }
     }
 }
