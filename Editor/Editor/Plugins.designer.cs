@@ -333,7 +333,7 @@ namespace Invert.uFrame.ECS {
         }
         
         public override void Initialize(Invert.IOC.UFrameContainer container) {
-            container.RegisterInstance<IDocumentationProvider>(new uFrameECSDocumentationProvider(), "uFrameECS");
+            
             container.AddItem<ComponentsReference>();
             container.AddItem<SelectReference>();
             container.RegisterInstance<IEditorCommand>(GetOutputsSelectionCommand(), typeof(OutputsChildItem).Name + "TypeSelection");;
