@@ -43,7 +43,7 @@ namespace Invert.uFrame.ECS {
                 base(viewModel) {
         }
     }
-
+    
     public class BoolNodeDrawerBase : GenericNodeDrawer<BoolNode,BoolNodeViewModel> {
         
         public BoolNodeDrawerBase(BoolNodeViewModel viewModel) : 
@@ -93,7 +93,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-
     public class ContextNodeDrawerBase : GenericNodeDrawer<ContextNode,ContextNodeViewModel> {
         
         public ContextNodeDrawerBase(ContextNodeViewModel viewModel) : 
@@ -143,7 +142,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-
     public class PublishNodeDrawerBase : GenericNodeDrawer<PublishNode,PublishNodeViewModel> {
         
         public PublishNodeDrawerBase(PublishNodeViewModel viewModel) : 
@@ -157,7 +155,6 @@ namespace Invert.uFrame.ECS {
                 base(viewModel) {
         }
     }
-    
     
     public class ItemTypesNodeDrawerBase : GenericNodeDrawer<ItemTypesNode,ItemTypesNodeViewModel> {
         

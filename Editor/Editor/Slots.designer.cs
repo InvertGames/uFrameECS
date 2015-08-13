@@ -42,11 +42,11 @@ namespace Invert.uFrame.ECS {
     public partial interface IVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class FilterByBase : SingleInputSlot<IFilterByConnectable> {
+    public class ValueBase : SingleInputSlot<IValueConnectable> {
         
         public override string Name {
             get {
-                return "Filter By";
+                return "Value";
             }
             set {
             }
@@ -65,33 +65,7 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public partial interface IFilterByConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
-    public class VariableInputBase : SingleInputSlot<IVariableInputConnectable> {
-        
-        public override string Name {
-            get {
-                return "VariableInput";
-            }
-            set {
-            }
-        }
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface IVariableInputConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    public partial interface IValueConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
     public class TimerBase : SingleInputSlot<ITimerConnectable> {
@@ -120,11 +94,11 @@ namespace Invert.uFrame.ECS {
     public partial interface ITimerConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ValueBase : SingleInputSlot<IValueConnectable> {
+    public class FilterByBase : SingleInputSlot<IFilterByConnectable> {
         
         public override string Name {
             get {
-                return "Value";
+                return "Filter By";
             }
             set {
             }
@@ -143,7 +117,7 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public partial interface IValueConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    public partial interface IFilterByConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
     public class VariablesBase : SingleInputSlot<IVariablesConnectable> {
@@ -222,58 +196,6 @@ namespace Invert.uFrame.ECS {
     }
     
     public partial interface IComponentConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
-    public class VariableOutputBase : SingleOutputSlot<IVariableOutputConnectable> {
-        
-        public override string Name {
-            get {
-                return "VariableOutput";
-            }
-            set {
-            }
-        }
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface IVariableOutputConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
-    public class FilterBase : SingleOutputSlot<IFilterConnectable> {
-        
-        public override string Name {
-            get {
-                return "Filter";
-            }
-            set {
-            }
-        }
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface IFilterConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
     public class EachBase : SingleOutputSlot<IEachConnectable>, IActionConnectable {

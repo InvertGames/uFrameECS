@@ -110,7 +110,6 @@ namespace Invert.uFrame.ECS {
     public partial interface IStringConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-
     public class BoolNodeBase : LiteralNode {
         
         public override bool AllowMultipleInputs {
@@ -280,24 +279,6 @@ namespace Invert.uFrame.ECS {
     }
     
     public partial interface IVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
-    public class ComponentsNodeBase : Invert.Core.GraphDesigner.GenericNode {
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface IComponentsConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
     public class ContextNodeBase : Invert.Core.GraphDesigner.GenericNode, ISelectConnectable, IHandlerConnectable {
@@ -473,24 +454,6 @@ namespace Invert.uFrame.ECS {
     public partial interface IVector2Connectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ActionLibraryNodeBase : Invert.Core.GraphDesigner.GenericNode {
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface IActionLibraryConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
     public class PublishNodeBase : ActionNode {
         
         private Variables _Variables;
@@ -572,29 +535,9 @@ namespace Invert.uFrame.ECS {
     public partial interface IStartTimerConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class TimerNodeBase : ActionNode, ITimerConnectable {
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface ITimerConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
     public class ItemTypesNodeBase : Invert.Core.GraphDesigner.GenericNode {
         
         private FilterBy _FilterBy;
-        
-    
         
         private Variables _Variables;
         
@@ -602,7 +545,6 @@ namespace Invert.uFrame.ECS {
         
         private Component _Component;
         
-    
         private Each _Each;
         
         public override bool AllowMultipleInputs {
@@ -656,7 +598,6 @@ namespace Invert.uFrame.ECS {
                 _FilterBy = value;
             }
         }
-
         
         [Invert.Core.GraphDesigner.InputSlot("Variables", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual Variables VariablesInputSlot {

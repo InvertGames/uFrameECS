@@ -42,7 +42,7 @@ namespace Invert.uFrame.ECS {
                 base(graphItemObject, diagramViewModel) {
         }
     }
-
+    
     public class BoolNodeViewModelBase : LiteralNodeViewModel {
         
         public BoolNodeViewModelBase(BoolNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
@@ -92,7 +92,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-
     public class ContextNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ContextNode> {
         
         public ContextNodeViewModelBase(ContextNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
@@ -142,7 +141,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-
     public class PublishNodeViewModelBase : ActionNodeViewModel {
         
         public PublishNodeViewModelBase(PublishNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
@@ -157,7 +155,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-
     public class ItemTypesNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ItemTypesNode> {
         
         public ItemTypesNodeViewModelBase(ItemTypesNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 

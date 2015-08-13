@@ -16,24 +16,6 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class ComponentsReferenceBase : Invert.Core.GraphDesigner.GenericReferenceItem<IComponentsConnectable>, IVariablesConnectable {
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface IComponentsConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
     public class SelectReferenceBase : Invert.Core.GraphDesigner.GenericReferenceItem<ISelectConnectable> {
         
         public override bool AllowMultipleInputs {
@@ -50,5 +32,23 @@ namespace Invert.uFrame.ECS {
     }
     
     public partial interface ISelectConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class ComponentsReferenceBase : Invert.Core.GraphDesigner.GenericReferenceItem<IComponentsConnectable>, IVariablesConnectable {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IComponentsConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
 }
