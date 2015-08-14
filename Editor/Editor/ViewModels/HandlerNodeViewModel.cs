@@ -69,7 +69,8 @@ namespace Invert.uFrame.ECS {
                         Name = item.EventFieldInfo.Name,
                         IsInput = true,
                         IsOutput = false,
-                        IsNewLine = true
+                        IsNewLine = true,
+                        AllowSelection = true
                     };
                     ContentItems.Add(vm);
                 }

@@ -33,8 +33,8 @@ namespace Invert.uFrame.ECS.Templates
 //            RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentGroupNode,ComponentGroupTemplate>();
   //          RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentGroupNode,ComponentGroupManagerTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<EventNode,EventTemplate>();
-            RegisteredTemplateGeneratorsFactory.RegisterTemplate<ContextNode,ContextTemplate>();
-            RegisteredTemplateGeneratorsFactory.RegisterTemplate<ContextNode, ContextItemTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<GroupNode,ContextTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<GroupNode, ContextItemTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<HandlerNode, HandlerTemplate>();
 //            RegisteredTemplateGeneratorsFactory.RegisterTemplate<EntityNode, EntityTemplate>();
 
@@ -189,11 +189,11 @@ namespace Invert.uFrame.ECS.Templates
             }
         }
 
-        public IEnumerable<ContextNode> FilterNodes
+        public IEnumerable<GroupNode> FilterNodes
         {
             get
             {
-                foreach (var item in Ctx.Data.Repository.All<ContextNode>())
+                foreach (var item in Ctx.Data.Repository.All<GroupNode>())
                 {
 
                     if (item.Graph.Identifier == Ctx.Data.Graph.Identifier)
@@ -258,14 +258,14 @@ namespace Invert.uFrame.ECS.Templates
     [RequiresNamespace("uFrame.ECS")]
     [RequiresNamespace("uFrame.Kernel")]
     [RequiresNamespace("UniRx")]
-    public partial class ContextTemplate : IClassTemplate<ContextNode>
+    public partial class ContextTemplate : IClassTemplate<GroupNode>
     {
 
         public IEnumerable<ComponentNode> SelectComponents
         {
             get
             {
-                return Ctx.Data.Select.Select(p => p.SourceItem).OfType<ComponentNode>();
+                return Ctx.Data.Require.Select(p => p.SourceItem).OfType<ComponentNode>();
             }
         }
         public string OutputPath
@@ -284,21 +284,21 @@ namespace Invert.uFrame.ECS.Templates
             this.Ctx.SetBaseType("ReactiveContext<{0}>",Ctx.Data.Name);
         }
 
-        public TemplateContext<ContextNode> Ctx { get; set; }
+        public TemplateContext<GroupNode> Ctx { get; set; }
     }
 
     [TemplateClass(TemplateLocation.DesignerFile, "{0}"), AsPartial]
     [RequiresNamespace("uFrame.ECS")]
     [RequiresNamespace("uFrame.Kernel")]
     [RequiresNamespace("UniRx")]
-    public partial class ContextItemTemplate : ContextItem, IClassTemplate<ContextNode>
+    public partial class ContextItemTemplate : ContextItem, IClassTemplate<GroupNode>
     {
 
         public IEnumerable<ComponentNode> SelectComponents
         {
             get
             {
-                return Ctx.Data.Select.Select(p => p.SourceItem).OfType<ComponentNode>();
+                return Ctx.Data.Require.Select(p => p.SourceItem).OfType<ComponentNode>();
             }
         }
         public string OutputPath
@@ -316,7 +316,7 @@ namespace Invert.uFrame.ECS.Templates
     
         }
 
-        public TemplateContext<ContextNode> Ctx { get; set; }
+        public TemplateContext<GroupNode> Ctx { get; set; }
     }
 
     [TemplateClass(TemplateLocation.DesignerFile), AsPartial]

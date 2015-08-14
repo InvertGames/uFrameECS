@@ -22,16 +22,16 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class StringLiteralNodeViewModelBase : VariableNodeViewModel {
+    public class DataNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<DataNode> {
         
-        public StringLiteralNodeViewModelBase(StringLiteralNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+        public DataNodeViewModelBase(DataNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
     }
     
-    public class LibraryNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<LibraryNode> {
+    public class StringLiteralNodeViewModelBase : VariableNodeViewModel {
         
-        public LibraryNodeViewModelBase(LibraryNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+        public StringLiteralNodeViewModelBase(StringLiteralNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
     }
@@ -46,6 +46,13 @@ namespace Invert.uFrame.ECS {
     public class BoolNodeViewModelBase : LiteralNodeViewModel {
         
         public BoolNodeViewModelBase(BoolNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
+    public class ModuleNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ModuleNode> {
+        
+        public ModuleNodeViewModelBase(ModuleNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
     }
@@ -92,9 +99,9 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class ContextNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ContextNode> {
+    public class GroupNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<GroupNode> {
         
-        public ContextNodeViewModelBase(ContextNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+        public GroupNodeViewModelBase(GroupNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
     }
@@ -148,13 +155,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class ItemTypesNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ItemTypesNode> {
-        
-        public ItemTypesNodeViewModelBase(ItemTypesNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
-                base(graphItemObject, diagramViewModel) {
-        }
-    }
-    
     public class ActionNodeViewModelBase : SequenceItemNodeViewModel {
         
         public ActionNodeViewModelBase(ActionNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
@@ -165,13 +165,6 @@ namespace Invert.uFrame.ECS {
     public class HandlerNodeViewModelBase : SequenceItemNodeViewModel {
         
         public HandlerNodeViewModelBase(HandlerNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
-                base(graphItemObject, diagramViewModel) {
-        }
-    }
-    
-    public class ModuleNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ModuleNode> {
-        
-        public ModuleNodeViewModelBase(ModuleNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
     }
@@ -200,13 +193,6 @@ namespace Invert.uFrame.ECS {
     public class SequenceItemNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<SequenceItemNode> {
         
         public SequenceItemNodeViewModelBase(SequenceItemNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
-                base(graphItemObject, diagramViewModel) {
-        }
-    }
-    
-    public class DataNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<DataNode> {
-        
-        public DataNodeViewModelBase(DataNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
     }

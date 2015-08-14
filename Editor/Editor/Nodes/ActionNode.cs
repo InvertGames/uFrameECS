@@ -15,7 +15,7 @@ namespace Invert.uFrame.ECS
         string ShortName { get; }
         ITypedItem SourceVariable { get; set; }
         string VariableName { get; set; }
-        string AsParameter { get; }
+        string AsParameter { get; } 
         bool IsSubVariable { get; set; }
         string VariableType { get; }
     }

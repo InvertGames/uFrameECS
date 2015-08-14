@@ -37,14 +37,13 @@ namespace Invert.uFrame.ECS {
             Action.AllowAddingInMenu = false;
             SequenceItem.AllowAddingInMenu = false;
             VariableReference.AllowAddingInMenu = false;
-            Context.Name = "Entity Group";
             CustomAction.Name = "Custom Action";
             System.Name = "System";
             Action.NodeColor.Literal = NodeColor.Green;
             System.HasSubNode<TypeReferenceNode>();
             Module.HasSubNode<TypeReferenceNode>();
-            System.HasSubNode<ComponentNode>();
-            System.HasSubNode<ContextNode>(); 
+            //System.HasSubNode<ComponentNode>();
+           // System.HasSubNode<ContextNode>(); 
               
             Component.AddFlag("Blackboard"); 
 
@@ -334,7 +333,6 @@ namespace Invert.uFrame.ECS {
 
         public void QueryContextMenu(ContextMenuUI ui, MouseEvent evt, object obj)
         {
-            
             if (obj is InputOutputViewModel)
             {
                 QuerySlotMenu(ui, (InputOutputViewModel) obj);
@@ -344,7 +342,6 @@ namespace Invert.uFrame.ECS {
                 ui.AddCommand(new ContextMenuItem()
                 {
                     Title = "Create New Module Workspace",
-
                     Command = new NewModuleWorkspace()
                     {
                         Name = "Test Workspace",

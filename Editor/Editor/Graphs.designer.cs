@@ -16,15 +16,12 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class LibraryGraphBase : GenericGraphData<LibraryNode> {
+    public class DataGraphBase : GenericGraphData<DataNode> {
     }
     
     public class ModuleGraphBase : GenericGraphData<ModuleNode> {
     }
     
     public class SystemGraphBase : GenericGraphData<SystemNode> {
-    }
-    
-    public class DataGraphBase : GenericGraphData<DataNode> {
     }
 }

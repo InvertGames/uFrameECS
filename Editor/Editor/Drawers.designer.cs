@@ -23,16 +23,16 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class StringLiteralNodeDrawerBase : GenericNodeDrawer<StringLiteralNode,StringLiteralNodeViewModel> {
+    public class DataNodeDrawerBase : GenericNodeDrawer<DataNode,DataNodeViewModel> {
         
-        public StringLiteralNodeDrawerBase(StringLiteralNodeViewModel viewModel) : 
+        public DataNodeDrawerBase(DataNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
     
-    public class LibraryNodeDrawerBase : GenericNodeDrawer<LibraryNode,LibraryNodeViewModel> {
+    public class StringLiteralNodeDrawerBase : GenericNodeDrawer<StringLiteralNode,StringLiteralNodeViewModel> {
         
-        public LibraryNodeDrawerBase(LibraryNodeViewModel viewModel) : 
+        public StringLiteralNodeDrawerBase(StringLiteralNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
@@ -47,6 +47,13 @@ namespace Invert.uFrame.ECS {
     public class BoolNodeDrawerBase : GenericNodeDrawer<BoolNode,BoolNodeViewModel> {
         
         public BoolNodeDrawerBase(BoolNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class ModuleNodeDrawerBase : GenericNodeDrawer<ModuleNode,ModuleNodeViewModel> {
+        
+        public ModuleNodeDrawerBase(ModuleNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
@@ -93,9 +100,9 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class ContextNodeDrawerBase : GenericNodeDrawer<ContextNode,ContextNodeViewModel> {
+    public class GroupNodeDrawerBase : GenericNodeDrawer<GroupNode,GroupNodeViewModel> {
         
-        public ContextNodeDrawerBase(ContextNodeViewModel viewModel) : 
+        public GroupNodeDrawerBase(GroupNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
@@ -149,13 +156,6 @@ namespace Invert.uFrame.ECS {
         }
     }
     
-    public class ItemTypesNodeDrawerBase : GenericNodeDrawer<ItemTypesNode,ItemTypesNodeViewModel> {
-        
-        public ItemTypesNodeDrawerBase(ItemTypesNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
     public class ActionNodeDrawerBase : GenericNodeDrawer<ActionNode,ActionNodeViewModel> {
         
         public ActionNodeDrawerBase(ActionNodeViewModel viewModel) : 
@@ -166,13 +166,6 @@ namespace Invert.uFrame.ECS {
     public class HandlerNodeDrawerBase : GenericNodeDrawer<HandlerNode,HandlerNodeViewModel> {
         
         public HandlerNodeDrawerBase(HandlerNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class ModuleNodeDrawerBase : GenericNodeDrawer<ModuleNode,ModuleNodeViewModel> {
-        
-        public ModuleNodeDrawerBase(ModuleNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
@@ -201,13 +194,6 @@ namespace Invert.uFrame.ECS {
     public class SequenceItemNodeDrawerBase : GenericNodeDrawer<SequenceItemNode,SequenceItemNodeViewModel> {
         
         public SequenceItemNodeDrawerBase(SequenceItemNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class DataNodeDrawerBase : GenericNodeDrawer<DataNode,DataNodeViewModel> {
-        
-        public DataNodeDrawerBase(DataNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }

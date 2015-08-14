@@ -1,1 +1,9 @@
-{"Identifier":"11d456f9-b41f-4a15-bf0b-c4035a75a23e", "Collapsed":true, "NodeId":"f321c28b-3e11-4235-b4db-ce82a2980762", "FilterId":"e961a403-b4e8-4929-935a-a75022bd2d01", "Position":{"x":928, "y":205}}
+{
+	"Identifier":"11d456f9-b41f-4a15-bf0b-c4035a75a23e"	, 
+	"Collapsed":true	, 
+	"NodeId":"f321c28b-3e11-4235-b4db-ce82a2980762"	, 
+	"FilterId":"e961a403-b4e8-4929-935a-a75022bd2d01"	, 
+	"Position":	{
+		"x":1020		, 
+		"y":312	}
+}

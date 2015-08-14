@@ -21,13 +21,15 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<CustomActionNode> _CustomAction;
         
-        private Invert.Core.GraphDesigner.NodeConfig<StringLiteralNode> _StringLiteral;
+        private Invert.Core.GraphDesigner.NodeConfig<DataNode> _Data;
         
-        private Invert.Core.GraphDesigner.NodeConfig<LibraryNode> _Library;
+        private Invert.Core.GraphDesigner.NodeConfig<StringLiteralNode> _StringLiteral;
         
         private Invert.Core.GraphDesigner.NodeConfig<StringNode> _String;
         
         private Invert.Core.GraphDesigner.NodeConfig<BoolNode> _Bool;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ModuleNode> _Module;
         
         private Invert.Core.GraphDesigner.NodeConfig<VariableReferenceNode> _VariableReference;
         
@@ -41,7 +43,7 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<VariableNode> _Variable;
         
-        private Invert.Core.GraphDesigner.NodeConfig<ContextNode> _Context;
+        private Invert.Core.GraphDesigner.NodeConfig<GroupNode> _Group;
         
         private Invert.Core.GraphDesigner.NodeConfig<Vector3Node> _Vector3;
         
@@ -57,13 +59,9 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<StartTimerNode> _StartTimer;
         
-        private Invert.Core.GraphDesigner.NodeConfig<ItemTypesNode> _ItemTypes;
-        
         private Invert.Core.GraphDesigner.NodeConfig<ActionNode> _Action;
         
         private Invert.Core.GraphDesigner.NodeConfig<HandlerNode> _Handler;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<ModuleNode> _Module;
         
         private Invert.Core.GraphDesigner.NodeConfig<SystemNode> _System;
         
@@ -72,8 +70,6 @@ namespace Invert.uFrame.ECS {
         private Invert.Core.GraphDesigner.NodeConfig<ColorNode> _Color;
         
         private Invert.Core.GraphDesigner.NodeConfig<SequenceItemNode> _SequenceItem;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<DataNode> _Data;
         
         public Invert.Core.GraphDesigner.NodeConfig<CustomActionNode> CustomAction {
             get {
@@ -84,21 +80,21 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<DataNode> Data {
+            get {
+                return _Data;
+            }
+            set {
+                _Data = value;
+            }
+        }
+        
         public Invert.Core.GraphDesigner.NodeConfig<StringLiteralNode> StringLiteral {
             get {
                 return _StringLiteral;
             }
             set {
                 _StringLiteral = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<LibraryNode> Library {
-            get {
-                return _Library;
-            }
-            set {
-                _Library = value;
             }
         }
         
@@ -117,6 +113,15 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _Bool = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ModuleNode> Module {
+            get {
+                return _Module;
+            }
+            set {
+                _Module = value;
             }
         }
         
@@ -174,12 +179,12 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<ContextNode> Context {
+        public Invert.Core.GraphDesigner.NodeConfig<GroupNode> Group {
             get {
-                return _Context;
+                return _Group;
             }
             set {
-                _Context = value;
+                _Group = value;
             }
         }
         
@@ -246,15 +251,6 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<ItemTypesNode> ItemTypes {
-            get {
-                return _ItemTypes;
-            }
-            set {
-                _ItemTypes = value;
-            }
-        }
-        
         public Invert.Core.GraphDesigner.NodeConfig<ActionNode> Action {
             get {
                 return _Action;
@@ -270,15 +266,6 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _Handler = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<ModuleNode> Module {
-            get {
-                return _Module;
-            }
-            set {
-                _Module = value;
             }
         }
         
@@ -318,15 +305,6 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<DataNode> Data {
-            get {
-                return _Data;
-            }
-            set {
-                _Data = value;
-            }
-        }
-        
         public virtual Invert.Core.GraphDesigner.SelectTypeCommand GetOutputsSelectionCommand() {
             return new SelectTypeCommand() { IncludePrimitives = true, AllowNone = false };
         }
@@ -344,78 +322,68 @@ namespace Invert.uFrame.ECS {
         }
         
         public override void Initialize(Invert.IOC.UFrameContainer container) {
-            //container.RegisterInstance<IDocumentationProvider>(new uFrameECSDocumentationProvider(), "uFrameECS");
             container.AddItem<ComponentsReference>();
-            container.AddItem<SelectReference>();
+            container.AddItem<RequireReference>();
             container.AddTypeItem<OutputsChildItem>();
             container.AddTypeItem<InputsChildItem>();
+            container.AddItem<ScopeReference>();
             container.AddTypeItem<PropertiesChildItem>();
             container.AddTypeItem<CollectionsChildItem>();
             container.AddItem<BranchesChildItem>();
             CustomAction = container.AddNode<CustomActionNode,CustomActionNodeViewModel,CustomActionNodeDrawer>("CustomAction");
             CustomAction.Color(NodeColor.DarkGray);
+            Data = container.AddGraph<DataGraph, DataNode>("DataGraph");
+            Data.Color(NodeColor.Yellow);
+            Data.HasSubNode<EventNode>();
+            Data.HasSubNode<ComponentNode>();
             StringLiteral = container.AddNode<StringLiteralNode,StringLiteralNodeViewModel,StringLiteralNodeDrawer>("StringLiteral");
             StringLiteral.Color(NodeColor.Gray);
-            Library = container.AddGraph<LibraryGraph, LibraryNode>("LibraryGraph");
-            Library.Color(NodeColor.Gray);
-            Library.HasSubNode<CustomActionNode>();
-            Library.HasSubNode<ComponentNode>();
-            Library.HasSubNode<LibraryNode>();
-            Library.HasSubNode<EventNode>();
             String = container.AddNode<StringNode,StringNodeViewModel,StringNodeDrawer>("String");
             String.Color(NodeColor.Purple);
             Bool = container.AddNode<BoolNode,BoolNodeViewModel,BoolNodeDrawer>("Bool");
             Bool.Color(NodeColor.Purple);
+            Module = container.AddGraph<ModuleGraph, ModuleNode>("ModuleGraph");
+            Module.Color(NodeColor.Black);
             VariableReference = container.AddNode<VariableReferenceNode,VariableReferenceNodeViewModel,VariableReferenceNodeDrawer>("VariableReference");
             VariableReference.Color(NodeColor.Purple);
-            VariableReference.HasSubNode<VariableReferenceNode>();
             StopTimer = container.AddNode<StopTimerNode,StopTimerNodeViewModel,StopTimerNodeDrawer>("StopTimer");
             StopTimer.Color(NodeColor.Gray);
             Float = container.AddNode<FloatNode,FloatNodeViewModel,FloatNodeDrawer>("Float");
             Float.Color(NodeColor.Purple);
             UserMethod = container.AddNode<UserMethodNode,UserMethodNodeViewModel,UserMethodNodeDrawer>("UserMethod");
-            UserMethod.Color(NodeColor.Gray);
-            UserMethod.HasSubNode<UserMethodNode>();
+            UserMethod.Color(NodeColor.Blue);
             SetVariable = container.AddNode<SetVariableNode,SetVariableNodeViewModel,SetVariableNodeDrawer>("SetVariable");
             SetVariable.Color(NodeColor.Gray);
             Variable = container.AddNode<VariableNode,VariableNodeViewModel,VariableNodeDrawer>("Variable");
             Variable.Color(NodeColor.Gray);
-            Context = container.AddNode<ContextNode,ContextNodeViewModel,ContextNodeDrawer>("Context");
-            Context.Color(NodeColor.Gray);
-            Context.HasSubNode<ContextNode>();
-            Context.HasSubNode<StringLiteralNode>();
-            Context.HasSubNode<LiteralNode>();
-            Context.HasSubNode<VariableNode>();
-            Context.HasSubNode<ComponentNode>();
+            Group = container.AddNode<GroupNode,GroupNodeViewModel,GroupNodeDrawer>("Group");
+            Group.Color(NodeColor.Yellow);
+            Group.HasSubNode<StringLiteralNode>();
+            Group.HasSubNode<LiteralNode>();
+            Group.HasSubNode<VariableNode>();
+            Group.HasSubNode<ComponentNode>();
             Vector3 = container.AddNode<Vector3Node,Vector3NodeViewModel,Vector3NodeDrawer>("Vector3");
             Vector3.Color(NodeColor.Purple);
             Event = container.AddNode<EventNode,EventNodeViewModel,EventNodeDrawer>("Event");
             Event.Inheritable();
             Event.Color(NodeColor.Green);
             Event.HasSubNode<ActionNode>();
-            Event.HasSubNode<EventNode>();
             Event.HasSubNode<UserMethodNode>();
             Event.HasSubNode<ComponentNode>();
             Literal = container.AddNode<LiteralNode,LiteralNodeViewModel,LiteralNodeDrawer>("Literal");
             Literal.Color(NodeColor.Purple);
-            Literal.HasSubNode<LiteralNode>();
             Component = container.AddNode<ComponentNode,ComponentNodeViewModel,ComponentNodeDrawer>("Component");
             Component.Color(NodeColor.Yellow);
-            Component.HasSubNode<ComponentNode>();
             Int = container.AddNode<IntNode,IntNodeViewModel,IntNodeDrawer>("Int");
             Int.Color(NodeColor.Purple);
             Vector2 = container.AddNode<Vector2Node,Vector2NodeViewModel,Vector2NodeDrawer>("Vector2");
             Vector2.Color(NodeColor.Purple);
             StartTimer = container.AddNode<StartTimerNode,StartTimerNodeViewModel,StartTimerNodeDrawer>("StartTimer");
             StartTimer.Color(NodeColor.Gray);
-            ItemTypes = container.AddNode<ItemTypesNode,ItemTypesNodeViewModel,ItemTypesNodeDrawer>("ItemTypes");
-            ItemTypes.Color(NodeColor.Blue);
-            ItemTypes.HasSubNode<ItemTypesNode>();
             Action = container.AddNode<ActionNode,ActionNodeViewModel,ActionNodeDrawer>("Action");
-            Action.Color(NodeColor.Gray);
-            Action.HasSubNode<ActionNode>();
+            Action.Color(NodeColor.Red);
             Handler = container.AddNode<HandlerNode,HandlerNodeViewModel,HandlerNodeDrawer>("Handler");
-            Handler.Color(NodeColor.Gray);
+            Handler.Color(NodeColor.Red);
             Handler.HasSubNode<SetVariableNode>();
             Handler.HasSubNode<ColorNode>();
             Handler.HasSubNode<UserMethodNode>();
@@ -426,44 +394,28 @@ namespace Invert.uFrame.ECS {
             Handler.HasSubNode<Vector2Node>();
             Handler.HasSubNode<FloatNode>();
             Handler.HasSubNode<BoolNode>();
-            Handler.HasSubNode<HandlerNode>();
             Handler.HasSubNode<SequenceItemNode>();
             Handler.HasSubNode<Vector3Node>();
             Handler.HasSubNode<StringNode>();
-            Module = container.AddGraph<ModuleGraph, ModuleNode>("ModuleGraph");
-            Module.Color(NodeColor.Orange);
-            Module.HasSubNode<EntityNode>();
-            Module.HasSubNode<CustomActionNode>();
-            Module.HasSubNode<ContextNode>();
-            Module.HasSubNode<ComponentNode>();
-            Module.HasSubNode<ModuleNode>();
-            Module.HasSubNode<EventNode>();
-            Module.HasSubNode<SystemNode>();
             System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
             System.Color(NodeColor.Blue);
             System.HasSubNode<ComponentNode>();
             System.HasSubNode<CustomActionNode>();
             System.HasSubNode<HandlerNode>();
-            System.HasSubNode<SystemNode>();
-            System.HasSubNode<ContextNode>();
+            System.HasSubNode<GroupNode>();
             Entity = container.AddNode<EntityNode,EntityNodeViewModel,EntityNodeDrawer>("Entity");
             Entity.Color(NodeColor.Gray);
             Color = container.AddNode<ColorNode,ColorNodeViewModel,ColorNodeDrawer>("Color");
-            Color.Color(NodeColor.Gray);
+            Color.Color(NodeColor.Purple);
             SequenceItem = container.AddNode<SequenceItemNode,SequenceItemNodeViewModel,SequenceItemNodeDrawer>("SequenceItem");
-            SequenceItem.Color(NodeColor.Gray);
-            Data = container.AddGraph<DataGraph, DataNode>("DataGraph");
-            Data.Color(NodeColor.Yellow);
-            Data.HasSubNode<DataNode>();
-            Data.HasSubNode<ComponentNode>();
-            Data.HasSubNode<EventNode>();
+            SequenceItem.Color(NodeColor.Red);
             container.Connectable<VariableReferenceNode,Value>();
             container.Connectable<VariableReferenceNode,Variable>();
-            container.Connectable<ContextNode,SelectReference>();
-            container.Connectable<ContextNode,HandlerNode>();
+            container.Connectable<GroupNode,ScopeReference>();
+            container.Connectable<GroupNode,RequireReference>();
             container.Connectable<LiteralNode,Value>();
-            container.Connectable<ComponentNode,SelectReference>();
-            container.Connectable<ComponentNode,HandlerNode>();
+            container.Connectable<ComponentNode,RequireReference>();
+            container.Connectable<ComponentNode,ScopeReference>();
             container.Connectable<ComponentNode,ComponentsReference>();
             container.Connectable<ActionNode,ActionNode>();
             container.Connectable<HandlerNode,SequenceItemNode>();

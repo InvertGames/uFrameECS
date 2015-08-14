@@ -1,10 +1,10 @@
 {
-	"Color":8	, 
+	"Color":4	, 
 	"Inheritable":false	, 
 	"IsClass":false	, 
 	"Row":0	, 
 	"Column":0	, 
 	"Visibility":0	, 
-	"Name":"Group"	, 
+	"Name":"Module"	, 
 	"GraphId":"5f0e4e63-96ee-4a23-b1e3-4cfce292bfaf"	, 
-	"Identifier":"878728a5-85f4-4a0c-8172-d925787557b5"}
+	"Identifier":"2e395ea1-5cf9-430f-bf1f-440bf4c48bc7"}
