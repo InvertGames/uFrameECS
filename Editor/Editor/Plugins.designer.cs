@@ -73,6 +73,8 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<SequenceItemNode> _SequenceItem;
         
+        private Invert.Core.GraphDesigner.NodeConfig<DataNode> _Data;
+        
         public Invert.Core.GraphDesigner.NodeConfig<CustomActionNode> CustomAction {
             get {
                 return _CustomAction;
@@ -316,33 +318,38 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetOutputsSelectionCommand() {
-            return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
+        public Invert.Core.GraphDesigner.NodeConfig<DataNode> Data {
+            get {
+                return _Data;
+            }
+            set {
+                _Data = value;
+            }
         }
         
-        public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetInputsSelectionCommand() {
-            return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
+        public virtual Invert.Core.GraphDesigner.SelectTypeCommand GetOutputsSelectionCommand() {
+            return new SelectTypeCommand() { IncludePrimitives = true, AllowNone = false };
         }
         
-        public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetPropertiesSelectionCommand() {
-            return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
+        public virtual Invert.Core.GraphDesigner.SelectTypeCommand GetInputsSelectionCommand() {
+            return new SelectTypeCommand() { IncludePrimitives = true, AllowNone = false };
         }
         
-        public virtual Invert.Core.GraphDesigner.SelectItemTypeCommand GetCollectionsSelectionCommand() {
-            return new SelectItemTypeCommand() { IncludePrimitives = true, AllowNone = false };
+        public virtual Invert.Core.GraphDesigner.SelectTypeCommand GetPropertiesSelectionCommand() {
+            return new SelectTypeCommand() { IncludePrimitives = true, AllowNone = false };
+        }
+        
+        public virtual Invert.Core.GraphDesigner.SelectTypeCommand GetCollectionsSelectionCommand() {
+            return new SelectTypeCommand() { IncludePrimitives = true, AllowNone = false };
         }
         
         public override void Initialize(Invert.IOC.UFrameContainer container) {
-            
+            //container.RegisterInstance<IDocumentationProvider>(new uFrameECSDocumentationProvider(), "uFrameECS");
             container.AddItem<ComponentsReference>();
             container.AddItem<SelectReference>();
-            container.RegisterInstance<IEditorCommand>(GetOutputsSelectionCommand(), typeof(OutputsChildItem).Name + "TypeSelection");;
             container.AddTypeItem<OutputsChildItem>();
-            container.RegisterInstance<IEditorCommand>(GetInputsSelectionCommand(), typeof(InputsChildItem).Name + "TypeSelection");;
             container.AddTypeItem<InputsChildItem>();
-            container.RegisterInstance<IEditorCommand>(GetPropertiesSelectionCommand(), typeof(PropertiesChildItem).Name + "TypeSelection");;
             container.AddTypeItem<PropertiesChildItem>();
-            container.RegisterInstance<IEditorCommand>(GetCollectionsSelectionCommand(), typeof(CollectionsChildItem).Name + "TypeSelection");;
             container.AddTypeItem<CollectionsChildItem>();
             container.AddItem<BranchesChildItem>();
             CustomAction = container.AddNode<CustomActionNode,CustomActionNodeViewModel,CustomActionNodeDrawer>("CustomAction");
@@ -391,6 +398,7 @@ namespace Invert.uFrame.ECS {
             Event.HasSubNode<ComponentNode>();
             Literal = container.AddNode<LiteralNode,LiteralNodeViewModel,LiteralNodeDrawer>("Literal");
             Literal.Color(NodeColor.Purple);
+            Literal.HasSubNode<LiteralNode>();
             Component = container.AddNode<ComponentNode,ComponentNodeViewModel,ComponentNodeDrawer>("Component");
             Component.Color(NodeColor.Yellow);
             Component.HasSubNode<ComponentNode>();
@@ -444,6 +452,11 @@ namespace Invert.uFrame.ECS {
             Color.Color(NodeColor.Gray);
             SequenceItem = container.AddNode<SequenceItemNode,SequenceItemNodeViewModel,SequenceItemNodeDrawer>("SequenceItem");
             SequenceItem.Color(NodeColor.Gray);
+            Data = container.AddGraph<DataGraph, DataNode>("DataGraph");
+            Data.Color(NodeColor.Yellow);
+            Data.HasSubNode<DataNode>();
+            Data.HasSubNode<ComponentNode>();
+            Data.HasSubNode<EventNode>();
             container.Connectable<VariableReferenceNode,Value>();
             container.Connectable<VariableReferenceNode,Variable>();
             container.Connectable<ContextNode,SelectReference>();

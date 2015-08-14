@@ -1,5 +1,6 @@
 using System.Reflection;
 using Invert.Core.GraphDesigner.Unity;
+using Invert.Data;
 using Invert.IOC;
 using Invert.Windows;
 using uFrame.Attributes;
@@ -13,11 +14,16 @@ namespace Invert.uFrame.ECS {
     using Invert.Core;
     using Invert.Core.GraphDesigner;
 
+    public class NewModuleWorkspace : Command
+    {
+        public string Name { get; set; }
+    }
      
     public class uFrameECS : uFrameECSBase, 
         IPrefabNodeProvider, 
         IContextMenuQuery, IQuickAccessEvents, IOnMouseDoubleClickEvent,
-        IExecuteCommand<AddSlotInputNodeCommand>
+        IExecuteCommand<AddSlotInputNodeCommand>,
+        IExecuteCommand<NewModuleWorkspace>
     { 
         private static Dictionary<string, ActionMetaInfo> _actions;
         private static Dictionary<string, EventMetaInfo> _events;
@@ -333,6 +339,19 @@ namespace Invert.uFrame.ECS {
             {
                 QuerySlotMenu(ui, (InputOutputViewModel) obj);
             }
+            if (obj is SelectWorkspaceCommand)
+            {
+                ui.AddCommand(new ContextMenuItem()
+                {
+                    Title = "Create New Module Workspace",
+
+                    Command = new NewModuleWorkspace()
+                    {
+                        Name = "Test Workspace",
+                        Title = "Test Workspace"
+                    }
+                });
+            }
         }
 
         private void QuerySlotMenu(ContextMenuUI ui, InputOutputViewModel slot)
@@ -439,7 +458,8 @@ namespace Invert.uFrame.ECS {
                             Handler = currentFilter,
                             Position = mousePosition
                         };
-                        InvertGraphEditor.ExecuteCommand(command);
+                        // TODO 2.0 Add Variable Reference COmmand
+                        //InvertGraphEditor.ExecuteCommand(command);
                     })
                     {
                         Item = item1
@@ -553,6 +573,28 @@ namespace Invert.uFrame.ECS {
             connectionData.InputIdentifier = command.Input.Identifier;
             connectionData.OutputIdentifier = referenceNode.Identifier;
             referenceNode.Name = command.Variable.VariableName;
+        }
+
+        public void Execute(NewModuleWorkspace command)
+        {
+            var repository = InvertApplication.Container.Resolve<IRepository>();
+            var createWorkspaceCommand = new CreateWorkspaceCommand() { Name = command.Name, Title = command.Name };
+
+            Execute(createWorkspaceCommand);
+             
+
+            var dataGraph = repository.Create<DataGraph>();
+            var systemGraph = repository.Create<SystemGraph>();
+            dataGraph.Name = command.Name + "Data";
+            systemGraph.Name = command.Name + "System";
+            createWorkspaceCommand.Result.AddGraph(dataGraph);
+            createWorkspaceCommand.Result.AddGraph(systemGraph);
+            createWorkspaceCommand.Result.CurrentGraphId = dataGraph.Identifier;
+            Execute(new OpenWorkspaceCommand()
+            {
+                Workspace = createWorkspaceCommand.Result
+            });
+            
         }
     } 
 

@@ -203,4 +203,11 @@ namespace Invert.uFrame.ECS {
                 base(graphItemObject, diagramViewModel) {
         }
     }
+    
+    public class DataNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<DataNode> {
+        
+        public DataNodeViewModelBase(DataNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
 }

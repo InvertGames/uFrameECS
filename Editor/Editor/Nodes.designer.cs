@@ -501,12 +501,6 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleComponents {
-            get {
-                return this.Repository.AllOf<IComponentsConnectable>().Cast<IItem>();
-            }
-        }
-        
         [Invert.Core.GraphDesigner.Section("Properties", SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<PropertiesChildItem> Properties {
             get {
@@ -518,13 +512,6 @@ namespace Invert.uFrame.ECS {
         public virtual System.Collections.Generic.IEnumerable<CollectionsChildItem> Collections {
             get {
                 return PersistedItems.OfType<CollectionsChildItem>();
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.ReferenceSection("Components", SectionVisibility.Always, false, false, typeof(IComponentsConnectable), false, OrderIndex=0, HasPredefinedOptions=false, IsNewRow=false)]
-        public virtual System.Collections.Generic.IEnumerable<ComponentsReference> Components {
-            get {
-                return PersistedItems.OfType<ComponentsReference>();
             }
         }
     }
@@ -682,5 +669,23 @@ namespace Invert.uFrame.ECS {
     }
     
     public partial interface ISequenceItemConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class DataNodeBase : Invert.Core.GraphDesigner.GenericNode {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IDataConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
 }

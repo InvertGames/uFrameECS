@@ -1,1 +1,10 @@
-{"Color":8, "Inheritable":false, "IsClass":true, "Row":0, "Column":0, "Visibility":0, "Name":"Component", "GraphId":"5f0e4e63-96ee-4a23-b1e3-4cfce292bfaf", "Identifier":"9fc82f81-9765-4084-8ea8-1f567850865d"}
+{
+	"Color":8	, 
+	"Inheritable":false	, 
+	"IsClass":true	, 
+	"Row":0	, 
+	"Column":0	, 
+	"Visibility":0	, 
+	"Name":"Component"	, 
+	"GraphId":"5f0e4e63-96ee-4a23-b1e3-4cfce292bfaf"	, 
+	"Identifier":"9fc82f81-9765-4084-8ea8-1f567850865d"}

@@ -51,8 +51,8 @@ namespace Invert.uFrame.ECS.Templates
         [ForEach("Components"), GenerateProperty, WithField]
         public IEcsComponentManagerOf<_ITEMTYPE_> _Name_Manager { get; set; }
 
-        [ForEach("ComponentGroups"), GenerateProperty, WithField]
-        public IEcsComponentManagerOf<_ITEMTYPE_> _GroupName_Manager { get; set; }
+        //[ForEach("ComponentGroups"), GenerateProperty, WithField]
+        //public IEcsComponentManagerOf<_ITEMTYPE_> _GroupName_Manager { get; set; }
     }
 
 

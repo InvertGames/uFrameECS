@@ -204,4 +204,11 @@ namespace Invert.uFrame.ECS {
                 base(viewModel) {
         }
     }
+    
+    public class DataNodeDrawerBase : GenericNodeDrawer<DataNode,DataNodeViewModel> {
+        
+        public DataNodeDrawerBase(DataNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
 }
