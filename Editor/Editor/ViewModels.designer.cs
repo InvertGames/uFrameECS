@@ -92,6 +92,13 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class PropertyChangedNodeViewModelBase : SequenceItemNodeViewModel {
+        
+        public PropertyChangedNodeViewModelBase(PropertyChangedNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+    }
+    
     public class VariableNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<VariableNode> {
         
         public VariableNodeViewModelBase(VariableNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 

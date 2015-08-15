@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Name: ECSDB
   m_EditorClassIdentifier: 
   _isCurrent: 1
-  _databaseName: uFrameDB
+  _databaseName: Assets/uFrameECS/Db
   _codePath: uFrameECS/Editor
   _ns: Invert.uFrame.ECS

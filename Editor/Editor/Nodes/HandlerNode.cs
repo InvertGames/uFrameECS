@@ -22,7 +22,17 @@ namespace Invert.uFrame.ECS
         // IEnumerable<IContextVariable> GetVariables();
     }
 
-    public class HandlerNode : HandlerNodeBase, ISetupCodeWriter, ICodeOutput, IFilterInput
+    public interface ISequenceNode : IDiagramNode, ICodeOutput
+    {
+        bool CanGenerate { get; }
+        string HandlerMethodName { get; }
+        IEnumerable<IFilterInput> FilterInputs { get; }
+        string EventType { get; set; }
+        void Accept(IHandlerNodeVisitor csharpVisitor);
+        SequenceItemNode Right { get; }
+    }
+
+    public class HandlerNode : HandlerNodeBase, ISetupCodeWriter, ICodeOutput, IFilterInput, ISequenceNode
     {
         private string _eventIdentifier;
         private EventNode _eventNode;
@@ -134,6 +144,12 @@ namespace Invert.uFrame.ECS
                     yield return handlerIn;
                 }
             }
+        }
+
+        public string EventType
+        {
+            get { return Meta.Type.FullName; }
+            set { throw new NotImplementedException(); }
         }
 
         public override IEnumerable<IGraphItem> GraphItems
@@ -406,6 +422,11 @@ namespace Invert.uFrame.ECS
         {
             get { return "EntityId"; }
         }
+
+        public bool CanGenerate
+        {
+            get { return Meta != null; }
+        }
     }
 
     public interface IHandlerNodeVisitor
@@ -420,7 +441,7 @@ namespace Invert.uFrame.ECS
 
         public void Visit(IDiagramNodeItem item)
         {
-            var handlerNode = item as HandlerNode;
+            var handlerNode = item as ISequenceNode;
             var actionNode = item as ActionNode;
             var actionBranch = item as ActionBranch;
             var actionOut = item as IActionOut;
@@ -512,15 +533,17 @@ namespace Invert.uFrame.ECS
             
         }
 
-        public virtual void BeforeVisitHandler(HandlerNode handlerNode)
+        public virtual void BeforeVisitHandler(ISequenceNode handlerNode)
         {
-            foreach (var item in handlerNode.HandlerInputs)
-            {
-                Visit(item);
-            }
+            var handler = handlerNode as HandlerNode;
+            if (handler != null)
+                foreach (var item in handler.HandlerInputs)
+                {
+                    Visit(item);
+                }
         }
 
-        public virtual void AfterVisitHandler(HandlerNode handlerNode)
+        public virtual void AfterVisitHandler(ISequenceNode handlerNode)
         {
             
         }
@@ -621,7 +644,7 @@ namespace Invert.uFrame.ECS
             
         }
 
-        public virtual void VisitHandler(HandlerNode handlerNode)
+        public virtual void VisitHandler(ISequenceNode handlerNode)
         {
             Visit(handlerNode.Right);
         }
@@ -650,6 +673,11 @@ namespace Invert.uFrame.ECS
         public string HandlerPropertyName
         {
             get { return Name; }
+        }
+
+        public override IEnumerable<IGraphItem> GetAllowed()
+        {
+            return Repository.AllOf<IMappingsConnectable>().OfType<IGraphItem>();
         }
     }
 

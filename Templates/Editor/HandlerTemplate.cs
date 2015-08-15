@@ -13,9 +13,8 @@ namespace Invert.uFrame.ECS.Templates
         {
             get
             {
-                if (Ctx.Data.Meta == null)
-                    return null;
-                this.Ctx.SetType(Ctx.Data.Meta.Type);
+                
+                this.Ctx.SetType(Ctx.Data.EventType);
                 return null;
             }
             set
@@ -31,9 +30,7 @@ namespace Invert.uFrame.ECS.Templates
 
         [TemplateSetup]
         public void SetName()
-        {
-            this.Ctx.CurrentDeclaration.Name = Ctx.Data.HandlerMethodName;
-            
+        {   
             foreach (var item in  Ctx.Data.FilterInputs)
             {
                 var context = item.FilterNode;
@@ -49,25 +46,11 @@ namespace Invert.uFrame.ECS.Templates
 
         }
 
-        [GenerateMethod]
-        public void Execute()
-        {
-            //if (Ctx.Data.Right != null)
-            //{
-            //    Ctx.Data.Right.WriteCode(Ctx);
-            //}
-            var csharpVisitor = new HandlerCsharpVisitor()
-            {
-                _ = Ctx
-            };
-            Ctx.Data.Accept(csharpVisitor);
-
-        }
     }
 
     public class HandlerCsharpVisitor : HandlerNodeVisitor
     {
-        public TemplateContext<HandlerNode> _ { get; set; }
+        public TemplateContext _ { get; set; }
         public int VariableCount;
         private CodeMethodInvokeExpression _currentActionInvoker;
 
@@ -211,7 +194,7 @@ namespace Invert.uFrame.ECS.Templates
 
         }
 
-        public override void VisitHandler(HandlerNode handlerNode)
+        public override void VisitHandler(ISequenceNode handlerNode)
         {
             base.VisitHandler(handlerNode);
             _._comment("HANDLER: " + handlerNode.Name);

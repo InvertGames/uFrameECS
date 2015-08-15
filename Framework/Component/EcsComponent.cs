@@ -1,4 +1,5 @@
 using System;
+using uFrame.Attributes;
 using uFrame.Kernel;
 using UniRx;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace uFrame.ECS
         private int _entityId;
 
         private Transform _cachedTransform;
-
+        [uFrameEventMapping("Source")]
         public virtual int EntityId
         {
             get

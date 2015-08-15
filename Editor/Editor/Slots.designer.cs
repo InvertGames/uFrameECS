@@ -28,14 +28,24 @@ namespace Invert.uFrame.ECS {
         
         public override bool AllowMultipleInputs {
             get {
-                return true;
+                return false;
             }
         }
         
         public override bool AllowMultipleOutputs {
             get {
-                return true;
+                return false;
             }
+        }
+        
+        public override bool AllowSelection {
+            get {
+                return false;
+            }
+        }
+        
+        public override System.Collections.Generic.IEnumerable<Invert.Core.GraphDesigner.IGraphItem> GetAllowed() {
+            return Repository.AllOf<IVariableConnectable>().OfType<IGraphItem>();;
         }
     }
     
@@ -54,18 +64,64 @@ namespace Invert.uFrame.ECS {
         
         public override bool AllowMultipleInputs {
             get {
-                return true;
+                return false;
             }
         }
         
         public override bool AllowMultipleOutputs {
             get {
-                return true;
+                return false;
             }
+        }
+        
+        public override bool AllowSelection {
+            get {
+                return false;
+            }
+        }
+        
+        public override System.Collections.Generic.IEnumerable<Invert.Core.GraphDesigner.IGraphItem> GetAllowed() {
+            return Repository.AllOf<IValueConnectable>().OfType<IGraphItem>();;
         }
     }
     
     public partial interface IValueConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class PropertyBase : SingleInputSlot<IPropertyConnectable> {
+        
+        public override string Name {
+            get {
+                return "Property";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return false;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return false;
+            }
+        }
+        
+        public override bool AllowSelection {
+            get {
+                return true;
+            }
+        }
+        
+        public override System.Collections.Generic.IEnumerable<Invert.Core.GraphDesigner.IGraphItem> GetAllowed() {
+            return Repository.AllOf<IPropertyConnectable>().OfType<IGraphItem>();;
+        }
+    }
+    
+    public partial interface IPropertyConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
     public class TimerBase : SingleInputSlot<ITimerConnectable> {
@@ -80,14 +136,24 @@ namespace Invert.uFrame.ECS {
         
         public override bool AllowMultipleInputs {
             get {
-                return true;
+                return false;
             }
         }
         
         public override bool AllowMultipleOutputs {
             get {
-                return true;
+                return false;
             }
+        }
+        
+        public override bool AllowSelection {
+            get {
+                return false;
+            }
+        }
+        
+        public override System.Collections.Generic.IEnumerable<Invert.Core.GraphDesigner.IGraphItem> GetAllowed() {
+            return Repository.AllOf<ITimerConnectable>().OfType<IGraphItem>();;
         }
     }
     

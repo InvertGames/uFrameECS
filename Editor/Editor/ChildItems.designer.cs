@@ -70,7 +70,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IBranchesConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class PropertiesChildItemBase : GenericTypedChildItem {
+    public class PropertiesChildItemBase : GenericTypedChildItem, IPropertyConnectable {
         
         public override bool AllowMultipleInputs {
             get {

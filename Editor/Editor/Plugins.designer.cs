@@ -41,6 +41,8 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<SetVariableNode> _SetVariable;
         
+        private Invert.Core.GraphDesigner.NodeConfig<PropertyChangedNode> _PropertyChanged;
+        
         private Invert.Core.GraphDesigner.NodeConfig<VariableNode> _Variable;
         
         private Invert.Core.GraphDesigner.NodeConfig<GroupNode> _Group;
@@ -167,6 +169,15 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _SetVariable = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<PropertyChangedNode> PropertyChanged {
+            get {
+                return _PropertyChanged;
+            }
+            set {
+                _PropertyChanged = value;
             }
         }
         
@@ -354,6 +365,8 @@ namespace Invert.uFrame.ECS {
             UserMethod.Color(NodeColor.Blue);
             SetVariable = container.AddNode<SetVariableNode,SetVariableNodeViewModel,SetVariableNodeDrawer>("SetVariable");
             SetVariable.Color(NodeColor.Gray);
+            PropertyChanged = container.AddNode<PropertyChangedNode,PropertyChangedNodeViewModel,PropertyChangedNodeDrawer>("PropertyChanged");
+            PropertyChanged.Color(NodeColor.Gray);
             Variable = container.AddNode<VariableNode,VariableNodeViewModel,VariableNodeDrawer>("Variable");
             Variable.Color(NodeColor.Gray);
             Group = container.AddNode<GroupNode,GroupNodeViewModel,GroupNodeDrawer>("Group");
@@ -399,10 +412,8 @@ namespace Invert.uFrame.ECS {
             Handler.HasSubNode<StringNode>();
             System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
             System.Color(NodeColor.Blue);
-            System.HasSubNode<ComponentNode>();
-            System.HasSubNode<CustomActionNode>();
+            System.HasSubNode<PropertyChangedNode>();
             System.HasSubNode<HandlerNode>();
-            System.HasSubNode<GroupNode>();
             Entity = container.AddNode<EntityNode,EntityNodeViewModel,EntityNodeDrawer>("Entity");
             Entity.Color(NodeColor.Gray);
             Color = container.AddNode<ColorNode,ColorNodeViewModel,ColorNodeDrawer>("Color");
@@ -420,6 +431,7 @@ namespace Invert.uFrame.ECS {
             container.Connectable<ActionNode,ActionNode>();
             container.Connectable<HandlerNode,SequenceItemNode>();
             container.Connectable<SequenceItemNode,SequenceItemNode>();
+            container.Connectable<PropertiesChildItem,Property>();
         }
     }
 }

@@ -36,6 +36,7 @@ namespace Invert.uFrame.ECS.Templates
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<GroupNode,ContextTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<GroupNode, ContextItemTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<HandlerNode, HandlerTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<PropertyChangedNode, PropertyHandlerTemplate>();
 //            RegisteredTemplateGeneratorsFactory.RegisterTemplate<EntityNode, EntityTemplate>();
 
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<CustomActionNode, CustomActionEditableTemplate>();
@@ -90,7 +91,7 @@ namespace Invert.uFrame.ECS.Templates
     [TemplateClass(TemplateLocation.DesignerFile)]
     [RequiresNamespace("uFrame.Kernel")]
     [RequiresNamespace("UnityEngine")]
-    public partial class HandlerTemplate : IClassTemplate<HandlerNode>
+    public partial class SequenceTemplate<TType> : IClassTemplate<TType> where TType : ISequenceNode
     {
         public string OutputPath
         {
@@ -99,15 +100,43 @@ namespace Invert.uFrame.ECS.Templates
 
         public bool CanGenerate
         {
-            get { return Ctx.Data.Meta != null; }
+            get { return Ctx.Data.CanGenerate; }
         }
 
         public void TemplateSetup()
         {
-
+            this.Ctx.CurrentDeclaration.BaseTypes.Clear();
+            this.Ctx.CurrentDeclaration.Name = Ctx.Data.HandlerMethodName;
         }
 
-        public TemplateContext<HandlerNode> Ctx { get; set; }
+        public TemplateContext<TType> Ctx { get; set; }
+
+
+        [GenerateMethod]
+        public void Execute()
+        {
+            var csharpVisitor = new HandlerCsharpVisitor()
+            {
+                _ = Ctx
+            };
+            Ctx.Data.Accept(csharpVisitor);
+
+        }
+    }
+
+    [TemplateClass(TemplateLocation.DesignerFile)]
+    [RequiresNamespace("uFrame.Kernel")]
+    [RequiresNamespace("UnityEngine")]
+    public partial class HandlerTemplate : SequenceTemplate<HandlerNode>
+    {
+        
+    }
+    [TemplateClass(TemplateLocation.DesignerFile)]
+    [RequiresNamespace("uFrame.Kernel")]
+    [RequiresNamespace("UnityEngine")]
+    public partial class PropertyHandlerTemplate : SequenceTemplate<PropertyChangedNode>
+    {
+        
     }
     //[TemplateClass(TemplateLocation.Both,"{0}PrefabPool")]
     //[RequiresNamespace("uFrame.Kernel")]

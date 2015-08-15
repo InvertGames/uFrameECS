@@ -44,7 +44,8 @@ namespace Invert.uFrame.ECS {
             Module.HasSubNode<TypeReferenceNode>();
             //System.HasSubNode<ComponentNode>();
            // System.HasSubNode<ContextNode>(); 
-              
+            
+         
             Component.AddFlag("Blackboard"); 
 
             Module.HasSubNode<ComponentNode>();
@@ -62,6 +63,12 @@ namespace Invert.uFrame.ECS {
 
             LoadActions();
             LoadEvents();
+
+            var propertyTypes = FilterExtensions.AllowedFilterNodes[typeof(PropertyChangedNode)] = new List<Type>();
+            foreach (var item in FilterExtensions.AllowedFilterNodes[typeof(HandlerNode)])
+            {
+                propertyTypes.Add(item);
+            }
         }
 
         private void LoadActions()
@@ -268,6 +275,7 @@ namespace Invert.uFrame.ECS {
                     {
                         Type = typeof(int),
                         Name = "EntityId",
+                        Title = "Source",
                         IsProperty = true
                     });
                 }
@@ -276,6 +284,7 @@ namespace Invert.uFrame.ECS {
                     var fieldMetaInfo = new EventFieldInfo()
                     {
                         Type = field.FieldType,
+                        Attribute = eventType.GetCustomAttributes(typeof(uFrameEventMapping), true).OfType<uFrameEventMapping>().FirstOrDefault(),
                         Name = field.Name
                     };
             
@@ -288,6 +297,7 @@ namespace Invert.uFrame.ECS {
                     {
                         Type = field.PropertyType,
                         Name = field.Name,
+                        Attribute = eventType.GetCustomAttributes(typeof(uFrameEventMapping), true).OfType<uFrameEventMapping>().FirstOrDefault(),
                         IsProperty = true
                     };
 
@@ -338,7 +348,7 @@ namespace Invert.uFrame.ECS {
                 QuerySlotMenu(ui, (InputOutputViewModel) obj);
             }
             if (obj is SelectWorkspaceCommand)
-            {
+            { 
                 ui.AddCommand(new ContextMenuItem()
                 {
                     Title = "Create New Module Workspace",
@@ -427,7 +437,7 @@ namespace Invert.uFrame.ECS {
                     yield return qa;
                 }
             }
-            if (currentGraph.CurrentFilter is HandlerNode)
+            if (currentGraph.CurrentFilter is SequenceItemNode)
             {
                 var vm = InvertGraphEditor.CurrentDiagramViewModel;
 
@@ -442,7 +452,7 @@ namespace Invert.uFrame.ECS {
                 yield return new QuickAccessItem("Create", "Integer Variable", _ => { vm.AddNode(new IntNode(), vm.LastMouseEvent.LastMousePosition); });
                 yield return new QuickAccessItem("Create", "Literal", _ => { vm.AddNode(new LiteralNode(), vm.LastMouseEvent.LastMousePosition); });
 
-
+  
                 var currentFilter = currentGraph.CurrentFilter as HandlerNode;
                 foreach (var item in currentFilter.GetAllContextVariables())
                 {
@@ -646,9 +656,23 @@ namespace Invert.uFrame.ECS {
 
     public class EventFieldInfo
     {
+        private string _title;
         public Type Type { get; set; }
         public string Name { get; set; }
+
+        public string Title
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_title)) return _title;
+                if (Attribute == null) return Name;
+                return Attribute.Title;
+            }
+            set { _title = value; }
+        }
+
         public bool IsProperty { get; set; }
+        public uFrameEventMapping Attribute { get; set; }
     }
 
 

@@ -93,6 +93,13 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class PropertyChangedNodeDrawerBase : GenericNodeDrawer<PropertyChangedNode,PropertyChangedNodeViewModel> {
+        
+        public PropertyChangedNodeDrawerBase(PropertyChangedNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
     public class VariableNodeDrawerBase : GenericNodeDrawer<VariableNode,VariableNodeViewModel> {
         
         public VariableNodeDrawerBase(VariableNodeViewModel viewModel) : 

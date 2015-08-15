@@ -58,15 +58,23 @@ namespace Invert.uFrame.ECS {
 
         protected override void CreateContent()
         {
-            base.CreateContent();
+           
             if (IsVisible(SectionVisibility.WhenNodeIsNotFilter))
             {
-                foreach (var item in Handler.HandlerInputs)
+                var inputs = Handler.HandlerInputs;
+                if (inputs.Length > 0)
+                    ContentItems.Add(new GenericItemHeaderViewModel()
+                    {
+                        Name = "Mappings",
+                        DiagramViewModel = DiagramViewModel,
+                        IsNewLine = true,
+                    });
+                foreach (var item in inputs)
                 {
                     var vm = new InputOutputViewModel()
                     {
                         DataObject = item,
-                        Name = item.EventFieldInfo.Name,
+                        Name = item.EventFieldInfo.Title,
                         IsInput = true,
                         IsOutput = false,
                         IsNewLine = true,
@@ -75,7 +83,7 @@ namespace Invert.uFrame.ECS {
                     ContentItems.Add(vm);
                 }
             }
-            
+            base.CreateContent();
         }
     }
 }

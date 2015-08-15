@@ -166,6 +166,8 @@ namespace Invert.uFrame.ECS {
     
     public class StopTimerNodeBase : Invert.Core.GraphDesigner.GenericNode {
         
+        private string _TimerInputSlotId;
+        
         private Timer _Timer;
         
         public override bool AllowMultipleInputs {
@@ -180,12 +182,30 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        [Invert.Json.JsonProperty()]
+        public virtual string TimerInputSlotId {
+            get {
+                if (_TimerInputSlotId == null) {
+                    _TimerInputSlotId = Guid.NewGuid().ToString();
+                }
+                return _TimerInputSlotId;
+            }
+            set {
+                _TimerInputSlotId = value;
+            }
+        }
+        
         [Invert.Core.GraphDesigner.InputSlot("Timer", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual Timer TimerInputSlot {
             get {
-                if (_Timer == null) {
-                    _Timer = new Timer() { Repository = Repository, Node = this };
+                if (Repository == null) {
+                    return null;
                 }
+                if (_Timer != null) {
+                    return _Timer;
+                }
+                _Timer = Repository.GetSingleLazy<Timer>(TimerInputSlotId);
+                _Timer.Node = this;
                 return _Timer;
             }
             set {
@@ -235,6 +255,10 @@ namespace Invert.uFrame.ECS {
     
     public class SetVariableNodeBase : SequenceItemNode {
         
+        private string _VariableInputSlotId;
+        
+        private string _ValueInputSlotId;
+        
         private Variable _Variable;
         
         private Value _Value;
@@ -251,12 +275,43 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        [Invert.Json.JsonProperty()]
+        public virtual string VariableInputSlotId {
+            get {
+                if (_VariableInputSlotId == null) {
+                    _VariableInputSlotId = Guid.NewGuid().ToString();
+                }
+                return _VariableInputSlotId;
+            }
+            set {
+                _VariableInputSlotId = value;
+            }
+        }
+        
+        [Invert.Json.JsonProperty()]
+        public virtual string ValueInputSlotId {
+            get {
+                if (_ValueInputSlotId == null) {
+                    _ValueInputSlotId = Guid.NewGuid().ToString();
+                }
+                return _ValueInputSlotId;
+            }
+            set {
+                _ValueInputSlotId = value;
+            }
+        }
+        
         [Invert.Core.GraphDesigner.InputSlot("Variable", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual Variable VariableInputSlot {
             get {
-                if (_Variable == null) {
-                    _Variable = new Variable() { Repository = Repository, Node = this };
+                if (Repository == null) {
+                    return null;
                 }
+                if (_Variable != null) {
+                    return _Variable;
+                }
+                _Variable = Repository.GetSingleLazy<Variable>(VariableInputSlotId);
+                _Variable.Node = this;
                 return _Variable;
             }
             set {
@@ -267,9 +322,14 @@ namespace Invert.uFrame.ECS {
         [Invert.Core.GraphDesigner.InputSlot("Value", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual Value ValueInputSlot {
             get {
-                if (_Value == null) {
-                    _Value = new Value() { Repository = Repository, Node = this };
+                if (Repository == null) {
+                    return null;
                 }
+                if (_Value != null) {
+                    return _Value;
+                }
+                _Value = Repository.GetSingleLazy<Value>(ValueInputSlotId);
+                _Value.Node = this;
                 return _Value;
             }
             set {
@@ -279,6 +339,59 @@ namespace Invert.uFrame.ECS {
     }
     
     public partial interface ISetVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class PropertyChangedNodeBase : SequenceItemNode {
+        
+        private string _PropertyInputSlotId;
+        
+        private Property _Property;
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+        
+        [Invert.Json.JsonProperty()]
+        public virtual string PropertyInputSlotId {
+            get {
+                if (_PropertyInputSlotId == null) {
+                    _PropertyInputSlotId = Guid.NewGuid().ToString();
+                }
+                return _PropertyInputSlotId;
+            }
+            set {
+                _PropertyInputSlotId = value;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Property", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Property PropertyInputSlot {
+            get {
+                if (Repository == null) {
+                    return null;
+                }
+                if (_Property != null) {
+                    return _Property;
+                }
+                _Property = Repository.GetSingleLazy<Property>(PropertyInputSlotId);
+                _Property.Node = this;
+                return _Property;
+            }
+            set {
+                _Property = value;
+            }
+        }
+    }
+    
+    public partial interface IPropertyChangedConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
     public class VariableNodeBase : Invert.Core.GraphDesigner.GenericNode {
@@ -474,6 +587,8 @@ namespace Invert.uFrame.ECS {
     
     public class StartTimerNodeBase : Invert.Core.GraphDesigner.GenericNode {
         
+        private string _TimerInputSlotId;
+        
         private Timer _Timer;
         
         public override bool AllowMultipleInputs {
@@ -488,12 +603,30 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        [Invert.Json.JsonProperty()]
+        public virtual string TimerInputSlotId {
+            get {
+                if (_TimerInputSlotId == null) {
+                    _TimerInputSlotId = Guid.NewGuid().ToString();
+                }
+                return _TimerInputSlotId;
+            }
+            set {
+                _TimerInputSlotId = value;
+            }
+        }
+        
         [Invert.Core.GraphDesigner.InputSlot("Timer", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
         public virtual Timer TimerInputSlot {
             get {
-                if (_Timer == null) {
-                    _Timer = new Timer() { Repository = Repository, Node = this };
+                if (Repository == null) {
+                    return null;
                 }
+                if (_Timer != null) {
+                    return _Timer;
+                }
+                _Timer = Repository.GetSingleLazy<Timer>(TimerInputSlotId);
+                _Timer.Node = this;
                 return _Timer;
             }
             set {
@@ -543,7 +676,7 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        [Invert.Core.GraphDesigner.ReferenceSection("Scope", SectionVisibility.Always, false, false, typeof(IScopeConnectable), false, OrderIndex=3, HasPredefinedOptions=false, IsNewRow=true)]
+        [Invert.Core.GraphDesigner.ReferenceSection("Scope", SectionVisibility.WhenNodeIsNotFilter, false, false, typeof(IScopeConnectable), false, OrderIndex=3, HasPredefinedOptions=false, IsNewRow=true)]
         public virtual System.Collections.Generic.IEnumerable<ScopeReference> Scope {
             get {
                 return PersistedItems.OfType<ScopeReference>();

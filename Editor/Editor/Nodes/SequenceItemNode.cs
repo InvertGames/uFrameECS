@@ -48,7 +48,7 @@ namespace Invert.uFrame.ECS {
                     right = right.Right;
                 }
             }
-        }
+        } 
         public SequenceItemNode Right
         {
             get { return this.OutputTo<SequenceItemNode>(); }
