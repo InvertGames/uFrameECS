@@ -92,6 +92,114 @@ namespace Invert.uFrame.ECS {
     public partial interface IStringLiteralConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
+    public class PropertyNodeBase : Invert.Core.GraphDesigner.GenericNode {
+        
+        private string _SourceObjectInputSlotId;
+        
+        private string _SetInputSlotId;
+        
+        private SourceObject _SourceObject;
+        
+        private Set _Set;
+        
+        private string _GetOutputSlotId;
+        
+        private Get _Get;
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+        
+        [Invert.Json.JsonProperty()]
+        public virtual string SourceObjectInputSlotId {
+            get {
+                if (_SourceObjectInputSlotId == null) {
+                    _SourceObjectInputSlotId = Guid.NewGuid().ToString();
+                }
+                return _SourceObjectInputSlotId;
+            }
+            set {
+                _SourceObjectInputSlotId = value;
+            }
+        }
+        
+        [Invert.Json.JsonProperty()]
+        public virtual string SetInputSlotId {
+            get {
+                if (_SetInputSlotId == null) {
+                    _SetInputSlotId = Guid.NewGuid().ToString();
+                }
+                return _SetInputSlotId;
+            }
+            set {
+                _SetInputSlotId = value;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("SourceObject", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual SourceObject SourceObjectInputSlot {
+            get {
+                if (Repository == null) {
+                    return null;
+                }
+                if (_SourceObject != null) {
+                    return _SourceObject;
+                }
+                return _SourceObject ?? (_SourceObject = new SourceObject() { Repository = Repository, Node = this, Identifier = SourceObjectInputSlotId });
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Set", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Set SetInputSlot {
+            get {
+                if (Repository == null) {
+                    return null;
+                }
+                if (_Set != null) {
+                    return _Set;
+                }
+                return _Set ?? (_Set = new Set() { Repository = Repository, Node = this, Identifier = SetInputSlotId });
+            }
+        }
+        
+        [Invert.Json.JsonProperty()]
+        public virtual string GetOutputSlotId {
+            get {
+                if (_GetOutputSlotId == null) {
+                    _GetOutputSlotId = Guid.NewGuid().ToString();
+                }
+                return _GetOutputSlotId;
+            }
+            set {
+                _GetOutputSlotId = value;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.OutputSlot("Get", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=false)]
+        public virtual Get GetOutputSlot {
+            get {
+                if (Repository == null) {
+                    return null;
+                }
+                if (_Get != null) {
+                    return _Get;
+                }
+                return _Get ?? (_Get = new Get() { Repository = Repository, Node = this, Identifier = GetOutputSlotId });
+            }
+        }
+    }
+    
+    public partial interface IPropertyConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
     public class StringNodeBase : LiteralNode {
         
         public override bool AllowMultipleInputs {
@@ -204,12 +312,7 @@ namespace Invert.uFrame.ECS {
                 if (_Timer != null) {
                     return _Timer;
                 }
-                _Timer = Repository.GetSingleLazy<Timer>(TimerInputSlotId);
-                _Timer.Node = this;
-                return _Timer;
-            }
-            set {
-                _Timer = value;
+                return _Timer ?? (_Timer = new Timer() { Repository = Repository, Node = this, Identifier = TimerInputSlotId });
             }
         }
     }
@@ -310,12 +413,7 @@ namespace Invert.uFrame.ECS {
                 if (_Variable != null) {
                     return _Variable;
                 }
-                _Variable = Repository.GetSingleLazy<Variable>(VariableInputSlotId);
-                _Variable.Node = this;
-                return _Variable;
-            }
-            set {
-                _Variable = value;
+                return _Variable ?? (_Variable = new Variable() { Repository = Repository, Node = this, Identifier = VariableInputSlotId });
             }
         }
         
@@ -328,12 +426,7 @@ namespace Invert.uFrame.ECS {
                 if (_Value != null) {
                     return _Value;
                 }
-                _Value = Repository.GetSingleLazy<Value>(ValueInputSlotId);
-                _Value.Node = this;
-                return _Value;
-            }
-            set {
-                _Value = value;
+                return _Value ?? (_Value = new Value() { Repository = Repository, Node = this, Identifier = ValueInputSlotId });
             }
         }
     }
@@ -341,7 +434,7 @@ namespace Invert.uFrame.ECS {
     public partial interface ISetVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class PropertyChangedNodeBase : SequenceItemNode {
+    public class PropertyChangedNodeBase : HandlerNode {
         
         private string _PropertyInputSlotId;
         
@@ -372,7 +465,7 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        [Invert.Core.GraphDesigner.InputSlot("Property", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        [Invert.Core.GraphDesigner.InputSlot("Property", false, SectionVisibility.WhenNodeIsNotFilter, OrderIndex=0, IsNewRow=true)]
         public virtual Property PropertyInputSlot {
             get {
                 if (Repository == null) {
@@ -381,12 +474,7 @@ namespace Invert.uFrame.ECS {
                 if (_Property != null) {
                     return _Property;
                 }
-                _Property = Repository.GetSingleLazy<Property>(PropertyInputSlotId);
-                _Property.Node = this;
-                return _Property;
-            }
-            set {
-                _Property = value;
+                return _Property ?? (_Property = new Property() { Repository = Repository, Node = this, Identifier = PropertyInputSlotId });
             }
         }
     }
@@ -412,7 +500,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class GroupNodeBase : Invert.Core.GraphDesigner.GenericNode, IScopeConnectable, IRequireConnectable {
+    public class GroupNodeBase : Invert.Core.GraphDesigner.GenericNode, ISourceConnectable {
         
         public override bool AllowMultipleInputs {
             get {
@@ -511,7 +599,7 @@ namespace Invert.uFrame.ECS {
     public partial interface ILiteralConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ComponentNodeBase : Invert.Core.GraphDesigner.GenericNode, Invert.Core.GraphDesigner.IClassTypeNode, IRequireConnectable, IScopeConnectable, IComponentsConnectable {
+    public class ComponentNodeBase : Invert.Core.GraphDesigner.GenericNode, Invert.Core.GraphDesigner.IClassTypeNode, IRequireConnectable, IComponentsConnectable, ISourceConnectable {
         
         public virtual string ClassName {
             get {
@@ -625,12 +713,7 @@ namespace Invert.uFrame.ECS {
                 if (_Timer != null) {
                     return _Timer;
                 }
-                _Timer = Repository.GetSingleLazy<Timer>(TimerInputSlotId);
-                _Timer.Node = this;
-                return _Timer;
-            }
-            set {
-                _Timer = value;
+                return _Timer ?? (_Timer = new Timer() { Repository = Repository, Node = this, Identifier = TimerInputSlotId });
             }
         }
     }
@@ -658,6 +741,10 @@ namespace Invert.uFrame.ECS {
     
     public class HandlerNodeBase : SequenceItemNode, ISequenceItemConnectable {
         
+        private string _SourceInputSlotId;
+        
+        private Source _Source;
+        
         public override bool AllowMultipleInputs {
             get {
                 return true;
@@ -670,16 +757,29 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public virtual System.Collections.Generic.IEnumerable<Invert.Core.IItem> PossibleScope {
+        [Invert.Json.JsonProperty()]
+        public virtual string SourceInputSlotId {
             get {
-                return this.Repository.AllOf<IScopeConnectable>().Cast<IItem>();
+                if (_SourceInputSlotId == null) {
+                    _SourceInputSlotId = Guid.NewGuid().ToString();
+                }
+                return _SourceInputSlotId;
+            }
+            set {
+                _SourceInputSlotId = value;
             }
         }
         
-        [Invert.Core.GraphDesigner.ReferenceSection("Scope", SectionVisibility.WhenNodeIsNotFilter, false, false, typeof(IScopeConnectable), false, OrderIndex=3, HasPredefinedOptions=false, IsNewRow=true)]
-        public virtual System.Collections.Generic.IEnumerable<ScopeReference> Scope {
+        [Invert.Core.GraphDesigner.InputSlot("Source", false, SectionVisibility.WhenNodeIsNotFilter, OrderIndex=0, IsNewRow=true)]
+        public virtual Source SourceInputSlot {
             get {
-                return PersistedItems.OfType<ScopeReference>();
+                if (Repository == null) {
+                    return null;
+                }
+                if (_Source != null) {
+                    return _Source;
+                }
+                return _Source ?? (_Source = new Source() { Repository = Repository, Node = this, Identifier = SourceInputSlotId });
             }
         }
     }

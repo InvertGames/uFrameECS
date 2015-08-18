@@ -50,12 +50,12 @@ namespace Invert.uFrame.ECS {
 
         public string SystemPropertyName
         {
-            get { return Name + "Context"; }
+            get { return Name + "Manager"; }
         }
 
         public string EnumeratorExpression
         {
-            get { return string.Format("{0}.Items", SystemPropertyName); }
+            get { return string.Format("{0}.Components", SystemPropertyName); }
         }
 
         public IEnumerable<IContextVariable> GetVariables(IFilterInput input)
@@ -82,12 +82,23 @@ namespace Invert.uFrame.ECS {
 
         public string MatchAndSelect(string mappingExpression)
         {
-            return string.Format("{0}Context.MatchAndSelect({1})",Name,mappingExpression);
+            return string.Format("{0}Manager[{1}])",SystemPropertyName,mappingExpression);
         }
 
         public string DispatcherTypesExpression()
         {
             return SystemPropertyName + ".SelectTypes";
+        }
+
+        public IEnumerable<PropertiesChildItem> GetObservableProperties()
+        {
+            foreach (var item in SelectComponents)
+            {
+                foreach (var p in item.GetObservableProperties())
+                {
+                    yield return p;
+                }
+            }
         }
     }
     

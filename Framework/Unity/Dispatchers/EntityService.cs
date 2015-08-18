@@ -2,9 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using uFrame.Actions;
 using uFrame.Actions.Attributes;
-using uFrame.Attributes;
 using uFrame.Kernel;
 using UniRx;
 using UnityEngine;
@@ -108,60 +106,5 @@ namespace uFrame.ECS
 
         }
 
-    }
-
-    public class SpawnEntity
-    {
-        public string PoolName;
-        public string PrefabName;
-        public Vector3 Position;
-        public Vector3 Rotation;
-        public Entity Result;
-    }
-    public class DespawnEntity
-    {
-        public int EntityId;
-        public Entity Entity;
-    }
-
-    [ActionTitle("Spawn")]
-    public class Spawn : UFAction
-    {
-        [In] public string PoolName;
-        [In] public string PrefabName;
-        [In] public Vector3 Position;
-        [In] public Vector3 Rotation;
-        [Out] public Entity Result;
-
-        public override bool Execute()
-        {
-            var evt = new SpawnEntity()
-            {
-                PoolName = PoolName,
-                PrefabName = PrefabName,
-                Position = Position,
-                Rotation = Rotation,
-                Result = Result,
-            };
-            System.Publish(evt);
-            Result = evt.Result;
-            return base.Execute();
-        }
-    }
-    [ActionTitle("Spawn")]
-    public class Despawn : UFAction
-    {
-        [In] public int EntityId;
-        [In] public Entity Entity;
-
-        public override bool Execute()
-        {
-            System.Publish(new DespawnEntity()
-            {
-                Entity = Entity,
-                EntityId = EntityId
-            });
-            return base.Execute();
-        }
     }
 }

@@ -37,6 +37,13 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class PropertyNodeDrawerBase : GenericNodeDrawer<PropertyNode,PropertyNodeViewModel> {
+        
+        public PropertyNodeDrawerBase(PropertyNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
     public class StringNodeDrawerBase : GenericNodeDrawer<StringNode,StringNodeViewModel> {
         
         public StringNodeDrawerBase(StringNodeViewModel viewModel) : 

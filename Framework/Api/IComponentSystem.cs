@@ -16,5 +16,9 @@ namespace uFrame.ECS
         void DestroyComponentInstance(Type componentType, IEcsComponent instance);
         void AddComponent(int entityId, Type componentType);
         void AddComponent<TComponentType>(int entityId) where TComponentType : class, IEcsComponent;
+
+        TGroupType RegisterGroup<TGroupType, TComponent>() where TComponent : GroupItem, new()
+            where TGroupType : ReactiveGroup<TComponent>, new();
+
     }
 }

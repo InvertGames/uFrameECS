@@ -53,7 +53,7 @@ namespace Invert.uFrame.ECS {
         {
             get { return this.OutputTo<SequenceItemNode>(); }
         }
-
+       
 
         public IEnumerable<IContextVariable> GetAllContextVariables()
         {

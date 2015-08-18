@@ -567,12 +567,14 @@ namespace Invert.uFrame.ECS
 
     public interface IActionItem : IDiagramNodeItem
     {
-        ActionFieldInfo ActionFieldInfo { get; set; }
+        ActionFieldInfo ActionFieldInfo { get; set; }    
         string VariableName { get; }
+    
+        
     }
     public interface IActionIn : IActionItem
     {
-     
+    
     }
 
     public interface IActionOut : IActionItem
@@ -610,7 +612,7 @@ namespace Invert.uFrame.ECS
         }
     }
 
-    public class ActionOut : SingleOutputSlot<IContextVariable>, IActionOut, IContextVariable
+    public class ActionOut : SingleOutputSlot<IContextVariable>, IActionOut, IPropertyConnectable
     {
         public ActionFieldInfo ActionFieldInfo { get; set; }
         public override string Name
@@ -653,15 +655,6 @@ namespace Invert.uFrame.ECS
         }
 
         public ITypedItem SourceVariable { get; set; }
-
-        //public string VariableName
-        //{
-        //    get { return Node.Name + ActionFieldInfo.Name; }
-        //    set
-        //    {
-                
-        //    }
-        //}
 
         public string AsParameter
         {

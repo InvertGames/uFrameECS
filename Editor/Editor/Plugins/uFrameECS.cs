@@ -345,10 +345,12 @@ namespace Invert.uFrame.ECS {
         {
             if (obj is InputOutputViewModel)
             {
+                ui.AddSeparator();
                 QuerySlotMenu(ui, (InputOutputViewModel) obj);
             }
             if (obj is SelectWorkspaceCommand)
-            { 
+            {
+                ui.AddSeparator();
                 ui.AddCommand(new ContextMenuItem()
                 {
                     Title = "Create New Module Workspace",

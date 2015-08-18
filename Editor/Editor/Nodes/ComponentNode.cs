@@ -91,6 +91,11 @@ namespace Invert.uFrame.ECS {
         {
             return string.Format("typeof({0})", this.Name);
         }
+
+        public IEnumerable<PropertiesChildItem> GetObservableProperties()
+        {
+            return Properties;
+        }
     }
     
     public partial interface IComponentConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

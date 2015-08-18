@@ -34,24 +34,6 @@ namespace Invert.uFrame.ECS {
     public partial interface IRequireConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ScopeReferenceBase : Invert.Core.GraphDesigner.GenericReferenceItem<IScopeConnectable> {
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface IScopeConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
     public class ComponentsReferenceBase : Invert.Core.GraphDesigner.GenericReferenceItem<IComponentsConnectable> {
         
         public override bool AllowMultipleInputs {

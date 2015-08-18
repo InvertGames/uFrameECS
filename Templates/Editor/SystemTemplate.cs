@@ -18,8 +18,8 @@ namespace Invert.uFrame.ECS.Templates
     public partial class SystemTemplate
     {
 
-        [ForEach("FilterNodes"), GenerateProperty, WithField]
-        public _CONTEXT_ _Name_Context { get; set; }
+        //[ForEach("FilterNodes"), GenerateProperty, WithField]
+        //public _CONTEXT_ _Name_Context { get; set; }
 
         [GenerateMethod(TemplateLocation.Both), AsOverride, InsideAll]
         public void Setup()
@@ -31,21 +31,14 @@ namespace Invert.uFrame.ECS.Templates
             {
                 Ctx._("{0}Manager = ComponentSystem.RegisterComponent<{0}>()", item.Name);
             }
-            //foreach (var item in ComponentGroups)
-            //{
-            //    Ctx._("{0}Manager = ComponentSystem.RegisterComponent<{0}>()", item.Name);
-            //}
-            foreach (var item in FilterNodes)
+            foreach (var item in Groups)
             {
-                Ctx._("{0}Context = new {0}Context(this)", item.Name);
-                
+                Ctx._("{0}Manager = ComponentSystem.RegisterGroup<{0}Group,{0}>()", item.Name);
             }
             foreach (var item in Ctx.Data.GetContainingNodes().OfType<ISetupCodeWriter>())
             {
                 item.WriteSetupCode(Ctx);
             }
-
-
         }
 
         [ForEach("Components"), GenerateProperty, WithField]

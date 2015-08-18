@@ -13,7 +13,13 @@ namespace Invert.uFrame.ECS {
         {
             get { return NodeColor.Black; }
         }
-
+        public override INodeStyleSchema StyleSchema
+        {
+            get
+            {
+               return MinimalisticStyleSchema;
+            }
+        }
         public ActionNode Action
         {
             get { return GraphItem as ActionNode; }

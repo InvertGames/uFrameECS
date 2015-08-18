@@ -1,3 +1,5 @@
+using Invert.Core.GraphDesigner;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -6,7 +8,13 @@ namespace Invert.uFrame.ECS {
     
     
     public class SetVariableNodeViewModel : SetVariableNodeViewModelBase {
-        
+        public override INodeStyleSchema StyleSchema
+        {
+            get
+            {
+                return MinimalisticStyleSchema;
+            }
+        }
         public SetVariableNodeViewModel(SetVariableNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }

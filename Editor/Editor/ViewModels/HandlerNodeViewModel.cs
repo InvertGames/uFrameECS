@@ -62,13 +62,13 @@ namespace Invert.uFrame.ECS {
             if (IsVisible(SectionVisibility.WhenNodeIsNotFilter))
             {
                 var inputs = Handler.HandlerInputs;
-                if (inputs.Length > 0)
-                    ContentItems.Add(new GenericItemHeaderViewModel()
-                    {
-                        Name = "Mappings",
-                        DiagramViewModel = DiagramViewModel,
-                        IsNewLine = true,
-                    });
+                //if (inputs.Length > 0)
+                //    ContentItems.Add(new GenericItemHeaderViewModel()
+                //    {
+                //        Name = "Mappings",
+                //        DiagramViewModel = DiagramViewModel,
+                //        IsNewLine = true,
+                //    });
                 foreach (var item in inputs)
                 {
                     var vm = new InputOutputViewModel()

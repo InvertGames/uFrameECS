@@ -20,12 +20,24 @@ namespace Invert.uFrame.ECS {
         public CustomActionNodeViewModelBase(CustomActionNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
+        }
     }
     
     public class DataNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<DataNode> {
         
         public DataNodeViewModelBase(DataNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
         }
     }
     
@@ -34,12 +46,37 @@ namespace Invert.uFrame.ECS {
         public StringLiteralNodeViewModelBase(StringLiteralNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
+        }
+    }
+    
+    public class PropertyNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<PropertyNode> {
+        
+        public PropertyNodeViewModelBase(PropertyNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
+            }
+        }
     }
     
     public class StringNodeViewModelBase : LiteralNodeViewModel {
         
         public StringNodeViewModelBase(StringNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
+            }
         }
     }
     
@@ -48,12 +85,24 @@ namespace Invert.uFrame.ECS {
         public BoolNodeViewModelBase(BoolNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
+            }
+        }
     }
     
     public class ModuleNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ModuleNode> {
         
         public ModuleNodeViewModelBase(ModuleNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
         }
     }
     
@@ -62,12 +111,24 @@ namespace Invert.uFrame.ECS {
         public VariableReferenceNodeViewModelBase(VariableReferenceNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
+            }
+        }
     }
     
     public class StopTimerNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<StopTimerNode> {
         
         public StopTimerNodeViewModelBase(StopTimerNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
         }
     }
     
@@ -76,12 +137,24 @@ namespace Invert.uFrame.ECS {
         public FloatNodeViewModelBase(FloatNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
+            }
+        }
     }
     
     public class UserMethodNodeViewModelBase : SequenceItemNodeViewModel {
         
         public UserMethodNodeViewModelBase(UserMethodNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
         }
     }
     
@@ -90,12 +163,24 @@ namespace Invert.uFrame.ECS {
         public SetVariableNodeViewModelBase(SetVariableNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
+            }
+        }
     }
     
-    public class PropertyChangedNodeViewModelBase : SequenceItemNodeViewModel {
+    public class PropertyChangedNodeViewModelBase : HandlerNodeViewModel {
         
         public PropertyChangedNodeViewModelBase(PropertyChangedNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
         }
     }
     
@@ -104,12 +189,24 @@ namespace Invert.uFrame.ECS {
         public VariableNodeViewModelBase(VariableNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
+        }
     }
     
     public class GroupNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<GroupNode> {
         
         public GroupNodeViewModelBase(GroupNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
         }
     }
     
@@ -118,12 +215,24 @@ namespace Invert.uFrame.ECS {
         public Vector3NodeViewModelBase(Vector3Node graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
+            }
+        }
     }
     
     public class EventNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<EventNode> {
         
         public EventNodeViewModelBase(EventNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
         }
     }
     
@@ -132,12 +241,24 @@ namespace Invert.uFrame.ECS {
         public LiteralNodeViewModelBase(LiteralNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
+            }
+        }
     }
     
     public class ComponentNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<ComponentNode> {
         
         public ComponentNodeViewModelBase(ComponentNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
         }
     }
     
@@ -146,12 +267,24 @@ namespace Invert.uFrame.ECS {
         public IntNodeViewModelBase(IntNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
+            }
+        }
     }
     
     public class Vector2NodeViewModelBase : LiteralNodeViewModel {
         
         public Vector2NodeViewModelBase(Vector2Node graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
+            }
         }
     }
     
@@ -160,12 +293,24 @@ namespace Invert.uFrame.ECS {
         public StartTimerNodeViewModelBase(StartTimerNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
+        }
     }
     
     public class ActionNodeViewModelBase : SequenceItemNodeViewModel {
         
         public ActionNodeViewModelBase(ActionNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
+            }
         }
     }
     
@@ -174,12 +319,24 @@ namespace Invert.uFrame.ECS {
         public HandlerNodeViewModelBase(HandlerNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
+        }
     }
     
     public class SystemNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<SystemNode> {
         
         public SystemNodeViewModelBase(SystemNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
         }
     }
     
@@ -188,6 +345,12 @@ namespace Invert.uFrame.ECS {
         public EntityNodeViewModelBase(EntityNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
+        }
     }
     
     public class ColorNodeViewModelBase : LiteralNodeViewModel {
@@ -195,12 +358,24 @@ namespace Invert.uFrame.ECS {
         public ColorNodeViewModelBase(ColorNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
+        }
     }
     
     public class SequenceItemNodeViewModelBase : Invert.Core.GraphDesigner.GenericNodeViewModel<SequenceItemNode> {
         
         public SequenceItemNodeViewModelBase(SequenceItemNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
+            }
         }
     }
 }
