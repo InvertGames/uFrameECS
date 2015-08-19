@@ -9,14 +9,13 @@ namespace uFrame.ECS
         [In] public int EntityId;
         [In] public Entity Entity;
 
-        public override bool Execute()
+        public override void Execute()
         {
             System.Publish(new DespawnEntity()
             {
                 Entity = Entity,
                 EntityId = EntityId
             });
-            return base.Execute();
         }
     }
 }

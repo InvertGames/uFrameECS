@@ -17,13 +17,12 @@ namespace uFrame.Actions
         [Out]
         public IDisposable Result;
 
-        public override bool Execute()
+        public override void Execute()
         {
             Result = Observable.Interval(new TimeSpan(0, 0, Minutes, Seconds, 0)).Subscribe(_ =>
             {
                 Tick();
             }).DisposeWith(System);
-            return true;
         }
     }
 }

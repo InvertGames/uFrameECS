@@ -93,6 +93,13 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class GetPropertyNodeDrawerBase : GenericNodeDrawer<GetPropertyNode,GetPropertyNodeViewModel> {
+        
+        public GetPropertyNodeDrawerBase(GetPropertyNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
     public class SetVariableNodeDrawerBase : GenericNodeDrawer<SetVariableNode,SetVariableNodeViewModel> {
         
         public SetVariableNodeDrawerBase(SetVariableNodeViewModel viewModel) : 
@@ -180,6 +187,13 @@ namespace Invert.uFrame.ECS {
     public class HandlerNodeDrawerBase : GenericNodeDrawer<HandlerNode,HandlerNodeViewModel> {
         
         public HandlerNodeDrawerBase(HandlerNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class SetPropertyNodeDrawerBase : GenericNodeDrawer<SetPropertyNode,SetPropertyNodeViewModel> {
+        
+        public SetPropertyNodeDrawerBase(SetPropertyNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }

@@ -21,9 +21,9 @@ public class AddResetPositionAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public uFrame.ECS.EcsComponent Beside;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<ResetPosition>();
-        return base.Execute();
+    
     }
 }
 
@@ -33,9 +33,9 @@ public class AddResetRotationAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public uFrame.ECS.EcsComponent Beside;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<ResetRotation>();
-        return base.Execute();
+ 
     }
 }
 
@@ -45,8 +45,7 @@ public class AddResetDestroyAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public uFrame.ECS.EcsComponent Beside;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<ResetDestroy>();
-        return base.Execute();
     }
 }

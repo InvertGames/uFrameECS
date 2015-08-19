@@ -27,9 +27,9 @@ public class AddScrollerAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public Boolean IsScrolling;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<Scroller>();
-        return base.Execute();
+
     }
 }
 
@@ -39,11 +39,11 @@ public class PublishToggleScrollingAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public Boolean On;
     
-    public override bool Execute() {
+    public override void Execute() {
         var evt = new ToggleScrolling();
         evt.On = On;
         System.Publish(evt);
-        return base.Execute();
+
     }
 }
 
@@ -53,9 +53,9 @@ public class AddDestroyWhenInvisibleAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public uFrame.ECS.EcsComponent Beside;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<DestroyWhenInvisible>();
-        return base.Execute();
+  
     }
 }
 
@@ -68,8 +68,8 @@ public class AddResetWhenInvisibleAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public Vector3 StartPosition;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<ResetWhenInvisible>();
-        return base.Execute();
+  
     }
 }

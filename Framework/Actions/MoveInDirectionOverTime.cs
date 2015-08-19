@@ -11,10 +11,10 @@ namespace uFrame.Actions
         [In] public float Speed;
         [In] public Vector3 Direction;
 
-        public override bool Execute()
+        public override void Execute()
         {
             Component.CachedTransform.position += (Direction*Speed)*Time.deltaTime;
-            return true;
+
         }
     }
 }

@@ -7,28 +7,8 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
 
 
-    public class GroupNode : GroupNodeBase,IRequireConnectable, IMappingsConnectable, IHandlerConnectable, ICodeOutput {
-        public IEnumerable<IContextVariable> GetAllContextVariables()
-        {
-            return GetContextVariables();
-        }
-
-        public virtual IEnumerable<IContextVariable> GetContextVariables()
-        {
-            //foreach (var item in SelectComponents)
-            //{
-            //    foreach (var property in item.PersistedItems.OfType<ITypedItem>())
-            //    {
-            //        yield return new ContextVariable(string.Format("{0}", property.Name))
-            //        {
-            //            SourceVariable = property,
-            //            Node = this
-            //        };
-            //    }
-            //}
-            yield break;
-        }
-
+    public class GroupNode : GroupNodeBase,IRequireConnectable, IMappingsConnectable, IHandlerConnectable {
+       
         public void WriteCode(TemplateContext ctx)
         {
             

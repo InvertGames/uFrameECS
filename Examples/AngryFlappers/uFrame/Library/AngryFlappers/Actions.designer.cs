@@ -18,10 +18,10 @@ using UnityEngine;
 [uFrame.Attributes.ActionTitle("Publish GameOver")]
 public class PublishGameOverAction : uFrame.Actions.UFAction {
     
-    public override bool Execute() {
+    public override void Execute() {
         var evt = new GameOver();
         System.Publish(evt);
-        return base.Execute();
+
     }
 }
 
@@ -43,9 +43,9 @@ public class AddBirdAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public Single FlapVelocity;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<Bird>();
-        return base.Execute();
+
     }
 }
 
@@ -55,11 +55,11 @@ public class PublishBirdDiedAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public Int32 Bird;
     
-    public override bool Execute() {
+    public override void Execute() {
         var evt = new BirdDied();
         evt.Bird = Bird;
         System.Publish(evt);
-        return base.Execute();
+
     }
 }
 
@@ -69,9 +69,9 @@ public class AddDeadlyAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public uFrame.ECS.EcsComponent Beside;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<Deadly>();
-        return base.Execute();
+
     }
 }
 
@@ -81,19 +81,19 @@ public class AddFlappingAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public uFrame.ECS.EcsComponent Beside;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<Flapping>();
-        return base.Execute();
+
     }
 }
 
 [uFrame.Attributes.ActionTitle("Publish StartPlaying")]
 public class PublishStartPlayingAction : uFrame.Actions.UFAction {
     
-    public override bool Execute() {
+    public override void Execute() {
         var evt = new StartPlaying();
         System.Publish(evt);
-        return base.Execute();
+
     }
 }
 
@@ -103,9 +103,9 @@ public class AddDestroyOnPlayAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public uFrame.ECS.EcsComponent Beside;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<DestroyOnPlay>();
-        return base.Execute();
+ 
     }
 }
 
@@ -118,9 +118,9 @@ public class AddResetPositionOnPlayAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public Vector3 StartPosition;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<ResetPositionOnPlay>();
-        return base.Execute();
+ 
     }
 }
 
@@ -133,9 +133,9 @@ public class AddResetRotationOnPlayAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public Vector3 StartRotation;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<ResetRotationOnPlay>();
-        return base.Execute();
+ 
     }
 }
 
@@ -145,9 +145,9 @@ public class AddAngryFlappersGameAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public uFrame.ECS.EcsComponent Beside;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<AngryFlappersGame>();
-        return base.Execute();
+ 
     }
 }
 
@@ -178,9 +178,9 @@ public class AddSpawnRandomlyAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public Vector3 StartPosition;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<SpawnRandomly>();
-        return base.Execute();
+ 
     }
 }
 
@@ -190,9 +190,9 @@ public class AddPipeAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public uFrame.ECS.EcsComponent Beside;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<Pipe>();
-        return base.Execute();
+ 
     }
 }
 
@@ -202,8 +202,8 @@ public class AddDestroyOnGameOverAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public uFrame.ECS.EcsComponent Beside;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<DestroyOnGameOver>();
-        return base.Execute();
+ 
     }
 }

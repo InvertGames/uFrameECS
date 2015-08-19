@@ -7,9 +7,9 @@ namespace uFrame.Actions
         public Entity EntityView;
         public EcsSystem System;
 
-        public virtual bool Execute()
+        public virtual void Execute()
         {
-            return false;
+            
         }
 
     }

@@ -65,7 +65,11 @@ namespace Invert.uFrame.ECS {
 
         public override string EventType
         {
-            get { return SourceInputSlot.InputFrom<IMappingsConnectable>().Name; }
+            get
+            {
+                return "FIXMEPROPERTYCHANGEDNODE_EVENTTYPE_PROPERTY";
+                //return SourceInputSlot.InputFrom<IMappingsConnectable>().Name;
+            }
             set
             {
                 
@@ -97,14 +101,14 @@ namespace Invert.uFrame.ECS {
             ctx._("this.PropertyChanged<{0},{1}>(component=>component.{2}Observable, {3})", EventType, relatedTypeProperty.RelatedTypeName, SourceProperty.Name, filterMethod.Name);
         }
 
-        public override IEnumerable<IMappingsConnectable> GetSystemGroups()
-        { 
-            //foreach (var item in Scope)
-            //{
-            //    yield return item.SourceItem as IMappingsConnectable;
-            //}
-            yield return SourceInputSlot.InputFrom<IMappingsConnectable>();
-        }
+//        public override IEnumerable<IMappingsConnectable> GetSystemGroups()
+//        { 
+//            //foreach (var item in Scope)
+//            //{
+//            //    yield return item.SourceItem as IMappingsConnectable;
+//            //}
+////            yield return SourceInputSlot.InputFrom<IMappingsConnectable>();
+//        }
 
         public IEnumerable GetObservableProperties()
         {

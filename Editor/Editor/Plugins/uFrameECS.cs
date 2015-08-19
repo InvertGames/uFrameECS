@@ -269,16 +269,7 @@ namespace Invert.uFrame.ECS {
                 var fields = eventType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
                 var properties = eventType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
 
-                if (!eventInfo.SystemEvent && eventInfo.Dispatcher)
-                {
-                    eventInfo.Members.Add(new EventFieldInfo()
-                    {
-                        Type = typeof(int),
-                        Name = "EntityId",
-                        Title = "Source",
-                        IsProperty = true
-                    });
-                }
+               
                 foreach (var field in fields)
                 {
                     var fieldMetaInfo = new EventFieldInfo()

@@ -103,8 +103,12 @@ namespace Invert.uFrame.ECS {
                         DiagramViewModel = DiagramViewModel
                     };
                     ContentItems.Add(vm);
-                    vm.InputConnector.Style = ConnectorStyle.Circle;
-                    vm.InputConnector.TintColor = UnityEngine.Color.green;
+                    if (vm.InputConnector != null)
+                    {
+                        vm.InputConnector.Style = ConnectorStyle.Circle;
+                        vm.InputConnector.TintColor = UnityEngine.Color.green;
+                    }
+                    
                 }
                 foreach (var item in Action.OutputVars)
                 {

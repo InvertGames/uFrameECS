@@ -11,21 +11,21 @@ namespace Invert.uFrame.ECS {
 
     public class SequenceItemNode : SequenceItemNodeBase, ICodeOutput
     {
-        public SequenceItemNode Left
+        public IVariableContextProvider Left
         {
             get
             {
-                var r = this.InputFrom<SequenceItemNode>();
-                if (r != null) return r;
-                var leftInput = this.InputFrom<IDiagramNodeItem>();
-                if (leftInput != null)
-                {
-                    return leftInput.Node as SequenceItemNode;
-                }
+                var r = this.InputFrom<IVariableContextProvider>();
+                return r;
+                //var leftInput = this.InputFrom<IDiagramNodeItem>();
+                //if (leftInput != null)
+                //{
+                //    return leftInput.Node as SequenceItemNode;
+                //}
                 return null;
             }
         }
-        public IEnumerable<SequenceItemNode> LeftNodes
+        public IEnumerable<IVariableContextProvider> LeftNodes
         {
             get
             {
@@ -37,7 +37,7 @@ namespace Invert.uFrame.ECS {
                 }
             }
         }
-        public IEnumerable<SequenceItemNode> RightNodes
+        public IEnumerable<IVariableContextProvider> RightNodes
         {
             get
             {

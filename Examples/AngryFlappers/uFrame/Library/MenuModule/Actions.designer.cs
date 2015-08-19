@@ -21,9 +21,8 @@ public class AddPlayButtonAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public uFrame.ECS.EcsComponent Beside;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<PlayButton>();
-        return base.Execute();
     }
 }
 
@@ -33,8 +32,8 @@ public class AddMenuAction : uFrame.Actions.UFAction {
     [uFrame.Attributes.In()]
     public uFrame.ECS.EcsComponent Beside;
     
-    public override bool Execute() {
+    public override void Execute() {
         Beside.gameObject.AddComponent<Menu>();
-        return base.Execute();
+
     }
 }

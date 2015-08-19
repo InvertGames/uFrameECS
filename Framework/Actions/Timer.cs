@@ -12,14 +12,12 @@ namespace uFrame.Actions
         [In] public int Seconds;
 
         [Out] public Action Complete;
-        public override bool Execute()
+        public override void Execute()
         {
-            
             Observable.Timer(new TimeSpan(0, 0, Minutes, Seconds, 0)).Subscribe(_ =>
             {
                 Complete();
             }).DisposeWith(System);
-            return true;
         }
     }
 }

@@ -20,6 +20,7 @@ public class EcsDyanmicActionTemplates : DiagramPlugin
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentNode, AddComponentTemplate>();
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<EventNode, PublishActionTemplate>();
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<EntityNode, SpawnEntityTemplate>();
+        RegisteredTemplateGeneratorsFactory.RegisterTemplate<IMappingsConnectable, LoopComponentsTemplate>();
     }
 }
 
@@ -30,10 +31,9 @@ public partial class EnumSwitchActionTemplate : UFAction, IClassTemplate<EnumNod
     public bool CanGenerate { get { return true; } }
 
     [GenerateMethod]
-    public override bool Execute()
+    public override void Execute()
     {
         Ctx._("return true");
-        return false;
     }
 
     public void TemplateSetup()
@@ -55,8 +55,9 @@ public partial class EnumSwitchActionTemplate : UFAction, IClassTemplate<EnumNod
 
 
 [TemplateClass(TemplateLocation.DesignerFile)]
-[ForceBaseType(typeof(UFAction))]
+
 [RequiresNamespace("UnityEngine")]
+[RequiresNamespace("uFrame.Actions")]
 public class ActionTemplate<TNodeType> :  IClassTemplate<TNodeType> where TNodeType : IDiagramNodeItem {
 
     public string OutputPath
@@ -71,6 +72,7 @@ public class ActionTemplate<TNodeType> :  IClassTemplate<TNodeType> where TNodeT
 
     public virtual void TemplateSetup()
     {
+        Ctx.SetBaseType(typeof(UFAction));
         Ctx.CurrentDeclaration.CustomAttributes.Add(
           new CodeAttributeDeclaration(typeof(ActionTitle).ToCodeReference(),
               new CodeAttributeArgument(
@@ -111,6 +113,24 @@ public class ActionTemplate<TNodeType> :  IClassTemplate<TNodeType> where TNodeT
 
 }
 
+
+public class LoopComponentsTemplate : ActionTemplate<IMappingsConnectable>
+{
+    protected override string ClassName
+    {
+        get { return string.Format("{0}LoopAction", Ctx.Data.Name); }
+    }
+
+    protected override string ActionTitle
+    {
+        get { return string.Format("{0} Loop", Ctx.Data.Name); }
+    }
+    public override void TemplateSetup()
+    {
+        base.TemplateSetup();
+        this.Ctx.SetBaseType("LoopEntities<{0}>",Ctx.Data.Name);
+    }
+}
 public class AddComponentTemplate : ActionTemplate<ComponentNode>
 {
     protected override string ClassName
@@ -124,7 +144,7 @@ public class AddComponentTemplate : ActionTemplate<ComponentNode>
     }
 
     [GenerateMethod(CallBase = true), AsOverride]
-    public bool Execute()
+    public void Execute()
     {
         AddIn(typeof(EcsComponent), "Beside");
 
@@ -134,8 +154,6 @@ public class AddComponentTemplate : ActionTemplate<ComponentNode>
         }
         
         Ctx._("Beside.gameObject.AddComponent<{0}>()",Ctx.Data.Name);
-        Ctx._("return base.Execute()");
-        return false;
     }
 }
 //public class RemoveComponentTemplate : ActionTemplate<ComponentNode>
@@ -178,7 +196,7 @@ public class PublishActionTemplate : ActionTemplate<EventNode>
     }
 
     [GenerateMethod(CallBase = true), AsOverride]
-    public bool Execute()
+    public void Execute()
     {
 
         Ctx._("var evt = new {0}()",Ctx.Data.Name);
@@ -194,8 +212,7 @@ public class PublishActionTemplate : ActionTemplate<EventNode>
         
         
 
-        Ctx._("return base.Execute()");
-        return false;
+
     }
 }
 
@@ -212,7 +229,7 @@ public class SpawnEntityTemplate : ActionTemplate<EntityNode>
         get { return string.Format("Entities/Spawn {0}", Ctx.Data.Name); }
     }
     [GenerateMethod(CallBase = true), AsOverride]
-    public bool Execute()
+    public void Execute()
     {
         AddIn(typeof(string), "Pool");
 
@@ -226,9 +243,6 @@ public class SpawnEntityTemplate : ActionTemplate<EntityNode>
         }
         AddOut(typeof (Entity), "Entity");
 
-       // Ctx._("Beside.gameObject.AddComponent<{0}>()", Ctx.Data.Name);
-        Ctx._("return base.Execute()");
-        return false;
     }
 }
 

@@ -21,14 +21,7 @@ namespace Invert.uFrame.ECS {
         }
         protected override void CreateContent()
         {
-            if (ShowContextVariables)
-            {
-                foreach (var item in GraphItem.GetAllContextVariables())
-                {
-                    ContentItems.Add(new ItemViewModel<IContextVariable>(item, this));
-                }
-            }
-
+         
             base.CreateContent();
 
         }

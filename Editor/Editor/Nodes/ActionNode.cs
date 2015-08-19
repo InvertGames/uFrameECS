@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
+using Invert.Data;
 using Invert.Json;
 using uFrame.Attributes;
 
@@ -178,12 +179,14 @@ namespace Invert.uFrame.ECS
         public HandlerIn Input { get; set; }
         public ComponentNode Component { get; set; }
     }
-
-    public interface ICodeOutput
+    public interface IVariableContextProvider : IDiagramNodeItem
     {
         IEnumerable<IContextVariable> GetAllContextVariables();
         IEnumerable<IContextVariable> GetContextVariables();
-
+        IVariableContextProvider Left { get; }
+    }
+    public interface ICodeOutput : IVariableContextProvider
+    {
         void WriteCode(TemplateContext ctx);
     }
     public class ActionNode : ActionNodeBase, ICodeOutput
@@ -491,18 +494,34 @@ namespace Invert.uFrame.ECS
             var meta = Meta;
             if (meta != null)
             {
+
+                //// Get the generic contraints
+                //foreach (var item in meta.Type.GetGenericArguments())
+                //{
+                //    var typeConstraints = item.GetGenericParameterConstraints().Select(p=>p.Name);
+                //    if (!typeConstraints.Contains("IEcsComponent")) continue;
+                //    var variableIn = new GroupIn()
+                //    {
+                        
+                //    };
+                //    variableIn.Node = this;
+                //    variableIn.Repository = Repository;
+                //    variableIn.Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name;
+                //}
+
                 foreach (var item in Meta.ActionFields.Where(p => p.DisplayType is In))
                 {
-                    var variableIn = new ActionIn()
-                    {
-                        Repository = Repository,
-                        ActionFieldInfo = item,
-                        Node = this,
-                        Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name
-                    };
+                    IActionIn variableIn;
+                 
+                    variableIn = new ActionIn();
+                    variableIn.Node = this;
+                    variableIn.Repository = Repository;
+                    variableIn.ActionFieldInfo = item;
+                    variableIn.Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name;
                     yield return variableIn;
                 }
             }
+            
         }
 
         public IActionOut[] OutputVars
@@ -582,26 +601,28 @@ namespace Invert.uFrame.ECS
         string VariableType { get; }
     }
 
-    public class ActionIn : SingleInputSlot<IContextVariable>, IActionIn
+    public class GroupIn : SelectionFor<IMappingsConnectable, GroupSelection>, IActionIn
     {
+        public override bool AllowInputs
+        {
+            get { return false; }
+        }
+
+        public override IEnumerable<IGraphItem> GetAllowed()
+        {
+            foreach (var item in Repository.AllOf<IMappingsConnectable>())
+            {
+                yield return item;
+            }
+        }
+
         public ActionFieldInfo ActionFieldInfo { get; set; }
-
-        
-
         public string VariableName
         {
             get
             {
                 var actionNode = Node as ActionNode;
                 return actionNode.Meta.Type.Name + "_" + Name;
-                //var str = string.Empty;
-                //foreach (var c in Node.Identifier)
-                //{
-                //    if (Char.IsLetter(c))
-                //    {
-                //        str
-                //    }
-                //}
             }
         }
 
@@ -612,7 +633,51 @@ namespace Invert.uFrame.ECS
         }
     }
 
-    public class ActionOut : SingleOutputSlot<IContextVariable>, IActionOut, IPropertyConnectable
+    public class ActionIn : SelectionFor<IContextVariable, VariableSelection>, IActionIn
+    {
+        public ActionFieldInfo ActionFieldInfo { get; set; }
+
+        public string VariableName
+        {
+            get
+            {
+                var actionNode = Node as ActionNode;
+                return actionNode.Meta.Type.Name + "_" + Name;
+            }
+        }
+
+        public override string Name
+        {
+            get { return ActionFieldInfo.Name; }
+            set { base.Name = value; }
+        }
+
+        public override IEnumerable<IGraphItem> GetAllowed()
+        {
+            var action = this.Node as IVariableContextProvider;
+            if (action != null)
+            {
+                InvertApplication.Log(action.Name);
+
+                foreach (var item in action.GetAllContextVariables())
+                    yield return item;
+            }
+            else
+            {
+                InvertApplication.Log("BS");
+            }
+        }
+    }
+
+    public class GroupSelection : InputSelectionValue
+    {
+        
+    }
+    public class VariableSelection : InputSelectionValue
+    {
+      
+    }
+    public class ActionOut : SingleOutputSlot<IContextVariable>, IActionOut, ISourceObjectConnectable
     {
         public ActionFieldInfo ActionFieldInfo { get; set; }
         public override string Name
@@ -673,7 +738,7 @@ namespace Invert.uFrame.ECS
         }
     }
 
-    public class ActionBranch : SingleOutputSlot<ActionNode>, IActionOut
+    public class ActionBranch : SingleOutputSlot<ActionNode>, IActionOut, IVariableContextProvider
     {
         public string VariableName
         {
@@ -696,5 +761,26 @@ namespace Invert.uFrame.ECS
         }
 
         public string VariableType { get; set; }
+        public IEnumerable<IContextVariable> GetAllContextVariables()
+        {
+            if (Left == null)
+            {
+                InvertApplication.Log("BULLSHIT");
+                yield break;
+            }
+            InvertApplication.Log("BULLSHIT2");
+            foreach (var item in  Left.GetAllContextVariables())
+                yield return item;
+        }
+
+        public IEnumerable<IContextVariable> GetContextVariables()
+        {
+            yield break;
+        }
+
+        public IVariableContextProvider Left
+        {
+            get { return this.Node as SequenceItemNode; }
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace Invert.uFrame.ECS
         private EventNode _eventNode;
         private EventMetaInfo _meta;
         private string _metaType;
-        private HandlerIn[] _contextInputs;
+        private EntityGroupIn[] _contextInputs;
 
         public void Accept(IHandlerNodeVisitor visitor)
         {
@@ -45,38 +45,6 @@ namespace Invert.uFrame.ECS
         {
             get { return Name + "Filter"; }
         }
-
-
-
-
-
-        //[JsonProperty]
-        //public string EventIdentifier
-        //{
-        //    get { return _eventIdentifier; }
-        //    set
-        //    {
-        //        _eventIdentifier = value;
-        //        _eventNode = null;
-
-        //    }
-        //}
-
-        //public override IEnumerable<IItem> PossibleMappings
-        //{
-        //    get
-        //    {
-        //        // TODO Make this work or remove it one
-        //        return Meta.Members.Cast<IItem>();
-        //        //                return base.PossibleMappings;
-        //    }
-        //}
-
-        //public EventNode EventNode
-        //{
-        //    get { return _eventNode ?? (_eventNode = Project.NodeItems.FirstOrDefault(p => p.Identifier == EventIdentifier) as EventNode); }
-
-        //}
 
         public EventMetaInfo Meta
         {
@@ -157,7 +125,6 @@ namespace Invert.uFrame.ECS
                     Repository = this.Repository,
                     Node = this,
                     VariableType = evtNode.Type.FullName
-                    //SourceVariable = select as GenericNode
                 };
 
                 foreach (var child in evtNode.Members)
@@ -382,17 +349,23 @@ namespace Invert.uFrame.ECS
 
         }
 
-        public HandlerIn[] HandlerInputs
+        public EntityGroupIn[] HandlerInputs
         {
             get { return _contextInputs ?? (_contextInputs = GetHandlerInputs().ToArray()); }
             set { _contextInputs = value; }
         }
 
-        private IEnumerable<HandlerIn> GetHandlerInputs()
+        private IEnumerable<EntityGroupIn> GetHandlerInputs()
         {
             var meta = Meta;
             if (meta != null)
             {
+                yield return new EntityGroupIn()
+                {
+                    Repository = Repository,
+                    Node = this,
+                    Identifier = this.Identifier + ":" + meta.Type.Name + ":" + "Group"
+                };
                 foreach (var item in Meta.Members)
                 {
                     if (item.Type != typeof(int)) continue;

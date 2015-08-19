@@ -74,7 +74,7 @@ namespace Invert.uFrame.ECS {
                     var vm = new InputOutputViewModel()
                     {
                         DataObject = item,
-                        Name = item.EventFieldInfo.Title,
+                        Name = item.Title,
                         IsInput = true,
                         IsOutput = false,
                         IsNewLine = true,

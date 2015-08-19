@@ -4,27 +4,30 @@ using Invert.Core.GraphDesigner;
 
 namespace Invert.uFrame.ECS
 {
-    public class HandlerIn : SingleInputSlot<IMappingsConnectable>, IFilterInput
+    public class EntityGroupIn : SelectionFor<IMappingsConnectable, HandlerInValue>, IFilterInput
     {
         public IMappingsConnectable FilterNode
         {
-            get { return this.InputFrom<IMappingsConnectable>(); }
+            get { return this.Item; }
         }
 
-        public string MappingId
+        public virtual string MappingId
         {
-            get { return EventFieldInfo.Name; }
+            get { return "EntityId"; }
         }
-
-        public EventFieldInfo EventFieldInfo { get; set; }
 
         public override string Name
         {
-            get { return EventFieldInfo.Name; }
+            get { return "Group"; }
             set { base.Name = value; }
         }
 
-        public string HandlerPropertyName
+        public override string Title
+        {
+            get { return "Group"; }
+        }
+
+        public virtual string HandlerPropertyName
         {
             get { return Name; }
         }
@@ -33,5 +36,39 @@ namespace Invert.uFrame.ECS
         {
             return Repository.AllOf<IMappingsConnectable>().OfType<IGraphItem>();
         }
+    }
+
+    public class HandlerIn : EntityGroupIn, IFilterInput
+    {
+ 
+        public override string MappingId
+        {
+            get { return EventFieldInfo.Name; }
+        }
+
+        public EventFieldInfo EventFieldInfo { get; set; }
+        public override string Title
+        {
+            get
+            {
+                return EventFieldInfo.Title;
+            }
+        }
+        public override string Name
+        {
+            get { return EventFieldInfo.Name; }
+            set { base.Name = value; }
+        }
+
+        public override string HandlerPropertyName
+        {
+            get { return Name; }
+        }
+
+    }
+
+    public class HandlerInValue : InputSelectionValue
+    {
+        
     }
 }

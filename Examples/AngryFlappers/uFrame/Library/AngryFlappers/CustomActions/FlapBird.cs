@@ -8,7 +8,7 @@ using UnityEngine;
 
 public partial class FlapBird {
     
-    public override bool Execute() {
+    public override void Execute() {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Bird.DidFlap = true;
@@ -24,6 +24,6 @@ public partial class FlapBird {
 
         float angle = Bird.Velocity.y < 0 ? Mathf.Lerp(0f, -90, -Bird.Velocity.y / Bird.MaxSpeed) : 0;
         Bird.transform.rotation = Quaternion.Euler(0f, 0f, angle);
-        return base.Execute();
+     
     }
 }

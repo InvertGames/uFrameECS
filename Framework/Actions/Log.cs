@@ -7,10 +7,9 @@ namespace uFrame.Actions
     public class Log : UFAction
     {
         [In] public string Message;
-        public override bool Execute()
+        public override void Execute()
         {
             Debug.Log(Message);
-            return true;
         }
     }
 }

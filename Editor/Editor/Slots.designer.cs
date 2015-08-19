@@ -267,40 +267,4 @@ namespace Invert.uFrame.ECS {
     
     public partial interface ITimerConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
-    
-    public class SourceBase : SingleInputSlot<ISourceConnectable> {
-        
-        public override string Name {
-            get {
-                return "Source";
-            }
-            set {
-            }
-        }
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return false;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return false;
-            }
-        }
-        
-        public override bool AllowSelection {
-            get {
-                return true;
-            }
-        }
-        
-        public override System.Collections.Generic.IEnumerable<Invert.Core.GraphDesigner.IGraphItem> GetAllowed() {
-            return Repository.AllOf<ISourceConnectable>().OfType<IGraphItem>();;
-        }
-    }
-    
-    public partial interface ISourceConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
 }

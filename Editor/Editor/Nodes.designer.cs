@@ -356,6 +356,24 @@ namespace Invert.uFrame.ECS {
     public partial interface IUserMethodConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
+    public class GetPropertyNodeBase : SequenceItemNode {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IGetPropertyConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
     public class SetVariableNodeBase : SequenceItemNode {
         
         private string _VariableInputSlotId;
@@ -500,7 +518,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class GroupNodeBase : Invert.Core.GraphDesigner.GenericNode, ISourceConnectable {
+    public class GroupNodeBase : Invert.Core.GraphDesigner.GenericNode {
         
         public override bool AllowMultipleInputs {
             get {
@@ -599,7 +617,7 @@ namespace Invert.uFrame.ECS {
     public partial interface ILiteralConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class ComponentNodeBase : Invert.Core.GraphDesigner.GenericNode, Invert.Core.GraphDesigner.IClassTypeNode, IRequireConnectable, IComponentsConnectable, ISourceConnectable {
+    public class ComponentNodeBase : Invert.Core.GraphDesigner.GenericNode, Invert.Core.GraphDesigner.IClassTypeNode, IRequireConnectable, IComponentsConnectable {
         
         public virtual string ClassName {
             get {
@@ -741,9 +759,23 @@ namespace Invert.uFrame.ECS {
     
     public class HandlerNodeBase : SequenceItemNode, ISequenceItemConnectable {
         
-        private string _SourceInputSlotId;
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
         
-        private Source _Source;
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IHandlerConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class SetPropertyNodeBase : SequenceItemNode {
         
         public override bool AllowMultipleInputs {
             get {
@@ -756,35 +788,9 @@ namespace Invert.uFrame.ECS {
                 return true;
             }
         }
-        
-        [Invert.Json.JsonProperty()]
-        public virtual string SourceInputSlotId {
-            get {
-                if (_SourceInputSlotId == null) {
-                    _SourceInputSlotId = Guid.NewGuid().ToString();
-                }
-                return _SourceInputSlotId;
-            }
-            set {
-                _SourceInputSlotId = value;
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.InputSlot("Source", false, SectionVisibility.WhenNodeIsNotFilter, OrderIndex=0, IsNewRow=true)]
-        public virtual Source SourceInputSlot {
-            get {
-                if (Repository == null) {
-                    return null;
-                }
-                if (_Source != null) {
-                    return _Source;
-                }
-                return _Source ?? (_Source = new Source() { Repository = Repository, Node = this, Identifier = SourceInputSlotId });
-            }
-        }
     }
     
-    public partial interface IHandlerConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    public partial interface ISetPropertyConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
     public class SystemNodeBase : Invert.Core.GraphDesigner.GenericNode {

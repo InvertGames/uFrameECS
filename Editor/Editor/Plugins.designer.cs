@@ -41,6 +41,8 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<UserMethodNode> _UserMethod;
         
+        private Invert.Core.GraphDesigner.NodeConfig<GetPropertyNode> _GetProperty;
+        
         private Invert.Core.GraphDesigner.NodeConfig<SetVariableNode> _SetVariable;
         
         private Invert.Core.GraphDesigner.NodeConfig<PropertyChangedNode> _PropertyChanged;
@@ -66,6 +68,8 @@ namespace Invert.uFrame.ECS {
         private Invert.Core.GraphDesigner.NodeConfig<ActionNode> _Action;
         
         private Invert.Core.GraphDesigner.NodeConfig<HandlerNode> _Handler;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<SetPropertyNode> _SetProperty;
         
         private Invert.Core.GraphDesigner.NodeConfig<SystemNode> _System;
         
@@ -171,6 +175,15 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _UserMethod = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<GetPropertyNode> GetProperty {
+            get {
+                return _GetProperty;
+            }
+            set {
+                _GetProperty = value;
             }
         }
         
@@ -291,6 +304,15 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<SetPropertyNode> SetProperty {
+            get {
+                return _SetProperty;
+            }
+            set {
+                _SetProperty = value;
+            }
+        }
+        
         public Invert.Core.GraphDesigner.NodeConfig<SystemNode> System {
             get {
                 return _System;
@@ -376,6 +398,8 @@ namespace Invert.uFrame.ECS {
             Float.Color(NodeColor.Purple);
             UserMethod = container.AddNode<UserMethodNode,UserMethodNodeViewModel,UserMethodNodeDrawer>("UserMethod");
             UserMethod.Color(NodeColor.Blue);
+            GetProperty = container.AddNode<GetPropertyNode,GetPropertyNodeViewModel,GetPropertyNodeDrawer>("GetProperty");
+            GetProperty.Color(NodeColor.Blue);
             SetVariable = container.AddNode<SetVariableNode,SetVariableNodeViewModel,SetVariableNodeDrawer>("SetVariable");
             SetVariable.Color(NodeColor.Gray);
             PropertyChanged = container.AddNode<PropertyChangedNode,PropertyChangedNodeViewModel,PropertyChangedNodeDrawer>("PropertyChanged");
@@ -413,17 +437,21 @@ namespace Invert.uFrame.ECS {
             Handler.HasSubNode<SetVariableNode>();
             Handler.HasSubNode<ColorNode>();
             Handler.HasSubNode<UserMethodNode>();
+            Handler.HasSubNode<GetPropertyNode>();
             Handler.HasSubNode<ActionNode>();
             Handler.HasSubNode<ComponentNode>();
+            Handler.HasSubNode<SetPropertyNode>();
             Handler.HasSubNode<VariableReferenceNode>();
             Handler.HasSubNode<IntNode>();
+            Handler.HasSubNode<PropertyNode>();
             Handler.HasSubNode<Vector2Node>();
             Handler.HasSubNode<FloatNode>();
             Handler.HasSubNode<BoolNode>();
             Handler.HasSubNode<SequenceItemNode>();
             Handler.HasSubNode<Vector3Node>();
             Handler.HasSubNode<StringNode>();
-            Handler.HasSubNode<PropertyNode>();
+            SetProperty = container.AddNode<SetPropertyNode,SetPropertyNodeViewModel,SetPropertyNodeDrawer>("SetProperty");
+            SetProperty.Color(NodeColor.Blue);
             System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
             System.Color(NodeColor.Blue);
             System.HasSubNode<PropertyChangedNode>();
@@ -436,11 +464,9 @@ namespace Invert.uFrame.ECS {
             SequenceItem.Color(NodeColor.Green);
             container.Connectable<VariableReferenceNode,Value>();
             container.Connectable<VariableReferenceNode,Variable>();
-            container.Connectable<GroupNode,Source>();
             container.Connectable<LiteralNode,Value>();
             container.Connectable<ComponentNode,RequireReference>();
             container.Connectable<ComponentNode,ComponentsReference>();
-            container.Connectable<ComponentNode,Source>();
             container.Connectable<ActionNode,ActionNode>();
             container.Connectable<HandlerNode,SequenceItemNode>();
             container.Connectable<SequenceItemNode,SequenceItemNode>();

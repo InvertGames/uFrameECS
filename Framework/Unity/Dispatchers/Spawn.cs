@@ -13,7 +13,7 @@ namespace uFrame.ECS
         [In] public Vector3 Rotation;
         [Out] public Entity Result;
 
-        public override bool Execute()
+        public override void Execute()
         {
             var evt = new SpawnEntity()
             {
@@ -25,7 +25,7 @@ namespace uFrame.ECS
             };
             System.Publish(evt);
             Result = evt.Result;
-            return base.Execute();
+
         }
     }
 }

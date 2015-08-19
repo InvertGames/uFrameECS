@@ -1,29 +1,29 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using uFrame.Attributes;
 using uFrame.ECS;
 
 namespace uFrame.Actions
 {
-    [uFrame.Attributes.ActionTitle("Loop Entities"), uFrameCategory("Loops", "Entities")]
-    public class LoopEntities : UFAction
+    [ActionTitle("Loop Entities"), uFrameCategory("Loops", "Entities")]
+    public class LoopEntities<TType> : UFAction where TType : class, IEcsComponent
     {
-        [In] 
-        public IEcsComponentManager Group;
-
-        [Out] 
-        public IEcsComponent Item;
-
         [Out]
-        public Action Continue { get; set; }
+        public Action Continue;
+        
+        [Out]
+        public TType Item;
 
-        public override bool Execute()
+        public override void Execute()
         {
-            foreach (var item in Group.All)
+            var items = System.ComponentSystem.RegisterComponent<TType>().Components;
+            foreach (var item in items)
             {
-                Item = item;
-                Continue();
+                Item = (TType)item;
+                if (Continue != null)
+                    Continue();
             }
-            return base.Execute();
         }
     }
 }
