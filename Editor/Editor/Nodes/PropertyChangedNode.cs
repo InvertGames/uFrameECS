@@ -62,18 +62,26 @@ namespace Invert.uFrame.ECS {
                 return Graph.CurrentFilter.Name + "PropertyChangedFilter";
             }
         }
-
+         
         public override string EventType
         {
             get
             {
-                return "FIXMEPROPERTYCHANGEDNODE_EVENTTYPE_PROPERTY";
+                if (SourceProperty == null) return "...";
+                return this.SourceProperty.Node.Name;
                 //return SourceInputSlot.InputFrom<IMappingsConnectable>().Name;
             }
             set
             {
                 
             }
+        }
+
+        public override void Validate(List<ErrorInfo> errors)
+        {
+            base.Validate(errors);
+            if (SourceProperty == null) 
+                errors.AddError("Source Property not set",this.Identifier);
         }
 
         public override void WriteCode(TemplateContext ctx)

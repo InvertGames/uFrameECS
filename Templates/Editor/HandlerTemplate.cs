@@ -215,8 +215,8 @@ namespace Invert.uFrame.ECS.Templates
             };
 
             _.CurrentDeclaration.Members.Add(varDecl);
-            
-            var variableReference = input.InputFrom<IContextVariable>();
+
+            var variableReference = input.Item;
             if (variableReference != null)
             _.CurrentStatements.Add(new CodeAssignStatement(new CodeSnippetExpression(input.VariableName),
                 new CodeSnippetExpression(variableReference.VariableName)));

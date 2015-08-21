@@ -42,6 +42,13 @@ namespace Invert.uFrame.ECS {
 
             }
         }
+
+        
+
+        IContextVariable IActionIn.Item
+        {
+            get { return null; }
+        }
     }
     
     public partial interface IValueConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

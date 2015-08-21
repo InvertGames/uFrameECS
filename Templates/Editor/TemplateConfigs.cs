@@ -187,7 +187,7 @@ namespace Invert.uFrame.ECS.Templates
 
     //    public TemplateContext<EntityNode> Ctx { get; set; }
     //}
-
+     
 
     [TemplateClass(TemplateLocation.DesignerFile), AsPartial]
     [RequiresNamespace("uFrame.Kernel")]
@@ -195,7 +195,14 @@ namespace Invert.uFrame.ECS.Templates
     {
         public string Filename
         {
-            get { return Path2.Combine("Modules", Ctx.Data.Graph.Name, Ctx.Data.Name + ".cs"); }
+            get
+            {
+                if (Ctx.Data.Name == null)
+                {
+                     throw new Exception(Ctx.Data.Name + " Graph is null");
+                } 
+                return Path2.Combine("Modules", Ctx.Data.Graph.Name, Ctx.Data.Name + ".cs");
+            }
         }
         public string OutputPath
         {

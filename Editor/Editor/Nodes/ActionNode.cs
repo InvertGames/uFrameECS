@@ -246,7 +246,7 @@ namespace Invert.uFrame.ECS
             var outputtedNodes = new List<ActionNode>();
             foreach (var input in InputVars)
             {
-                var actionOutput = input.InputFrom<ActionOut>();
+                var actionOutput = input.Item;
                 if (actionOutput == null) continue;
                 var actionNode = actionOutput.Node as ActionNode;
                 
@@ -314,9 +314,9 @@ namespace Invert.uFrame.ECS
             var varStatement = ctx.CurrentDeclaration._private_(Meta.Type, VarName);
             varStatement.InitExpression = new CodeObjectCreateExpression(Meta.Type);
 
-            foreach (var item in GraphItems.OfType<GenericSlot>())
+            foreach (var item in GraphItems.OfType<IActionIn>())
             {
-                var contextVariable = item.InputFrom<IContextVariable>();
+                var contextVariable = item.Item;
                 if (contextVariable == null) continue;
                 ctx._("{0}.{1} = {2}", varStatement.Name, item.Name, contextVariable.Name);
             }
@@ -403,7 +403,7 @@ namespace Invert.uFrame.ECS
                 {
                     var item1 = item;
                     var input = InputVars.FirstOrDefault(p => p.ActionFieldInfo.DisplayType.ParameterName == item1.Name);
-                    var inputVar = input.InputFrom<IContextVariable>();
+                    var inputVar = input.Item;
 
                     if (inputVar != null)
                     {
@@ -593,7 +593,7 @@ namespace Invert.uFrame.ECS
     }
     public interface IActionIn : IActionItem
     {
-    
+        IContextVariable Item { get; }
     }
 
     public interface IActionOut : IActionItem
@@ -631,6 +631,13 @@ namespace Invert.uFrame.ECS
             get { return ActionFieldInfo.Name; }
             set { base.Name = value; }
         }
+
+        
+
+        IContextVariable IActionIn.Item
+        {
+            get { return null; }
+        }
     }
 
     public class ActionIn : SelectionFor<IContextVariable, VariableSelection>, IActionIn
@@ -641,6 +648,7 @@ namespace Invert.uFrame.ECS
         {
             get
             {
+                
                 var actionNode = Node as ActionNode;
                 return actionNode.Meta.Type.Name + "_" + Name;
             }
