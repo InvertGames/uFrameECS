@@ -664,8 +664,7 @@ namespace Invert.uFrame.ECS
         {
             var action = this.Node as IVariableContextProvider;
             if (action != null)
-            {
-                InvertApplication.Log(action.Name);
+            {  
 
                 foreach (var item in action.GetAllContextVariables())
                     yield return item;
@@ -676,7 +675,45 @@ namespace Invert.uFrame.ECS
             }
         }
     }
+    public class PropertyIn : SelectionFor<IContextVariable, VariableSelection>
+    {
+        public override bool AllowInputs
+        {
+            get { return false; }
+        }
 
+        public string VariableName
+        {
+            get
+            {
+
+                var actionNode = Node as ActionNode;
+                return actionNode.Meta.Type.Name + "_" + Name;
+            }
+        }
+
+        public override string Name
+        {
+            get { return "Property"; }
+            set { base.Name = value; }
+        }
+
+        public override IEnumerable<IGraphItem> GetAllowed()
+        {
+            var action = this.Node as IVariableContextProvider;
+            if (action != null)
+            {
+                foreach (var item in action.GetContextVariables())
+                {
+                    if (item.SourceVariable is PropertiesChildItem)
+                    {
+                        yield return item;
+                    }
+                }
+            }
+     
+        }
+    }
     public class GroupSelection : InputSelectionValue
     {
         

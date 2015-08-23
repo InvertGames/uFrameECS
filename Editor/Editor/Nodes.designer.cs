@@ -470,31 +470,31 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        [Invert.Json.JsonProperty()]
-        public virtual string PropertyInputSlotId {
-            get {
-                if (_PropertyInputSlotId == null) {
-                    _PropertyInputSlotId = Guid.NewGuid().ToString();
-                }
-                return _PropertyInputSlotId;
-            }
-            set {
-                _PropertyInputSlotId = value;
-            }
-        }
+        //[Invert.Json.JsonProperty()]
+        //public virtual string PropertyInputSlotId {
+        //    get {
+        //        if (_PropertyInputSlotId == null) {
+        //            _PropertyInputSlotId = Guid.NewGuid().ToString();
+        //        }
+        //        return _PropertyInputSlotId;
+        //    }
+        //    set {
+        //        _PropertyInputSlotId = value;
+        //    }
+        //}
         
-        [Invert.Core.GraphDesigner.InputSlot("Property", false, SectionVisibility.WhenNodeIsNotFilter, OrderIndex=0, IsNewRow=true)]
-        public virtual Property PropertyInputSlot {
-            get {
-                if (Repository == null) {
-                    return null;
-                }
-                if (_Property != null) {
-                    return _Property;
-                }
-                return _Property ?? (_Property = new Property() { Repository = Repository, Node = this, Identifier = PropertyInputSlotId });
-            }
-        }
+        //[Invert.Core.GraphDesigner.InputSlot("Property", false, SectionVisibility.WhenNodeIsNotFilter, OrderIndex=0, IsNewRow=true)]
+        //public virtual Property PropertyInputSlot {
+        //    get {
+        //        if (Repository == null) {
+        //            return null;
+        //        }
+        //        if (_Property != null) {
+        //            return _Property;
+        //        }
+        //        return _Property ?? (_Property = new Property() { Repository = Repository, Node = this, Identifier = PropertyInputSlotId });
+        //    }
+        //}
     }
     
     public partial interface IPropertyChangedConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

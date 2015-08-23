@@ -10,16 +10,10 @@ namespace Invert.uFrame.ECS {
     
     
     public class PropertyChangedNode : PropertyChangedNodeBase, ISequenceNode, ISetupCodeWriter {
+        private PropertyIn _PropertyIn;
+        private string _PropertyInId;
+
         public override bool CanGenerate { get { return true; } }
-
-        //public override IEnumerable<IFilterInput> FilterInputs
-        //{
-        //    get
-        //    {
-        //        yield return SourceInputSlot;
-        //    }
-        //}
-
         public override string Name
         {
             get
@@ -30,17 +24,49 @@ namespace Invert.uFrame.ECS {
             set { base.Name = value; }
         }
 
-        public IPropertyConnectable SourceProperty
+        public IContextVariable SourceProperty
         {
-            get { return  PropertyInputSlot.Item; }
+            get { return  PropertyIn.Item; }
+        }
+
+        [Invert.Json.JsonProperty()]
+        public virtual string PropertyInId
+        {
+            get
+            {
+                if (_PropertyInId == null)
+                {
+                    _PropertyInId = Guid.NewGuid().ToString();
+                }
+                return _PropertyInId;
+            }
+            set
+            {
+                _PropertyInId = value;
+            }
+        }
+        public PropertyIn PropertyIn
+        {
+            get
+            {
+                if (Repository == null)
+                {
+                    return null;
+                }
+                if (_PropertyIn != null)
+                {
+                    return _PropertyIn;
+                }
+                return _PropertyIn ?? (_PropertyIn = new PropertyIn() { Repository = Repository, Node = this, Identifier = PropertyInId });
+            }
         }
 
         public string DisplayName
         {
             get
             {
-                if (Repository != null && !string.IsNullOrEmpty(this.PropertyInputSlotId) && PropertyInputSlot != null && SourceProperty != null)
-                    return string.Format("{0}PropertyChanged", SourceProperty.Name);
+                if (Repository != null && !string.IsNullOrEmpty(this.PropertyInId) && PropertyIn != null && SourceProperty != null)
+                    return string.Format("{0} {1} Property Changed", SourceProperty.SourceVariable.Node.Name, SourceProperty.SourceVariable.Name);
                 return "PropertyChanged";
             }
         }
@@ -48,8 +74,8 @@ namespace Invert.uFrame.ECS {
         {
             get
             {
-                if (Repository != null && !string.IsNullOrEmpty(this.PropertyInputSlotId) && PropertyInputSlot != null && SourceProperty != null)
-                    return string.Format("{0}{1}PropertyChanged",Graph.CurrentFilter.Name , SourceProperty.Name);
+                if (Repository != null && !string.IsNullOrEmpty(this.PropertyInId) && PropertyIn != null && SourceProperty != null)
+                    return string.Format("{0}{1}PropertyChanged", SourceProperty.SourceVariable.Node.Name, SourceProperty.SourceVariable.Name);
                 return Graph.CurrentFilter.Name + "PropertyChanged";
             }
         }
@@ -57,8 +83,8 @@ namespace Invert.uFrame.ECS {
         {
             get
             {
-                if (Repository != null && !string.IsNullOrEmpty(this.PropertyInputSlotId) && PropertyInputSlot != null && SourceProperty != null)
-                    return string.Format("{0}{1}PropertyChangedFilter", Graph.CurrentFilter.Name, SourceProperty.Name);
+                if (Repository != null && !string.IsNullOrEmpty(this.PropertyInId) && PropertyIn != null && SourceProperty != null)
+                    return string.Format("{0}{1}PropertyChangedFilter", SourceProperty.SourceVariable.Node.Name, SourceProperty.SourceVariable.Name);
                 return Graph.CurrentFilter.Name + "PropertyChangedFilter";
             }
         }
@@ -84,15 +110,6 @@ namespace Invert.uFrame.ECS {
                 errors.AddError("Source Property not set",this.Identifier);
         }
 
-        public override void WriteCode(TemplateContext ctx)
-        {
-            base.WriteCode(ctx);
-        }
-        public override CodeMemberMethod WriteHandlerFilter(TemplateContext ctx, CodeMemberMethod handlerMethod)
-        {
-            return base.WriteHandlerFilter(ctx, handlerMethod);
-        }
-
         protected override void WriteHandlerInvoker(CodeMethodInvokeExpression handlerInvoker, CodeMemberMethod handlerFilterMethod)
         {
             base.WriteHandlerInvoker(handlerInvoker, handlerFilterMethod);
@@ -102,21 +119,17 @@ namespace Invert.uFrame.ECS {
         public override void WriteEventSubscription(TemplateContext ctx, CodeMemberMethod filterMethod, CodeMemberMethod handlerMethod)
         {
             //base.WriteEventSubscription(ctx, filterMethod, handlerMethod);
-            var relatedTypeProperty = SourceProperty as GenericTypedChildItem;
+            var relatedTypeProperty = SourceProperty.SourceVariable;
             filterMethod.Parameters.Add(new CodeParameterDeclarationExpression(relatedTypeProperty.RelatedTypeName, "value"));
             handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(relatedTypeProperty.RelatedTypeName, "value"));
 
-            ctx._("this.PropertyChanged<{0},{1}>(component=>component.{2}Observable, {3})", EventType, relatedTypeProperty.RelatedTypeName, SourceProperty.Name, filterMethod.Name);
+            ctx._("this.PropertyChanged<{0},{1}>(Group=>{2}Observable, {3})", EventType, relatedTypeProperty.RelatedTypeName, SourceProperty.Name, filterMethod.Name);
         }
 
-//        public override IEnumerable<IMappingsConnectable> GetSystemGroups()
-//        { 
-//            //foreach (var item in Scope)
-//            //{
-//            //    yield return item.SourceItem as IMappingsConnectable;
-//            //}
-////            yield return SourceInputSlot.InputFrom<IMappingsConnectable>();
-//        }
+        public override bool IsLoop
+        {
+            get { return false; }
+        }
 
         public IEnumerable GetObservableProperties()
         {

@@ -2,9 +2,9 @@ using uFrame.Attributes;
 
 namespace uFrame.ECS
 {
-    [SystemUFrameEvent("Update", "Update")]
+    [SystemUFrameEvent("Update", "SystemUpdate")]
     public interface ISystemUpdate
     {
-        void Update();
+        void SystemUpdate();
     }
 }

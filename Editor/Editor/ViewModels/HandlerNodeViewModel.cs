@@ -69,6 +69,9 @@ namespace Invert.uFrame.ECS {
                 //        DiagramViewModel = DiagramViewModel,
                 //        IsNewLine = true,
                 //    });
+           
+         
+                
                 foreach (var item in inputs)
                 {
                     var vm = new InputOutputViewModel()

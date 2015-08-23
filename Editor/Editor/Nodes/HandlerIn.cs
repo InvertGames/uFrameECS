@@ -36,11 +36,16 @@ namespace Invert.uFrame.ECS
         {
             return Repository.AllOf<IMappingsConnectable>().OfType<IGraphItem>();
         }
+        public override bool AllowInputs
+        {
+            get { return false; }
+        }
+
     }
 
     public class HandlerIn : EntityGroupIn, IFilterInput
     {
- 
+    
         public override string MappingId
         {
             get { return EventFieldInfo.Name; }

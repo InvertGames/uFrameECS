@@ -62,7 +62,7 @@ namespace Invert.uFrame.ECS {
 
         public string MatchAndSelect(string mappingExpression)
         {
-            return string.Format("{0}Manager[{1}])",SystemPropertyName,mappingExpression);
+            return string.Format("{0}[{1}]",SystemPropertyName,mappingExpression);
         }
 
         public string DispatcherTypesExpression()

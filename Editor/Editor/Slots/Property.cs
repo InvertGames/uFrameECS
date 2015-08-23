@@ -4,21 +4,32 @@ namespace Invert.uFrame.ECS {
     using System.Collections.Generic;
     using System.Linq;
     using Invert.Core.GraphDesigner;
-    
-    
-    public class Property : PropertyBase {
+
+
+    public class Property : PropertyBase
+    {
+        public override string Name
+        {
+            get { return "Property"; }
+            set { base.Name = value; }
+        }
+
         public override IEnumerable<IGraphItem> GetAllowed()
         {
-            return Repository.AllOf<ComponentNode>().SelectMany(p=>p.PersistedItems)
-                .OfType<PropertiesChildItem>().Cast<IGraphItem>();
-            //var pcn = this.Node as PropertyChangedNode;
-            //if (pcn != null)
-            //{
-            //    foreach (var item in pcn.GetObservableProperties())
-            //    {
-            //        yield return item as IGraphItem;
-            //    }
-            //}
+            
+            //return Repository.AllOf<ComponentNode>().SelectMany(p=>p.PersistedItems)
+            //    .OfType<PropertiesChildItem>().Cast<IGraphItem>();
+            var pcn = this.Node as PropertyChangedNode;
+            if (pcn != null)
+            {
+                foreach (var item in pcn.GetContextVariables())
+                {
+                    if (item.SourceVariable is PropertiesChildItem)
+                    {
+                        yield return item;
+                    }
+                }
+            }
             
         }
     }
