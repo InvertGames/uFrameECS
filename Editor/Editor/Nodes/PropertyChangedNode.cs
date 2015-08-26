@@ -14,15 +14,15 @@ namespace Invert.uFrame.ECS {
         private string _PropertyInId;
 
         public override bool CanGenerate { get { return true; } }
-        public override string Name
-        {
-            get
-            {
+        //public override string Name
+        //{
+        //    get
+        //    {
                 
-                return "PropertyChanged"; 
-            }
-            set { base.Name = value; }
-        }
+        //        return "PropertyChanged"; 
+        //    }
+        //    set { base.Name = value; }
+        //}
 
         public IContextVariable SourceProperty
         {

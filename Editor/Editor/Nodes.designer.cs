@@ -872,8 +872,9 @@ namespace Invert.uFrame.ECS {
     
     public partial interface IColorConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
-    
-    public class SequenceItemNodeBase : Invert.Core.GraphDesigner.GenericNode, ISequenceItemConnectable {
+
+    public class SequenceItemNodeBase : Invert.Core.GraphDesigner.GenericNode, ISequenceItemConnectable
+    {
         
         public override bool AllowMultipleInputs {
             get {

@@ -21,33 +21,34 @@ namespace Invert.uFrame.ECS
             {
                 BeforeVisitHandlerIn(handlerIn);
                 VisitHandlerIn(handlerIn);
-                AfterVisitHandlerIn(handlerIn);
+                AfterVisitHandlerIn(handlerIn); return;
             }
             if (setVariableNode != null)
             {
                 BeforeSetVariableHandler(setVariableNode);
                 VisitSetVariable(setVariableNode);
-                AfterVisitSetVariable(setVariableNode);
+                AfterVisitSetVariable(setVariableNode); return;
             }
             if (handlerNode != null)
             {
                 BeforeVisitHandler(handlerNode);
                 VisitHandler(handlerNode);
-                AfterVisitHandler(handlerNode);
+                AfterVisitHandler(handlerNode); return;
             }
 
             if (actionNode != null)
             {
                 BeforeVisitAction(actionNode);
                 VisitAction(actionNode);
-                AfterVisitAction(actionNode);
+                AfterVisitAction(actionNode); return;
             }
-                
+
             if (actionBranch != null)
             {
                 BeforeVisitBranch(actionBranch);
                 VisitBranch(actionBranch);
                 AfterVisitBranch(actionBranch);
+                return;
             }
                 
             if (actionOut != null)
@@ -55,6 +56,7 @@ namespace Invert.uFrame.ECS
                 BeforeVisitOutput(actionOut);
                 VisitOutput(actionOut);
                 AfterVisitOutput(actionOut);
+                return;
             }
                 
             if (actionIn != null)
@@ -62,6 +64,7 @@ namespace Invert.uFrame.ECS
                 BeforeVisitInput(actionIn);
                 VisitInput(actionIn);
                 AfterVisitInput(actionIn);
+                return;
             }
                 
         }
@@ -140,8 +143,14 @@ namespace Invert.uFrame.ECS
 
         public virtual void BeforeVisitInput(IActionIn actionIn)
         {
+        
+
             var actionOutput = actionIn.InputFrom<ActionOut>();
             if (actionOutput == null) return;
+
+            var preferedIn = actionIn.Node.InputFrom<SequenceItemNode>();
+            if (preferedIn == actionOutput.Node) return;
+
             var actionNode = actionOutput.Node as ActionNode;
 
             if (actionNode != null)
@@ -149,15 +158,15 @@ namespace Invert.uFrame.ECS
                 if (outputtedNodes.Contains(actionNode)) return;
 
                 Visit(actionNode);
-                outputtedNodes.Add(actionNode);
+               
             }
         }
 
         public virtual void BeforeVisitAction(ActionNode actionNode)
         {
-            var outputtedNodes = new List<ActionNode>();
 
-            
+
+            outputtedNodes.Add(actionNode);
 
             foreach (var input in actionNode.InputVars)
             {

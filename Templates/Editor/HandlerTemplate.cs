@@ -138,15 +138,10 @@ namespace Invert.uFrame.ECS.Templates
                     _._("{0}.{1} = {2}", varStatement.Name, item.Name, item.VariableName);
                 }
 
-                _._if("!{0}.Execute()", varStatement.Name).TrueStatements._("return");
-
-                foreach (var item in actionNode.OutputVars.OfType<ActionOut>())
-                {
-                    var contextVariable = item.OutputTo<IContextVariable>();
-                    if (contextVariable == null) continue;
-                    _._("{0} = {1}.{2}", item.VariableName, varStatement.Name, item.Name);
-                }
-                _._comment("CALL EXECUTE ON {0} CLASS",actionNode.Meta.Type.Name);
+                _._("{0}.Execute()", varStatement.Name);
+                WriteActionOutputs(actionNode);
+               
+                
             }
         }
 
@@ -154,6 +149,7 @@ namespace Invert.uFrame.ECS.Templates
         {
             base.VisitOutput(output);
             if (output.ActionFieldInfo.Type == typeof (System.Action)) return;
+            _._comment("Visit Output");
             //if (output.Name == "Result") return;
             _.TryAddNamespace(output.ActionFieldInfo.Type.Namespace);
             var varDecl = new CodeMemberField(
@@ -164,11 +160,11 @@ namespace Invert.uFrame.ECS.Templates
                 InitExpression = new CodeSnippetExpression(string.Format("default( {0} )", output.VariableType.Replace("&", "")))
             };
             _.CurrentDeclaration.Members.Add(varDecl);
-            var variableReference = output.OutputTo<IContextVariable>();
-            if (variableReference != null)
-                _.CurrentStatements.Add(new CodeAssignStatement(new CodeSnippetExpression(variableReference.VariableName),
-                    new CodeSnippetExpression(output.VariableName)));
-            
+            //var variableReference = output.OutputTo<IContextVariable>();
+            //if (variableReference != null)
+            //    _.CurrentStatements.Add(new CodeAssignStatement(new CodeSnippetExpression(variableReference.VariableName),
+            //        new CodeSnippetExpression(output.VariableName)));
+
         }
 
         public override void VisitSetVariable(SetVariableNode setVariableNode)
@@ -181,6 +177,31 @@ namespace Invert.uFrame.ECS.Templates
                 setVariableNode.ValueInputSlot.VariableName);
         }
 
+        public void WriteActionOutputs(ActionNode action)
+        {
+            foreach (var output in action.OutputVars)
+            {
+                if (output is ActionBranch) continue;
+                WriteActionOutput(action, output);
+            }
+        }
+
+        private void WriteActionOutput(ActionNode node, IActionOut output)
+        {
+            _._("{0} = {1}.{2}", output.VariableName, node.VarName, output.Name);
+            var variableReference = output.OutputTo<IContextVariable>();
+            if (variableReference != null)
+                _.CurrentStatements.Add(new CodeAssignStatement(new CodeSnippetExpression(variableReference.VariableName),
+                    new CodeSnippetExpression(output.VariableName)));
+            var actionIn = output.OutputTo<IActionIn>();
+            if (actionIn != null)
+            {
+                _.CurrentStatements.Add(new CodeAssignStatement(
+                    new CodeSnippetExpression(actionIn.VariableName),
+                    new CodeSnippetExpression(output.VariableName)));
+            }
+        }
+
         public override void VisitBranch(ActionBranch output)
         {
             var branchMethod = new CodeMemberMethod()
@@ -188,6 +209,12 @@ namespace Invert.uFrame.ECS.Templates
                 Name = output.VariableName
             };
             _.PushStatements(branchMethod.Statements);
+            var actionNode = output.Node as ActionNode;
+            if (actionNode != null)
+            {
+                WriteActionOutputs(actionNode);
+            }
+           
             base.VisitBranch(output);
             _.PopStatements();
             _.CurrentDeclaration.Members.Add(branchMethod);

@@ -7,6 +7,8 @@ namespace uFrame.ECS
     public class EcsSystemLoader : SystemLoader
     {
         public List<EntityPrefabPool> Pools = new List<EntityPrefabPool>();
+        private ISystemUpdate[] _items;
+
         public override void Load()
         {
             base.Load();
@@ -18,7 +20,12 @@ namespace uFrame.ECS
         {
             if (uFrameKernel.IsKernelLoaded)
             {
-                foreach (var item in uFrameKernel.Instance.Services.OfType<ISystemUpdate>())
+                if (_items == null)
+                {
+                    _items = uFrameKernel.Instance.Services.OfType<ISystemUpdate>().ToArray();
+                }
+                
+                foreach (var item in _items)
                 {
                     item.SystemUpdate();
                 }

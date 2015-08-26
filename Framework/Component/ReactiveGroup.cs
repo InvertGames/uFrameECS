@@ -42,6 +42,7 @@ namespace uFrame.ECS
             }
             else
             {
+                if (_components.ContainsKey(entityId))
                 this.RemoveItem(_components[entityId].FirstOrDefault());
             }
         }

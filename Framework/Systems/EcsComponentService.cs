@@ -11,11 +11,24 @@ namespace uFrame.ECS
     public class EcsComponentService : EcsSystem, IComponentSystem
     {
         public static EcsComponentService Instance { get; set; }
+
+        public EcsComponentService()
+        {
+            Instance = this;
+        }
+
         public override void Setup()
         {
             base.Setup();
             Instance = this;
-            foreach (var item in ComponentManagers.Where(p => typeof (GroupItem).IsAssignableFrom(p.Key)))
+        
+        }
+
+        public override void Loaded()
+        {
+            base.Loaded();
+            var array = ComponentManagers.Where(p => typeof (GroupItem).IsAssignableFrom(p.Key)).ToArray();
+            foreach (var item in array)
             {
                 var reactiveGroup = item.Value as IReactiveGroup;
                 if (reactiveGroup != null)
@@ -28,6 +41,7 @@ namespace uFrame.ECS
                 }
             }
         }
+
         private Dictionary<Type, IEcsComponentManager> _componentManager;
 
         public LinkedList<Component> Components { get; set; }

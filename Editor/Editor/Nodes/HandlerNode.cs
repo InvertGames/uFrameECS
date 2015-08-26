@@ -1,5 +1,6 @@
-using System.CodeDom;
 using Invert.Json;
+using System.CodeDom;
+using UnityEngine;
 
 namespace Invert.uFrame.ECS
 {
@@ -13,38 +14,135 @@ namespace Invert.uFrame.ECS
     {
         IEnumerable<IMappingsConnectable> GetSystemGroups();
     }
+
     public class HandlerNode : HandlerNodeBase, ISetupCodeWriter, ICodeOutput, ISequenceNode, ISystemGroupProvider
     {
+        public override Color Color
+        {
+            get { return Color.blue; }
+        }
+
+        private EntityGroupIn[] _contextInputs;
+        private EntityGroupIn _entityGroup;
         private string _eventIdentifier;
         private EventNode _eventNode;
         private EventMetaInfo _meta;
         private string _metaType;
-        private EntityGroupIn[] _contextInputs;
-        private EntityGroupIn _entityGroup;
-
-        public void Accept(IHandlerNodeVisitor visitor)
-        {
-            visitor.Visit(this);
-        }
-
+        
         public override bool AllowInputs
         {
             get
             {
                 return !HandlerInputs.Any();
-
             }
         }
 
+        public virtual bool CanGenerate
+        {
+            get { return Meta != null; }
+        }
+
+        public IEnumerable<ConnectionData> Connections { get; set; }
+
+        public IMappingsConnectable ContextNode
+        {
+            get { return this.InputFrom<IMappingsConnectable>(); }
+        }
+
+        public EntityGroupIn EntityGroup
+        {
+            get
+            {
+                return _entityGroup ?? (_entityGroup = new EntityGroupIn()
+                {
+                    Repository = Repository,
+                    Node = this,
+                    Identifier = this.Identifier + ":" + "Group"
+                });
+            }
+            set { _entityGroup = value; }
+        }
+
+        public virtual string EventType
+        {
+            get { return Meta.Type.FullName; }
+            set { throw new NotImplementedException(); }
+        }
+
+        public virtual IEnumerable<IFilterInput> FilterInputs
+        {
+            get
+            {
+                foreach (var handlerIn in HandlerInputs)
+                {
+                    if (handlerIn.FilterNode != null)
+                        yield return handlerIn;
+                }
+            }
+        }
+
+        public IMappingsConnectable FilterNode
+        {
+            get { return this.InputFrom<IMappingsConnectable>(); }
+        }
+
+        public override IEnumerable<IGraphItem> GraphItems
+        {
+            get
+            {
+                foreach (var item in HandlerInputs)
+                    yield return item;
+
+                foreach (var item in this.PersistedItems)
+                    yield return item;
+                //foreach (var item in ContextVariables)
+                //{
+                //    yield return item;
+                //}
+            }
+        }
+
+        public virtual string HandlerFilterMethodName
+        {
+            get { return Name + "Filter"; }
+        }
+
+        public EntityGroupIn[] HandlerInputs
+        {
+            get { return _contextInputs ?? (_contextInputs = GetHandlerInputs().ToArray()); }
+            set { _contextInputs = value; }
+        }
 
         public virtual string HandlerMethodName
         {
             get { return Name + "Handler"; }
         }
 
-        public virtual string HandlerFilterMethodName
+        public string HandlerPropertyName
         {
-            get { return Name + "Filter"; }
+            get { return "Item"; }
+        }
+
+        public virtual bool IsLoop
+        {
+            get
+            {
+                if (Meta.Dispatcher) return false;
+                return Meta.SystemEvent || HandlerInputs.All(p => p == EntityGroup);
+            }
+        }
+
+        public bool IsSystemEvent
+        {
+            get
+            {
+                return Meta != null && Meta.SystemEvent;
+            }
+        }
+
+        public string MappingId
+        {
+            get { return "EntityId"; }
         }
 
         public EventMetaInfo Meta
@@ -77,43 +175,36 @@ namespace Invert.uFrame.ECS
             }
         }
 
-        public IMappingsConnectable ContextNode
+        public IEnumerable<IContextVariable> Vars
         {
-            get { return this.InputFrom<IMappingsConnectable>(); }
+            get { return GetAllContextVariables(); }
         }
 
-        public virtual IEnumerable<IFilterInput> FilterInputs
+        public void Accept(IHandlerNodeVisitor visitor)
         {
-            get
-            {
-                foreach (var handlerIn in HandlerInputs)
-                {
-                    if (handlerIn.FilterNode != null)
-                        yield return handlerIn;
-                }
-            }
+            visitor.Visit(this);
         }
 
-        public virtual string EventType
+        public virtual string BeginWriteLoop(TemplateContext ctx, IMappingsConnectable connectable)
         {
-            get { return Meta.Type.FullName; }
-            set { throw new NotImplementedException(); }
+            // ctx.PushStatements(ctx._if("{0} != null", ContextNode.SystemPropertyName).TrueStatements);
+
+            ctx._("var {0}Items = {1}.GetEnumerator()", connectable.Name, connectable.EnumeratorExpression);
+
+            var iteration = new CodeIterationStatement(
+                new CodeSnippetStatement(string.Empty),
+                new CodeSnippetExpression(string.Format("{0}Items.MoveNext()", connectable.Name)),
+                new CodeSnippetStatement(string.Empty)
+                );
+
+            ctx.CurrentStatements.Add(iteration);
+            ctx.PushStatements(iteration.Statements);
+            return connectable.Name + "Items.Current";
         }
 
-        public override IEnumerable<IGraphItem> GraphItems
+        public virtual void EndWriteLoop(TemplateContext ctx)
         {
-            get
-            {
-                foreach (var item in HandlerInputs)
-                    yield return item;
-
-                foreach (var item in this.PersistedItems)
-                    yield return item;
-                //foreach (var item in ContextVariables)
-                //{
-                //    yield return item;
-                //}
-            }
+            ctx.PopStatements();
         }
 
         public override IEnumerable<IContextVariable> GetContextVariables()
@@ -147,141 +238,30 @@ namespace Invert.uFrame.ECS
                     yield return item;
                 }
             }
-
         }
 
-        public IEnumerable<IContextVariable> Vars
+        public virtual IEnumerable<IMappingsConnectable> GetSystemGroups()
         {
-            get { return GetAllContextVariables(); }
+            //foreach (var item in Scope)
+            //{
+            //    yield return item.SourceItem as IMappingsConnectable;
+            //}
+            foreach (var input in FilterInputs)
+            {
+                var filter = input.FilterNode;
+                if (filter != null)
+                {
+                    yield return filter;
+                }
+            }
         }
 
         public override void WriteCode(TemplateContext ctx)
         {
-            var handlerMethod =  WriteHandler(ctx);
+            var handlerMethod = WriteHandler(ctx);
             var filterMethod = WriteHandlerFilter(ctx, handlerMethod);
             WriteEventSubscription(ctx, filterMethod, handlerMethod);
         }
-
-        public bool IsSystemEvent
-        {
-            get
-            {
-                return Meta != null && Meta.SystemEvent;
-            }
-        }
-
-        public virtual CodeMemberMethod WriteHandlerFilter(TemplateContext ctx, CodeMemberMethod handlerMethod)
-        {
-            var handlerFilterMethod = ctx.CurrentDeclaration.protected_func(typeof(void), HandlerFilterMethodName);
-            
-            if (!IsSystemEvent) // No event data for system events
-            handlerFilterMethod.Parameters.Add(new CodeParameterDeclarationExpression(EventType, "data"));
-
-            ctx.PushStatements(handlerFilterMethod.Statements);
-
-            if (Meta != null && Meta.CodeWriter != null)
-            {
-                var handlerInvoker = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), HandlerMethodName);
-                Meta.CodeWriter.WriteFilterMethod(this, ctx, handlerFilterMethod, handlerInvoker);
-            }
-            else
-            {
-                if (!IsLoop)
-                {
-                    var handlerInvoker = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), HandlerMethodName);
-                    //
-                    
-                    if (!IsSystemEvent)
-                        handlerInvoker.Parameters.Add(new CodeSnippetExpression("data"));
-                    
-                    foreach (var item in FilterInputs)
-                    {
-                        var filter = item.FilterNode;
-                        if (filter == null) continue;
-                        
-                        handlerInvoker.Parameters.Add(new CodeSnippetExpression(filter.GetContextItemName(item.Name)));
-
-                        ctx._("var {0} = {1}", filter.GetContextItemName(item.Name),
-                            filter.MatchAndSelect("data." + item.MappingId));
-                        ctx._if("{0} == null", filter.GetContextItemName(item.Name)).TrueStatements._("return");
-
-                    }
-                    WriteHandlerInvoker(handlerInvoker, handlerFilterMethod);
-                    ctx.CurrentStatements.Add(handlerInvoker);
-
-                }
-                else
-                {
-                    var handlerInvoker = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), HandlerMethodName);
-                    var item = this.BeginWriteLoop(ctx,this.EntityGroup.Item);
-                    if (!IsSystemEvent)
-                    handlerInvoker.Parameters.Add(new CodeSnippetExpression("data"));
-                    handlerInvoker.Parameters.Add(new CodeSnippetExpression(item));
-                    ctx.CurrentStatements.Add(handlerInvoker);
-                    this.EndWriteLoop(ctx);
-                }
-        
-            }
-
-            ctx.PopStatements();
-            return handlerFilterMethod;
-        }
-
-        public virtual bool IsLoop
-        {
-            get { return Meta.SystemEvent || HandlerInputs.All(p => p == EntityGroup); }
-        }
-        public virtual CodeMemberMethod WriteHandler(TemplateContext ctx)
-        {
-            var handlerMethod = ctx.CurrentDeclaration.protected_func(typeof(void), HandlerMethodName);
-            
-            if (!IsSystemEvent)
-                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(
-                     EventType,
-                     "data"
-                 ));
-
-            // Push the context on the code template
-            var prevMethod = ctx.CurrentMethod;
-            ctx.CurrentMember = handlerMethod;
-            ctx.PushStatements(handlerMethod.Statements);
-            // Now writing the handler method contents
-            var name = "handler";
-            ctx._("var {0} = new {1}()", name, HandlerMethodName);
-            ctx._("{0}.System = this", name);
-            
-            WriteHandlerSetup(ctx, name, handlerMethod);
-
-            ctx._("{0}.Execute()", name);
-            // End handler method contents
-            ctx.PopStatements();
-            ctx.CurrentMember = prevMethod;
-            return handlerMethod;
-        }
-
-        private void WriteHandlerSetup(TemplateContext ctx, string name, CodeMemberMethod handlerMethod)
-        {
-            if (!IsSystemEvent)
-            {
-                ctx._("{0}.Event = data", name);
-            }
-            foreach (var item in this.FilterInputs)
-            {
-                var filter = item.FilterNode;
-                if (filter == null) continue;
-                ctx._("{0}.{1} = {2}", name, item.HandlerPropertyName, item.HandlerPropertyName.ToLower());
-                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(filter.ContextTypeName,
-                    item.HandlerPropertyName.ToLower()));
-            }
-        }
-
-        protected virtual void WriteHandlerInvoker(CodeMethodInvokeExpression handlerInvoker, CodeMemberMethod handlerFilterMethod)
-        {
-            // If its a system event then there isn't any event data
-          
-       
-        }
-
 
         public virtual void WriteEventSubscription(TemplateContext ctx, CodeMemberMethod filterMethod, CodeMemberMethod handlerMethod)
         {
@@ -303,8 +283,89 @@ namespace Invert.uFrame.ECS
                     method._("{0}()", filterMethod.Name);
                     ctx.CurrentDeclaration.Members.Add(method);
                 }
-                
             }
+        }
+
+        public virtual CodeMemberMethod WriteHandler(TemplateContext ctx)
+        {
+            var handlerMethod = ctx.CurrentDeclaration.protected_func(typeof(void), HandlerMethodName);
+
+            if (!IsSystemEvent)
+                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(
+                     EventType,
+                     "data"
+                 ));
+
+            // Push the context on the code template
+            var prevMethod = ctx.CurrentMethod;
+            ctx.CurrentMember = handlerMethod;
+            ctx.PushStatements(handlerMethod.Statements);
+            // Now writing the handler method contents
+            var name = "handler";
+            ctx._("var {0} = new {1}()", name, HandlerMethodName);
+            ctx._("{0}.System = this", name);
+
+            WriteHandlerSetup(ctx, name, handlerMethod);
+
+            ctx._("{0}.Execute()", name);
+            // End handler method contents
+            ctx.PopStatements();
+            ctx.CurrentMember = prevMethod;
+            return handlerMethod;
+        }
+
+        public virtual CodeMemberMethod WriteHandlerFilter(TemplateContext ctx, CodeMemberMethod handlerMethod)
+        {
+            var handlerFilterMethod = ctx.CurrentDeclaration.protected_func(typeof(void), HandlerFilterMethodName);
+
+            if (!IsSystemEvent) // No event data for system events
+                handlerFilterMethod.Parameters.Add(new CodeParameterDeclarationExpression(EventType, "data"));
+
+            ctx.PushStatements(handlerFilterMethod.Statements);
+
+            if (Meta != null && Meta.CodeWriter != null)
+            {
+                var handlerInvoker = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), HandlerMethodName);
+                Meta.CodeWriter.WriteFilterMethod(this, ctx, handlerFilterMethod, handlerInvoker);
+            }
+            else
+            {
+                if (!IsLoop)
+                {
+                    var handlerInvoker = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), HandlerMethodName);
+                    //
+
+                    if (!IsSystemEvent)
+                        handlerInvoker.Parameters.Add(new CodeSnippetExpression("data"));
+
+                    foreach (var item in FilterInputs)
+                    {
+                        var filter = item.FilterNode;
+                        if (filter == null) continue;
+
+                        handlerInvoker.Parameters.Add(new CodeSnippetExpression(filter.GetContextItemName(item.Name)));
+
+                        ctx._("var {0} = {1}", filter.GetContextItemName(item.Name),
+                            filter.MatchAndSelect("data." + item.MappingId));
+                        ctx._if("{0} == null", filter.GetContextItemName(item.Name)).TrueStatements._("return");
+                    }
+                    WriteHandlerInvoker(handlerInvoker, handlerFilterMethod);
+                    ctx.CurrentStatements.Add(handlerInvoker);
+                }
+                else
+                {
+                    var handlerInvoker = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), HandlerMethodName);
+                    var item = this.BeginWriteLoop(ctx, this.EntityGroup.Item);
+                    if (!IsSystemEvent)
+                        handlerInvoker.Parameters.Add(new CodeSnippetExpression("data"));
+                    handlerInvoker.Parameters.Add(new CodeSnippetExpression(item));
+                    ctx.CurrentStatements.Add(handlerInvoker);
+                    this.EndWriteLoop(ctx);
+                }
+            }
+
+            ctx.PopStatements();
+            return handlerFilterMethod;
         }
 
         public virtual void WriteSetupCode(TemplateContext ctx)
@@ -312,60 +373,9 @@ namespace Invert.uFrame.ECS
             WriteCode(ctx);
         }
 
-        private void WriteEnsureDispatchers(TemplateContext ctx)
+        protected virtual void WriteHandlerInvoker(CodeMethodInvokeExpression handlerInvoker, CodeMemberMethod handlerFilterMethod)
         {
-            foreach (var item in FilterInputs)
-            {
-                var filter = item.FilterNode;
-                if (filter == null) continue;
-                if (Meta.Dispatcher)
-                {
-                    ctx._("EnsureDispatcherOnComponents<{0}>( {1} )", Meta.Type.Name, filter.DispatcherTypesExpression());
-                }
-            }
-        }
-
-        public virtual string BeginWriteLoop(TemplateContext ctx, IMappingsConnectable connectable)
-        {
-
-           // ctx.PushStatements(ctx._if("{0} != null", ContextNode.SystemPropertyName).TrueStatements);
-
-            ctx._("var {0}Items = {1}.GetEnumerator()",connectable.Name, connectable.EnumeratorExpression);
-
-            var iteration = new CodeIterationStatement(
-                new CodeSnippetStatement(string.Empty),
-                new CodeSnippetExpression(string.Format("{0}Items.MoveNext()", connectable.Name)),
-                new CodeSnippetStatement(string.Empty)
-                );
-
-            ctx.CurrentStatements.Add(iteration);
-            ctx.PushStatements(iteration.Statements);
-            return connectable.Name + "Items.Current";
-        }
-
-        public virtual void EndWriteLoop(TemplateContext ctx)
-        {
-
-            ctx.PopStatements();
-        }
-        private void LoopContextHandler(TemplateContext ctx, bool isAggregatorEvent = false)
-        {
-           
-            if (isAggregatorEvent)
-            {
-                ctx._("{0}(data, e.Current)", HandlerMethodName);
-            }
-            else
-            {
-                ctx._("{0}(e.Current)", HandlerMethodName);
-            }
-
-        }
-
-        public EntityGroupIn[] HandlerInputs
-        {
-            get { return _contextInputs ?? (_contextInputs = GetHandlerInputs().ToArray()); }
-            set { _contextInputs = value; }
+            // If its a system event then there isn't any event data
         }
 
         private IEnumerable<EntityGroupIn> GetHandlerInputs()
@@ -388,55 +398,33 @@ namespace Invert.uFrame.ECS
                 }
             }
         }
-
-        public IEnumerable<ConnectionData> Connections { get; set; }
-
-        public string HandlerPropertyName
+        
+        private void WriteEnsureDispatchers(TemplateContext ctx)
         {
-            get { return "Item"; }
-        }
-
-        public IMappingsConnectable FilterNode
-        {
-            get { return this.InputFrom<IMappingsConnectable>(); }
-        }
-
-        public string MappingId
-        {
-            get { return "EntityId"; }
-        }
-
-        public virtual bool CanGenerate
-        {
-            get { return Meta != null; }
-        }
-
-        public EntityGroupIn EntityGroup
-        {
-            get
+            foreach (var item in FilterInputs)
             {
-                return _entityGroup ?? (_entityGroup = new EntityGroupIn()
+                var filter = item.FilterNode;
+                if (filter == null) continue;
+                if (Meta.Dispatcher)
                 {
-                    Repository = Repository,
-                    Node = this,
-                    Identifier = this.Identifier + ":" + "Group"
-                }); }
-            set { _entityGroup = value; }
-        }
-
-        public virtual IEnumerable<IMappingsConnectable> GetSystemGroups()
-        {
-            //foreach (var item in Scope)
-            //{
-            //    yield return item.SourceItem as IMappingsConnectable;
-            //}
-            foreach (var input in FilterInputs)
-            {
-                var filter = input.FilterNode;
-                if (filter != null)
-                {
-                    yield return filter;
+                    ctx._("EnsureDispatcherOnComponents<{0}>( {1} )", Meta.Type.Name, filter.DispatcherTypesExpression());
                 }
+            }
+        }
+
+        private void WriteHandlerSetup(TemplateContext ctx, string name, CodeMemberMethod handlerMethod)
+        {
+            if (!IsSystemEvent)
+            {
+                ctx._("{0}.Event = data", name);
+            }
+            foreach (var item in this.FilterInputs)
+            {
+                var filter = item.FilterNode;
+                if (filter == null) continue;
+                ctx._("{0}.{1} = {2}", name, item.HandlerPropertyName, item.HandlerPropertyName.ToLower());
+                handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(filter.ContextTypeName,
+                    item.HandlerPropertyName.ToLower()));
             }
         }
     }

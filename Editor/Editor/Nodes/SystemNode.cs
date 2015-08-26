@@ -27,7 +27,7 @@ namespace Invert.uFrame.ECS {
         {
             get
             {
-                return this.GetContainingNodes().OfType<HandlerNode>();
+                return this.FilterNodes.OfType<HandlerNode>();
             }
         }
     }

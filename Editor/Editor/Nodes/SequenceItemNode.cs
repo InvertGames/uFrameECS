@@ -1,4 +1,6 @@
 using System.CodeDom;
+using Invert.Json;
+using UnityEngine;
 
 namespace Invert.uFrame.ECS {
     using System;
@@ -7,22 +9,26 @@ namespace Invert.uFrame.ECS {
     using System.Linq;
     using Invert.Core;
     using Invert.Core.GraphDesigner;
-
+    using Invert.Data;
 
     public class SequenceItemNode : SequenceItemNodeBase, ICodeOutput
     {
+        public override bool AllowMultipleInputs
+        {
+            get { return false; }
+        }
+
+        public override bool AllowMultipleOutputs
+        {
+            get { return false; }
+        }
+
         public IVariableContextProvider Left
         {
             get
             {
                 var r = this.InputFrom<IVariableContextProvider>();
                 return r;
-                //var leftInput = this.InputFrom<IDiagramNodeItem>();
-                //if (leftInput != null)
-                //{
-                //    return leftInput.Node as SequenceItemNode;
-                //}
-                return null;
             }
         }
         public IEnumerable<IVariableContextProvider> LeftNodes
@@ -53,7 +59,6 @@ namespace Invert.uFrame.ECS {
         {
             get { return this.OutputTo<SequenceItemNode>(); }
         }
-       
 
         public IEnumerable<IContextVariable> GetAllContextVariables()
         {
@@ -75,7 +80,7 @@ namespace Invert.uFrame.ECS {
         {
             yield break;
         }
-
+        
         public virtual void WriteCode(TemplateContext ctx)
         {
             OutputVariables(ctx);
@@ -101,6 +106,28 @@ namespace Invert.uFrame.ECS {
             }
      
         }
+
+        //public override IEnumerable<IDiagramNode> FilterNodes
+        //{
+        //    get
+        //    {
+        //        yield return this;
+        //        foreach (
+        //            var item in
+        //                Repository.AllOf<SequenceItemNode>()
+        //                    .Where(p => p.FilterId == this.Identifier)
+        //                    .OfType<IDiagramNode>())
+        //        {
+        //            yield return item; 
+        //        } 
+
+        //    }
+        //}
+
+        //public override IEnumerable<IFilterItem> FilterItems
+        //{
+        //    get { return FilterNodes.OfType<IFilterItem>(); }
+        //}
     }
     
     public partial interface ISequenceItemConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

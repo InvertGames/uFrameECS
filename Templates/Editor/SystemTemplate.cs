@@ -26,21 +26,20 @@ namespace Invert.uFrame.ECS.Templates
         {
             Ctx.CurrentMethod.invoke_base();
             if (!Ctx.IsDesignerFile) return;
-
-            foreach (var item in Components)
-            {
-                Ctx._("{0}Manager = ComponentSystem.RegisterComponent<{0}>()", item.Name);
-            }
             foreach (var item in Groups)
             {
                 Ctx._("{0}Manager = ComponentSystem.RegisterGroup<{0}Group,{0}>()", item.Name);
             }
-            foreach (var item in Ctx.Data.GetContainingNodes().OfType<ISetupCodeWriter>())
+            foreach (var item in Components)
+            {
+                Ctx._("{0}Manager = ComponentSystem.RegisterComponent<{0}>()", item.Name);
+            }
+            foreach (var item in Ctx.Data.FilterNodes.OfType<ISetupCodeWriter>())
             {
                 item.WriteSetupCode(Ctx);
             }
         }
-
+        
         [ForEach("Components"), GenerateProperty, WithField]
         public IEcsComponentManagerOf<_ITEMTYPE_> _Name_Manager { get; set; }
 

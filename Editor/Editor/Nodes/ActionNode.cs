@@ -7,6 +7,7 @@ using Invert.Core.GraphDesigner;
 using Invert.Data;
 using Invert.Json;
 using uFrame.Attributes;
+using UnityEngine;
 
 namespace Invert.uFrame.ECS
 {
@@ -189,8 +190,22 @@ namespace Invert.uFrame.ECS
     {
         void WriteCode(TemplateContext ctx);
     }
-    public class ActionNode : ActionNodeBase, ICodeOutput
+    public class ActionNode : ActionNodeBase, ICodeOutput, IConnectableProvider
     {
+        public override bool AllowMultipleOutputs
+        {
+            get { return false; }
+        }
+        public override bool AllowMultipleInputs
+        {
+            get { return false; }
+        }
+
+        public override Color Color
+        {
+            get { return Color.blue; }
+        }
+
         public override IEnumerable<IGraphItem> GraphItems
         {
             get
@@ -576,8 +591,14 @@ namespace Invert.uFrame.ECS
         }
 
 
-
-
+        public IEnumerable<IConnectable> Connectables
+        {
+            get
+            {
+                foreach (var item in InputVars) yield return item;
+                foreach (var item in OutputVars) yield return item;
+            }
+        }
     }
 
     public partial interface IActionConnectable : IDiagramNodeItem, IConnectable
@@ -785,6 +806,11 @@ namespace Invert.uFrame.ECS
 
     public class ActionBranch : SingleOutputSlot<ActionNode>, IActionOut, IVariableContextProvider
     {
+        public override Color Color
+        {
+            get { return Color.blue; }
+        }
+
         public string VariableName
         {
             get
@@ -806,14 +832,14 @@ namespace Invert.uFrame.ECS
         }
 
         public string VariableType { get; set; }
+
+
         public IEnumerable<IContextVariable> GetAllContextVariables()
         {
             if (Left == null)
             {
-                InvertApplication.Log("BULLSHIT");
                 yield break;
             }
-            InvertApplication.Log("BULLSHIT2");
             foreach (var item in  Left.GetAllContextVariables())
                 yield return item;
         }

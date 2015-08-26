@@ -88,10 +88,7 @@ namespace Invert.uFrame.ECS.Templates
         {
             Ctx._("EcsSystem system = null");
             Ctx._("system = this.AddSystem<{0}>()", Ctx.Data.Name);
-            foreach (var item in Groups)
-            {
-                Ctx._("system.ComponentSystem.RegisterGroup<{0}Group,{0}>()", item.Name);
-            }
+         
         }
 
 

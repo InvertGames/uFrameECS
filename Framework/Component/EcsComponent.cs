@@ -48,7 +48,7 @@ namespace uFrame.ECS
             base.KernelLoaded();
             if (EntityId != 0)
             {
-                EcsComponentService.Instance.ComponentSystem.RegisterComponentInstance(this.GetType(),this);
+                EcsComponentService.Instance.RegisterComponentInstance(this.GetType(),this);
                 return;
             }
             if (Entity != null)
@@ -59,13 +59,13 @@ namespace uFrame.ECS
             {
                 _entityId = GetComponent<Entity>().EntityId;
             }
-            EcsComponentService.Instance.ComponentSystem.RegisterComponentInstance(this.GetType(), this);
+            EcsComponentService.Instance.RegisterComponentInstance(this.GetType(), this);
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            EcsComponentService.Instance.ComponentSystem.DestroyComponentInstance(this.GetType(), this);
+            EcsComponentService.Instance.DestroyComponentInstance(this.GetType(), this);
  
         }
 

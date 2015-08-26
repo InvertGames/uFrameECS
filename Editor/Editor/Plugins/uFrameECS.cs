@@ -58,7 +58,8 @@ namespace Invert.uFrame.ECS {
            // container.Connectable<ActionOut, ActionIn>(UnityEngine.Color.blue);
             container.Connectable<ActionBranch, SequenceItemNode>();
             container.Connectable<IMappingsConnectable, HandlerIn>();
-            
+            container.AddWorkspaceConfig<LibraryWorkspace>("Library").WithGraph<DataGraph>("Data Graph");
+            container.AddWorkspaceConfig<BehaviourWorkspace>("Behaviour").WithGraph<SystemGraph>("System Graph");
             VariableReference.Name = "Var";
 
             LoadActions();
@@ -339,19 +340,26 @@ namespace Invert.uFrame.ECS {
                 ui.AddSeparator();
                 QuerySlotMenu(ui, (InputOutputViewModel) obj);
             }
-            if (obj is SelectWorkspaceCommand)
+            var handlerVM = obj as HandlerNodeViewModel;
+            if (handlerVM != null)
             {
-                ui.AddSeparator();
-                ui.AddCommand(new ContextMenuItem()
+                var handler = handlerVM.Handler;
+                foreach (var handlerIn in handler.HandlerInputs)
                 {
-                    Title = "Create New Module Workspace",
-                    Command = new NewModuleWorkspace()
+                    if (handlerIn.Item != null)
                     {
-                        Name = "Test Workspace",
-                        Title = "Test Workspace"
+                        ui.AddCommand(new ContextMenuItem()
+                        {
+                            Title = "Navigate To " + handlerIn.Item.Name,
+                            Command = new NavigateToNodeCommand()
+                            {
+                                Node = handlerIn.Item as IDiagramNode
+                            }
+                        });
                     }
-                });
+                }
             }
+
         }
 
         private void QuerySlotMenu(ContextMenuUI ui, InputOutputViewModel slot)
@@ -437,7 +445,11 @@ namespace Invert.uFrame.ECS {
 
                 yield return new QuickAccessItem("Set", "Set Variable", _ => { vm.AddNode(new SetVariableNode(), vm.LastMouseEvent.LastMousePosition); });
 
-                yield return new QuickAccessItem("Create", "Bool Variable", _ => { vm.AddNode(new BoolNode(), vm.LastMouseEvent.LastMousePosition); });
+                yield return new QuickAccessItem("Create", "Bool Variable", _ =>
+                {
+                    Execute(new CreateNodeCommand() { GraphData = vm.GraphData, Position = vm.LastMouseEvent.MouseDownPosition, NodeType = typeof(BoolNode)});
+                   
+                });
                 yield return new QuickAccessItem("Create", "Vector2 Variable", _ => { vm.AddNode(new Vector2Node(), vm.LastMouseEvent.LastMousePosition); });
                 yield return new QuickAccessItem("Create", "Vector3 Variable", _ => { vm.AddNode(new Vector3Node(), vm.LastMouseEvent.LastMousePosition); });
                 yield return new QuickAccessItem("Create", "String Variable", _ => { vm.AddNode(new StringNode(), vm.LastMouseEvent.LastMousePosition); });
@@ -446,26 +458,26 @@ namespace Invert.uFrame.ECS {
                 yield return new QuickAccessItem("Create", "Literal", _ => { vm.AddNode(new LiteralNode(), vm.LastMouseEvent.LastMousePosition); });
 
   
-                var currentFilter = currentGraph.CurrentFilter as HandlerNode;
-                foreach (var item in currentFilter.GetAllContextVariables())
-                {
-                    var item1 = item;
-                    var qa = new QuickAccessItem("Variables", item.VariableName ?? "Unknown", _ =>
-                    {
-                        var command = new AddVariableReferenceCommand()
-                        {
-                            Variable = _ as IContextVariable,
-                            Handler = currentFilter,
-                            Position = mousePosition
-                        };
-                        // TODO 2.0 Add Variable Reference COmmand
-                        //InvertGraphEditor.ExecuteCommand(command);
-                    })
-                    {
-                        Item = item1
-                    };
-                    yield return qa;
-                }
+                //var currentFilter = currentGraph.CurrentFilter as HandlerNode;
+                //foreach (var item in currentFilter.GetAllContextVariables())
+                //{
+                //    var item1 = item;
+                //    var qa = new QuickAccessItem("Variables", item.VariableName ?? "Unknown", _ =>
+                //    {
+                //        var command = new AddVariableReferenceCommand()
+                //        {
+                //            Variable = _ as IContextVariable,
+                //            Handler = currentFilter,
+                //            Position = mousePosition
+                //        };
+                //        // TODO 2.0 Add Variable Reference COmmand
+                //        //InvertGraphEditor.ExecuteCommand(command);
+                //    })
+                //    {
+                //        Item = item1
+                //    };
+                //    yield return qa;
+                //}
                 foreach (var item in QueryActions(context))
                 {
                     yield return item;
@@ -482,17 +494,15 @@ namespace Invert.uFrame.ECS {
 
             foreach (var item in Actions)
             {
-
                 var qaItem = new QuickAccessItem(item.Value.CategoryPath.FirstOrDefault() ?? string.Empty, item.Value.TitleText, item.Value.TitleText, _ =>
                 {
                     var actionInfo = _ as ActionMetaInfo;
                     var node = new ActionNode()
                     {
-                        Meta = actionInfo
+                        Meta = actionInfo,
+                        //FilterId = diagramViewModel.GraphData.CurrentFilter.Identifier
                     };
                     node.Graph = diagramViewModel.GraphData;
-
-
                     diagramViewModel.AddNode(node,mousePosition);
                  
                     node.IsSelected = true;
@@ -596,8 +606,17 @@ namespace Invert.uFrame.ECS {
             });
             
         }
-    } 
+    }
 
+    public class LibraryWorkspace : Workspace
+    {
+        
+    }
+
+    public class BehaviourWorkspace : Workspace
+    {
+        
+    }
     public class EventMetaInfo
     {
         private List<EventFieldInfo> _members;
@@ -773,94 +792,7 @@ namespace Invert.uFrame.ECS {
         }
     }
 
-    public class AddActionCommand : EditorCommand<DiagramViewModel>
-    {
-        public ActionMetaInfo ActionMetaInfo { get; set; }
-        public override string Group
-        {
-            get { return "Actions"; }
-        }
 
-        public AddActionCommand(ActionMetaInfo actionMetaInfo)
-        {
-            ActionMetaInfo = actionMetaInfo;
-        }
-
-        public override string Name
-        {
-            get { return base.Name; }
-        }
-
-        public override string Title
-        {
-            get { return ActionMetaInfo.TitleText; }
-            set { base.Title = value; }
-        }
-
-        public override string Path
-        {
-            get { return ActionMetaInfo.TitleText; }
-        }
-
-        public override void Perform(DiagramViewModel node)
-        {
-            var eventNode = new ActionNode()
-            {
-                Meta = ActionMetaInfo
-            };
-
-            node.AddNode(eventNode, node.LastMouseEvent.LastMousePosition);
-        }
-
-        public override string CanPerform(DiagramViewModel node)
-        {
-            return null;
-        }
-    }
-    public class AddHandlerCommand : EditorCommand<DiagramViewModel>
-    {
-        public EventMetaInfo ActionMetaInfo { get; set; }
-        public override string Group
-        {
-            get { return "Handlers"; }
-        }
-
-        public AddHandlerCommand(EventMetaInfo actionMetaInfo)
-        {
-            ActionMetaInfo = actionMetaInfo;
-        }
-
-        public override string Name
-        {
-            get { return base.Name; }
-        }
-
-        public override string Title
-        {
-            get { return ActionMetaInfo.Attribute.Title; }
-            set { base.Title = value; }
-        }
-
-        public override string Path
-        {
-            get { return "Listen For/" + ActionMetaInfo.Attribute.Title; }
-        }
-
-        public override void Perform(DiagramViewModel node)
-        {
-            var eventNode = new HandlerNode()
-            {
-                Meta = ActionMetaInfo
-            };
-
-            node.AddNode(eventNode, node.LastMouseEvent.LastMousePosition);
-        }
-
-        public override string CanPerform(DiagramViewModel node)
-        {
-            return null;
-        }
-    }
     public class AddSlotInputNodeCommand : Command
     {
         public IContextVariable Variable { get; set; }
@@ -869,39 +801,6 @@ namespace Invert.uFrame.ECS {
         public ActionIn Input { get; set; }
         public DiagramViewModel DiagramViewModel     { get; set; }
     }
-    public class AddVariableReferenceCommand : EditorCommand<DiagramViewModel>
-    {
-        public IContextVariable Variable { get; set; }
-        public HandlerNode Handler { get; set; }
-        public Vector2 Position { get; set; }
-        public override string Name
-        {
-            get { return Variable.ShortName; }
-        }
-
-        public override string Group
-        {
-            get { return "Variables"; }
-        }
-
-        public override void Perform(DiagramViewModel node)
-        {
-            
-            var referenceNode = new VariableReferenceNode()
-            {
-                
-                VariableId = Variable.Identifier,
-                HandlerId = Handler.Identifier
-            };
-
-            node.AddNode(referenceNode ,Position);
-            referenceNode.Name = Variable.VariableName;
-        }
-
-        public override string CanPerform(DiagramViewModel node)
-        {
-            return null;
-        }
-    }
+   
 
 }
