@@ -98,7 +98,7 @@ namespace uFrame.ECS
 
         protected override void RemoveItem(IEcsComponent component)
         {
-            if (!_components.ContainsKey(component.EntityId)) return;
+            if (_components == null || !_components.ContainsKey(component.EntityId)) return;
             _components[component.EntityId].Remove((TComponentType)component);
             if (_RemovedObservable != null)
             {

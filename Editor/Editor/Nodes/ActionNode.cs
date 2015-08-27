@@ -599,8 +599,26 @@ namespace Invert.uFrame.ECS
                 foreach (var item in OutputVars) yield return item;
             }
         }
+         
+        public Breakpoint BreakPoint
+        {
+            get { return Repository.All<Breakpoint>().FirstOrDefault(p => p.ForIdentifier == this.Identifier); }
+        }
     }
+    public class Breakpoint : IDataRecord
+    {
+        public IRepository Repository { get; set; }
+        public string Identifier { get; set; }
+        public bool Changed { get; set; }
 
+        [JsonProperty]
+        public string ForIdentifier { get; set; }
+
+        public ActionNode Action
+        {
+            get { return Repository.GetSingle<ActionNode>(ForIdentifier); }
+        }
+    }
     public partial interface IActionConnectable : IDiagramNodeItem, IConnectable
     {
     }

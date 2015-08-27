@@ -1,4 +1,5 @@
 using System.CodeDom;
+using System.Collections;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Invert.Core.GraphDesigner;
@@ -64,6 +65,7 @@ namespace Invert.uFrame.ECS.Templates
             if (actionNode.Meta == null) return;
             _._comment("Before visit {0}", actionNode.Meta.FullName);
             base.BeforeVisitAction(actionNode);
+           
 
         }
 
@@ -101,8 +103,9 @@ namespace Invert.uFrame.ECS.Templates
                 foreach (var @out in actionNode.OutputVars.OfType<ActionBranch>())
                 {
                     _currentActionInvoker.Parameters.Add(
-                        new CodeSnippetExpression(string.Format("{0}", @out.VariableName)));
+                        new CodeSnippetExpression(string.Format("()=> {{ System.StartCoroutine({0}()); }}", @out.VariableName)));
                 }
+                _._("while (this.DebugInfo(\"{0}\", this) == 1) yield return new WaitForEndOfFrame()", actionNode.Identifier);
                 if (resultOut == null)
                 {
                     _.CurrentStatements.Add(_currentActionInvoker);
@@ -120,24 +123,24 @@ namespace Invert.uFrame.ECS.Templates
                 var varStatement = _.CurrentDeclaration._private_(actionNode.Meta.Type, actionNode.VarName);
                 varStatement.InitExpression = new CodeObjectCreateExpression(actionNode.Meta.Type);
 
-                foreach (var item in actionNode.GraphItems.OfType<GenericSlot>())
+                foreach (var item in actionNode.GraphItems.OfType<ActionIn>())
                 {
-                    var contextVariable = item.InputFrom<IContextVariable>();
+                    var contextVariable = item.Item;
                     if (contextVariable == null) continue;
                     _._("{0}.{1} = {2}", varStatement.Name, item.Name, contextVariable.VariableName);
                 }
 
 
                 _._("{0}.System = System", varStatement.Name);
-
+                 
 
                 foreach (var item in actionNode.OutputVars.OfType<ActionBranch>())
                 {
                     var branchOutput = item.OutputTo<SequenceItemNode>();
                     if (branchOutput == null) continue;
-                    _._("{0}.{1} = {2}", varStatement.Name, item.Name, item.VariableName);
+                    _._("{0}.{1} = ()=> {{ System.StartCoroutine({2}()); }}", varStatement.Name, item.Name, item.VariableName);
                 }
-
+                _._("while (this.DebugInfo(\"{0}\", this) == 1) yield return new WaitForEndOfFrame()", actionNode.Identifier);
                 _._("{0}.Execute()", varStatement.Name);
                 WriteActionOutputs(actionNode);
                
@@ -206,7 +209,8 @@ namespace Invert.uFrame.ECS.Templates
         {
             var branchMethod = new CodeMemberMethod()
             {
-                Name = output.VariableName
+                Name = output.VariableName,
+                ReturnType = new CodeTypeReference(typeof(IEnumerator))
             };
             _.PushStatements(branchMethod.Statements);
             var actionNode = output.Node as ActionNode;

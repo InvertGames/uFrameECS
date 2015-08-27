@@ -23,6 +23,17 @@ namespace Invert.uFrame.ECS {
             get { return false; }
         }
 
+        public override void RecordRemoved(IDataRecord record)
+        {
+            base.RecordRemoved(record);
+            var container = this.Container();
+            if (container == null || container.Identifier == record.Identifier)
+            {
+                Repository.Remove(this);
+            }
+          
+        }
+
         public IVariableContextProvider Left
         {
             get

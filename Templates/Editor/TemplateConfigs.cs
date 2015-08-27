@@ -121,12 +121,14 @@ namespace Invert.uFrame.ECS.Templates
         [GenerateMethod]
         public void Execute()
         {
+            this.Ctx.SetType(typeof(IEnumerator));
             var csharpVisitor = new HandlerCsharpVisitor()
             {
                 _ = Ctx
             };
             Ctx.Data.Accept(csharpVisitor);
-
+            Ctx._("yield break");
+           
         }
     }
 
@@ -314,7 +316,7 @@ namespace Invert.uFrame.ECS.Templates
     [RequiresNamespace("uFrame.ECS")]
     [RequiresNamespace("uFrame.Kernel")]
     [RequiresNamespace("UniRx")]
-    public partial class ContextItemTemplate : GroupItem, IClassTemplate<GroupNode>
+    public partial class ContextItemTemplate : GroupItem, IClassTemplate<GroupNode>, ITemplateCustomFilename
     {
 
         public IEnumerable<ComponentNode> SelectComponents
@@ -327,6 +329,13 @@ namespace Invert.uFrame.ECS.Templates
         public string OutputPath
         {
             get { return Path2.Combine("Modules", Ctx.Data.Graph.Name, "Groups"); }
+        }
+        public string Filename
+        {
+            get
+            {
+                return Path2.Combine("Library", Ctx.Data.Graph.Name, "Groups", Ctx.Data.Name + ".cs");
+            }
         }
 
         public bool CanGenerate

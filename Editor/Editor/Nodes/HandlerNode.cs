@@ -188,7 +188,7 @@ namespace Invert.uFrame.ECS
         public virtual string BeginWriteLoop(TemplateContext ctx, IMappingsConnectable connectable)
         {
             // ctx.PushStatements(ctx._if("{0} != null", ContextNode.SystemPropertyName).TrueStatements);
-
+            
             ctx._("var {0}Items = {1}.GetEnumerator()", connectable.Name, connectable.EnumeratorExpression);
 
             var iteration = new CodeIterationStatement(
@@ -307,7 +307,7 @@ namespace Invert.uFrame.ECS
 
             WriteHandlerSetup(ctx, name, handlerMethod);
 
-            ctx._("{0}.Execute()", name);
+            ctx._("StartCoroutine({0}.Execute())", name);
             // End handler method contents
             ctx.PopStatements();
             ctx.CurrentMember = prevMethod;
@@ -355,12 +355,20 @@ namespace Invert.uFrame.ECS
                 else
                 {
                     var handlerInvoker = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), HandlerMethodName);
-                    var item = this.BeginWriteLoop(ctx, this.EntityGroup.Item);
                     if (!IsSystemEvent)
-                        handlerInvoker.Parameters.Add(new CodeSnippetExpression("data"));
-                    handlerInvoker.Parameters.Add(new CodeSnippetExpression(item));
-                    ctx.CurrentStatements.Add(handlerInvoker);
-                    this.EndWriteLoop(ctx);
+                            handlerInvoker.Parameters.Add(new CodeSnippetExpression("data"));
+                    if (this.EntityGroup.Item != null)
+                    {
+                        var item = this.BeginWriteLoop(ctx, this.EntityGroup.Item);
+                        handlerInvoker.Parameters.Add(new CodeSnippetExpression(item));
+                        ctx.CurrentStatements.Add(handlerInvoker);
+                        this.EndWriteLoop(ctx);
+                    }
+                    else
+                    {
+                        ctx.CurrentStatements.Add(handlerInvoker);
+                    }
+                  
                 }
             }
 

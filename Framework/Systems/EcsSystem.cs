@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using uFrame.IOC;
@@ -38,6 +39,11 @@ namespace uFrame.ECS
                         ;
                 })
                 .DisposeWith(this);
+        }
+
+        public void ExecuteRoutine(IEnumerator playerLoopActionContinue)
+        {
+            throw new NotImplementedException();
         }
     }
 }
