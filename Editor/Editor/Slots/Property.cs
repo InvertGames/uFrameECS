@@ -24,7 +24,7 @@ namespace Invert.uFrame.ECS {
             {
                 foreach (var item in pcn.GetContextVariables())
                 {
-                    if (item.SourceVariable is PropertiesChildItem)
+                    if (item.Source is PropertiesChildItem)
                     {
                         yield return item;
                     }

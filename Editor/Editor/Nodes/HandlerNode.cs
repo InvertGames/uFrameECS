@@ -225,7 +225,6 @@ namespace Invert.uFrame.ECS
                     {
                         Repository = this.Repository,
                         Node = this,
-                        IsSubVariable = true,
                         VariableType = child.Type.FullName
                     };
                 }

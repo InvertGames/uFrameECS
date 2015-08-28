@@ -7,7 +7,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class ComponentNode : ComponentNodeBase, IComponentsConnectable, IMappingsConnectable {
+    public class ComponentNode : ComponentNodeBase, IComponentsConnectable, IMappingsConnectable, ITypedItem {
  
 
         public IEnumerable<ComponentNode> WithAnyComponents
@@ -30,19 +30,13 @@ namespace Invert.uFrame.ECS {
             get { return Name; }
         }
 
-        [InspectorProperty]
-        public bool Blackboard
-        {
-            get { return this["Blackboard"]; }
-            set { this["Blackboard"] = value; }
-        }
-
         public IEnumerable<IContextVariable> GetVariables(IFilterInput input)
         {
             yield return new ContextVariable(input.HandlerPropertyName)
             {
                 Repository = this.Repository,
                 Node = this,
+                Source = this,
                 VariableType = this.Name
             };
             yield return new ContextVariable(input.HandlerPropertyName, "EntityId")
@@ -66,7 +60,7 @@ namespace Invert.uFrame.ECS {
                 {
                     Repository = this.Repository,
                     Node = this,
-                    SourceVariable = item,
+                    Source = item,
                     VariableType = item.RelatedTypeName
                 };
             }

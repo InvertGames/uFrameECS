@@ -17,10 +17,7 @@ namespace Invert.uFrame.ECS {
         {
             get
             {
-                if (GraphItem.Blackboard)
-                {
-                    return NodeColor.Black;
-                }
+               
                 return base.Color;
             }
         }

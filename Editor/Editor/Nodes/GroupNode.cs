@@ -52,7 +52,7 @@ namespace Invert.uFrame.ECS {
                     yield return new ContextVariable(input.HandlerPropertyName, select.Name, item.Name)
                     {
                         Repository = this.Repository,
-                        SourceVariable = item,
+                        Source = item,
                         VariableType = item.RelatedTypeName,
                         Node = this
                     };

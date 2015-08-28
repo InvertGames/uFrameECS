@@ -94,18 +94,6 @@ namespace Invert.uFrame.ECS {
     
     public class PropertyNodeBase : Invert.Core.GraphDesigner.GenericNode {
         
-        private string _SourceObjectInputSlotId;
-        
-        private string _SetInputSlotId;
-        
-        private SourceObject _SourceObject;
-        
-        private Set _Set;
-        
-        private string _GetOutputSlotId;
-        
-        private Get _Get;
-        
         public override bool AllowMultipleInputs {
             get {
                 return true;
@@ -115,84 +103,6 @@ namespace Invert.uFrame.ECS {
         public override bool AllowMultipleOutputs {
             get {
                 return true;
-            }
-        }
-        
-        [Invert.Json.JsonProperty()]
-        public virtual string SourceObjectInputSlotId {
-            get {
-                if (_SourceObjectInputSlotId == null) {
-                    _SourceObjectInputSlotId = Guid.NewGuid().ToString();
-                }
-                return _SourceObjectInputSlotId;
-            }
-            set {
-                _SourceObjectInputSlotId = value;
-            }
-        }
-        
-        [Invert.Json.JsonProperty()]
-        public virtual string SetInputSlotId {
-            get {
-                if (_SetInputSlotId == null) {
-                    _SetInputSlotId = Guid.NewGuid().ToString();
-                }
-                return _SetInputSlotId;
-            }
-            set {
-                _SetInputSlotId = value;
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.InputSlot("SourceObject", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual SourceObject SourceObjectInputSlot {
-            get {
-                if (Repository == null) {
-                    return null;
-                }
-                if (_SourceObject != null) {
-                    return _SourceObject;
-                }
-                return _SourceObject ?? (_SourceObject = new SourceObject() { Repository = Repository, Node = this, Identifier = SourceObjectInputSlotId });
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.InputSlot("Set", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual Set SetInputSlot {
-            get {
-                if (Repository == null) {
-                    return null;
-                }
-                if (_Set != null) {
-                    return _Set;
-                }
-                return _Set ?? (_Set = new Set() { Repository = Repository, Node = this, Identifier = SetInputSlotId });
-            }
-        }
-        
-        [Invert.Json.JsonProperty()]
-        public virtual string GetOutputSlotId {
-            get {
-                if (_GetOutputSlotId == null) {
-                    _GetOutputSlotId = Guid.NewGuid().ToString();
-                }
-                return _GetOutputSlotId;
-            }
-            set {
-                _GetOutputSlotId = value;
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.OutputSlot("Get", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=false)]
-        public virtual Get GetOutputSlot {
-            get {
-                if (Repository == null) {
-                    return null;
-                }
-                if (_Get != null) {
-                    return _Get;
-                }
-                return _Get ?? (_Get = new Get() { Repository = Repository, Node = this, Identifier = GetOutputSlotId });
             }
         }
     }
@@ -470,31 +380,31 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        //[Invert.Json.JsonProperty()]
-        //public virtual string PropertyInputSlotId {
-        //    get {
-        //        if (_PropertyInputSlotId == null) {
-        //            _PropertyInputSlotId = Guid.NewGuid().ToString();
-        //        }
-        //        return _PropertyInputSlotId;
-        //    }
-        //    set {
-        //        _PropertyInputSlotId = value;
-        //    }
-        //}
+        [Invert.Json.JsonProperty()]
+        public virtual string PropertyInputSlotId {
+            get {
+                if (_PropertyInputSlotId == null) {
+                    _PropertyInputSlotId = Guid.NewGuid().ToString();
+                }
+                return _PropertyInputSlotId;
+            }
+            set {
+                _PropertyInputSlotId = value;
+            }
+        }
         
-        //[Invert.Core.GraphDesigner.InputSlot("Property", false, SectionVisibility.WhenNodeIsNotFilter, OrderIndex=0, IsNewRow=true)]
-        //public virtual Property PropertyInputSlot {
-        //    get {
-        //        if (Repository == null) {
-        //            return null;
-        //        }
-        //        if (_Property != null) {
-        //            return _Property;
-        //        }
-        //        return _Property ?? (_Property = new Property() { Repository = Repository, Node = this, Identifier = PropertyInputSlotId });
-        //    }
-        //}
+        [Invert.Core.GraphDesigner.InputSlot("Property", false, SectionVisibility.WhenNodeIsNotFilter, OrderIndex=0, IsNewRow=true)]
+        public virtual Property PropertyInputSlot {
+            get {
+                if (Repository == null) {
+                    return null;
+                }
+                if (_Property != null) {
+                    return _Property;
+                }
+                return _Property ?? (_Property = new Property() { Repository = Repository, Node = this, Identifier = PropertyInputSlotId });
+            }
+        }
     }
     
     public partial interface IPropertyChangedConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
@@ -872,9 +782,8 @@ namespace Invert.uFrame.ECS {
     
     public partial interface IColorConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
-
-    public class SequenceItemNodeBase : Invert.Core.GraphDesigner.GenericNode, ISequenceItemConnectable
-    {
+    
+    public class SequenceItemNodeBase : Invert.Core.GraphDesigner.GenericNode, ISequenceItemConnectable {
         
         public override bool AllowMultipleInputs {
             get {

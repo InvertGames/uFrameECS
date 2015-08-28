@@ -127,7 +127,7 @@ namespace Invert.uFrame.ECS.Templates
                 {
                     var contextVariable = item.Item;
                     if (contextVariable == null) continue;
-                    _._("{0}.{1} = {2}", varStatement.Name, item.Name, contextVariable.VariableName);
+                    _._("{0}.{1} = {2}", varStatement.Name, item.Name, item.VariableName);
                 }
 
 

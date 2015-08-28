@@ -66,7 +66,7 @@ namespace Invert.uFrame.ECS {
             get
             {
                 if (Repository != null && !string.IsNullOrEmpty(this.PropertyInId) && PropertyIn != null && SourceProperty != null)
-                    return string.Format("{0} {1} Property Changed", SourceProperty.SourceVariable.Node.Name, SourceProperty.SourceVariable.Name);
+                    return string.Format("{0} {1} Property Changed", SourceProperty.Source.Node.Name, SourceProperty.Source.Name);
                 return "PropertyChanged";
             }
         }
@@ -75,7 +75,7 @@ namespace Invert.uFrame.ECS {
             get
             {
                 if (Repository != null && !string.IsNullOrEmpty(this.PropertyInId) && PropertyIn != null && SourceProperty != null)
-                    return string.Format("{0}{1}PropertyChanged", SourceProperty.SourceVariable.Node.Name, SourceProperty.SourceVariable.Name);
+                    return string.Format("{0}{1}PropertyChanged", SourceProperty.Source.Node.Name, SourceProperty.Source.Name);
                 return Graph.CurrentFilter.Name + "PropertyChanged";
             }
         }
@@ -84,7 +84,7 @@ namespace Invert.uFrame.ECS {
             get
             {
                 if (Repository != null && !string.IsNullOrEmpty(this.PropertyInId) && PropertyIn != null && SourceProperty != null)
-                    return string.Format("{0}{1}PropertyChangedFilter", SourceProperty.SourceVariable.Node.Name, SourceProperty.SourceVariable.Name);
+                    return string.Format("{0}{1}PropertyChangedFilter", SourceProperty.Source.Node.Name, SourceProperty.Source.Name);
                 return Graph.CurrentFilter.Name + "PropertyChangedFilter";
             }
         }
@@ -119,7 +119,7 @@ namespace Invert.uFrame.ECS {
         public override void WriteEventSubscription(TemplateContext ctx, CodeMemberMethod filterMethod, CodeMemberMethod handlerMethod)
         {
             //base.WriteEventSubscription(ctx, filterMethod, handlerMethod);
-            var relatedTypeProperty = SourceProperty.SourceVariable;
+            var relatedTypeProperty = SourceProperty.Source;
             filterMethod.Parameters.Add(new CodeParameterDeclarationExpression(relatedTypeProperty.RelatedTypeName, "value"));
             handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(relatedTypeProperty.RelatedTypeName, "value"));
 

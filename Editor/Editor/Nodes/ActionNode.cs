@@ -1,5 +1,6 @@
 using System;
 using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Invert.Core;
@@ -13,13 +14,10 @@ namespace Invert.uFrame.ECS
 {
     public interface IContextVariable : IDiagramNodeItem
     {
-        //IEnumerable<IContextVariable> Members { get; }
-        string ShortName { get; }
-        ITypedItem SourceVariable { get; set; }
-        string VariableName { get; set; }
-        string AsParameter { get; } 
-        bool IsSubVariable { get; set; }
+        ITypedItem Source { get; }
+        string VariableName { get; }
         string VariableType { get; }
+        IEnumerable<IContextVariable> GetPropertyDescriptions();
     }
 
     public interface IVariableExpressionItem
@@ -121,8 +119,35 @@ namespace Invert.uFrame.ECS
 
         public string VariableType
         {
-            get { return _variableType ?? (_variableType = SourceVariable.RelatedTypeName); }
+            get { return _variableType ?? (_variableType = Source.RelatedTypeName); }
             set { _variableType = value; }
+        }
+
+        public IEnumerable<IContextVariable> GetPropertyDescriptions()
+        {
+            if (Source != null)
+            {
+                var sourceNode = Source as GraphNode;
+                if (sourceNode != null)
+                {
+                    foreach (var item in sourceNode.PersistedItems.OfType<PropertiesChildItem>())
+                    {
+                        yield return new ContextVariable(VariableName, item.Name)
+                        {
+                            Source = item,
+                            Repository = Repository,
+                            Name = item.Name,
+                            Node = this.Node,
+                            VariableType = item.RelatedTypeName
+                        };
+                    }
+                }
+                else // Reflection based
+                {
+
+                }
+
+            }
         }
 
         public string ShortName
@@ -130,7 +155,7 @@ namespace Invert.uFrame.ECS
             get { return Items.Last() as string; }
         }
 
-        public ITypedItem SourceVariable { get; set; }
+        public ITypedItem Source { get; set; }
         public string[] FirstMembers { get; set; }
     }
 
@@ -157,9 +182,9 @@ namespace Invert.uFrame.ECS
                 {
                     yield return "Item";
                 }
-                if (SourceVariable != null)
+                if (Source != null)
                 {
-                    yield return SourceVariable.Name;
+                    yield return Source.Name;
                 }
                 else
                 {
@@ -264,7 +289,7 @@ namespace Invert.uFrame.ECS
                 var actionOutput = input.Item;
                 if (actionOutput == null) continue;
                 var actionNode = actionOutput.Node as ActionNode;
-                
+
                 if (actionNode != null)
                 {
                     if (outputtedNodes.Contains(actionNode)) continue;
@@ -284,9 +309,9 @@ namespace Invert.uFrame.ECS
                 WriteMethodCall(ctx);
             }
 
-            
+
             var hasInferredOutput = false;
-            foreach (var output in OutputVars.OfType<ActionBranch>().Select(p=>p.OutputTo<ActionNode>()))
+            foreach (var output in OutputVars.OfType<ActionBranch>().Select(p => p.OutputTo<ActionNode>()))
             {
                 if (output == null) continue;
                 //output.WriteCode(ctx);
@@ -300,7 +325,7 @@ namespace Invert.uFrame.ECS
                     Right.WriteCode(ctx);
                 }
             }
-            
+
 
         }
         public virtual void WriteCode2(TemplateContext ctx)
@@ -345,7 +370,7 @@ namespace Invert.uFrame.ECS
                 var branchOutput = item.OutputTo<SequenceItemNode>();
                 if (branchOutput == null) continue;
                 ctx._("{0}.{1} = {2}", varStatement.Name, item.Name, branchOutput.Name);
-                var method = ctx.CurrentDeclaration.protected_func(typeof (void).ToCodeReference(), branchOutput.Name);
+                var method = ctx.CurrentDeclaration.protected_func(typeof(void).ToCodeReference(), branchOutput.Name);
                 ctx.PushStatements(method.Statements);
                 branchOutput.WriteCode(ctx);
                 ctx.PopStatements();
@@ -372,19 +397,19 @@ namespace Invert.uFrame.ECS
             foreach (var item in parameters)
             {
                 // ALL OUTPUTS FIRST
-                if (item.IsOut || item.ParameterType == typeof (Action))
+                if (item.IsOut || item.ParameterType == typeof(Action))
                 {
                     var item1 = item;
                     var output = OutputVars.FirstOrDefault(p => p.ActionFieldInfo.DisplayType.ParameterName == item1.Name);
 
                     // If its a BRANCH OUTPUT
-                    if (item1.ParameterType == typeof (Action))
+                    if (item1.ParameterType == typeof(Action))
                     {
                         var branchOutput = output.OutputTo<SequenceItemNode>();
                         if (branchOutput != null)
                         {
                             invoker.Parameters.Add(new CodeSnippetExpression(branchOutput.Name));
-                            var method = ctx.CurrentDeclaration.protected_func(typeof (void).ToCodeReference(),
+                            var method = ctx.CurrentDeclaration.protected_func(typeof(void).ToCodeReference(),
                                 branchOutput.Name);
                             ctx.PushStatements(method.Statements);
                             branchOutput.WriteCode(ctx);
@@ -395,7 +420,7 @@ namespace Invert.uFrame.ECS
                             invoker.Parameters.Add(new CodeSnippetExpression("null"));
                         }
                     }
-                        // IF ITS A REGULAR OUTPUT
+                    // IF ITS A REGULAR OUTPUT
                     else
                     {
                         var outputVariable = output.OutputTo<IContextVariable>();
@@ -410,7 +435,7 @@ namespace Invert.uFrame.ECS
                             {
                                 invoker.Parameters.Add(new CodeSnippetExpression("out " + actionOut.VariableName));
                             }
-                            
+
                         }
                     }
                 }
@@ -432,7 +457,7 @@ namespace Invert.uFrame.ECS
                 }
             }
 
-            if (Meta.Method.ReturnType != typeof (void))
+            if (Meta.Method.ReturnType != typeof(void))
             {
                 var result = OutputVars.FirstOrDefault(p => p.Name == "Result");
                 if (result != null)
@@ -517,7 +542,7 @@ namespace Invert.uFrame.ECS
                 //    if (!typeConstraints.Contains("IEcsComponent")) continue;
                 //    var variableIn = new GroupIn()
                 //    {
-                        
+
                 //    };
                 //    variableIn.Node = this;
                 //    variableIn.Repository = Repository;
@@ -527,7 +552,7 @@ namespace Invert.uFrame.ECS
                 foreach (var item in Meta.ActionFields.Where(p => p.DisplayType is In))
                 {
                     IActionIn variableIn;
-                 
+
                     variableIn = new ActionIn();
                     variableIn.Node = this;
                     variableIn.Repository = Repository;
@@ -536,7 +561,7 @@ namespace Invert.uFrame.ECS
                     yield return variableIn;
                 }
             }
-            
+
         }
 
         public IActionOut[] OutputVars
@@ -599,7 +624,7 @@ namespace Invert.uFrame.ECS
                 foreach (var item in OutputVars) yield return item;
             }
         }
-         
+
         public Breakpoint BreakPoint
         {
             get { return Repository.All<Breakpoint>().FirstOrDefault(p => p.ForIdentifier == this.Identifier); }
@@ -625,10 +650,10 @@ namespace Invert.uFrame.ECS
 
     public interface IActionItem : IDiagramNodeItem
     {
-        ActionFieldInfo ActionFieldInfo { get; set; }    
+        ActionFieldInfo ActionFieldInfo { get; set; }
         string VariableName { get; }
-    
-        
+
+
     }
     public interface IActionIn : IActionItem
     {
@@ -671,7 +696,7 @@ namespace Invert.uFrame.ECS
             set { base.Name = value; }
         }
 
-        
+
 
         IContextVariable IActionIn.Item
         {
@@ -687,7 +712,7 @@ namespace Invert.uFrame.ECS
         {
             get
             {
-                
+
                 var actionNode = Node as ActionNode;
                 return actionNode.Meta.Type.Name + "_" + Name;
             }
@@ -703,7 +728,7 @@ namespace Invert.uFrame.ECS
         {
             var action = this.Node as IVariableContextProvider;
             if (action != null)
-            {  
+            {
 
                 foreach (var item in action.GetAllContextVariables())
                     yield return item;
@@ -716,11 +741,16 @@ namespace Invert.uFrame.ECS
     }
     public class PropertyIn : SelectionFor<IContextVariable, VariableSelection>
     {
+        public bool DoesAllowInputs;
         public override bool AllowInputs
         {
-            get { return false; }
-        }
+            get { return DoesAllowInputs; }
 
+        }
+        public HandlerNode Handler
+        {
+            get { return Node.Filter as HandlerNode; }
+        }
         public string VariableName
         {
             get
@@ -731,11 +761,11 @@ namespace Invert.uFrame.ECS
             }
         }
 
-        public override string Name
-        {
-            get { return "Property"; }
-            set { base.Name = value; }
-        }
+        //public override string Name
+        //{
+        //    get { return "Property"; }
+        //    set { base.Name = value; }
+        //}
 
         public override IEnumerable<IGraphItem> GetAllowed()
         {
@@ -744,24 +774,35 @@ namespace Invert.uFrame.ECS
             {
                 foreach (var item in action.GetContextVariables())
                 {
-                    if (item.SourceVariable is PropertiesChildItem)
+                    if (item.Source is PropertiesChildItem)
                     {
                         yield return item;
                     }
                 }
             }
-     
+            else
+            {
+                var hn = Handler;
+                if (hn != null)
+                {
+                    foreach (var item in hn.GetContextVariables())
+                    {
+                        yield return item;
+                    }
+                }
+            }
+
         }
     }
     public class GroupSelection : InputSelectionValue
     {
-        
+
     }
     public class VariableSelection : InputSelectionValue
     {
-      
+
     }
-    public class ActionOut : SingleOutputSlot<IContextVariable>, IActionOut, ISourceObjectConnectable
+    public class ActionOut : SingleOutputSlot<IContextVariable>, IActionOut, IContextVariable
     {
         public ActionFieldInfo ActionFieldInfo { get; set; }
         public override string Name
@@ -791,7 +832,7 @@ namespace Invert.uFrame.ECS
             }
             set
             {
-                
+
             }
         }
         public string ShortName
@@ -799,11 +840,11 @@ namespace Invert.uFrame.ECS
             get { return ActionFieldInfo.Name; }
             set
             {
-                
+
             }
         }
 
-        public ITypedItem SourceVariable { get; set; }
+        public ITypedItem Source { get; set; }
 
         public string AsParameter
         {
@@ -816,9 +857,23 @@ namespace Invert.uFrame.ECS
         {
             get
             {
-                
+
                 return ActionFieldInfo.Type.FullName;
             }
+        }
+
+        public IEnumerable<IContextVariable> GetPropertyDescriptions()
+        {
+            foreach (var item in ActionFieldInfo.Type.GetProperties())
+            {
+                yield return new ContextVariable(VariableName,item.Name)
+                {
+                    Repository = Repository,
+                    Node = this.Node,
+                   
+                };
+            }
+            
         }
     }
 
@@ -858,7 +913,7 @@ namespace Invert.uFrame.ECS
             {
                 yield break;
             }
-            foreach (var item in  Left.GetAllContextVariables())
+            foreach (var item in Left.GetAllContextVariables())
                 yield return item;
         }
 
@@ -872,4 +927,8 @@ namespace Invert.uFrame.ECS
             get { return this.Node as SequenceItemNode; }
         }
     }
+
+
+
+
 }

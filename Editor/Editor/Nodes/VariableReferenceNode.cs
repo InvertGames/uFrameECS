@@ -26,7 +26,7 @@ namespace Invert.uFrame.ECS {
             get { return VariableName.Split('.').LastOrDefault(); }
         }
         
-        public ITypedItem SourceVariable
+        public ITypedItem Source
         {
             get
             {
@@ -36,7 +36,7 @@ namespace Invert.uFrame.ECS {
 
                 var variable = HandlerNode.GetAllContextVariables().FirstOrDefault(p => p.VariableName == VariableName);
                 if (variable != null)
-                    return variable.SourceVariable;
+                    return variable.Source;
 
                 return null;
             }
@@ -61,7 +61,12 @@ namespace Invert.uFrame.ECS {
 
         public string VariableType
         {
-            get { return SourceVariable.RelatedTypeName; }
+            get { return Source.RelatedTypeName; }
+        }
+
+        public IEnumerable<IContextVariable> GetPropertyDescriptions()
+        {
+            yield break;
         }
     }
     
