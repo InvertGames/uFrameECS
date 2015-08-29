@@ -16,7 +16,7 @@ namespace Invert.uFrame.ECS
     {
         ITypedItem Source { get; }
         string VariableName { get; }
-        string VariableType { get; }
+        object VariableType { get; }
         string ShortName { get; }
         string ValueExpression { get; }
         IEnumerable<IContextVariable> GetPropertyDescriptions();
@@ -32,7 +32,7 @@ namespace Invert.uFrame.ECS
     {
 
         private string _memberExpression;
-        private string _variableType;
+        private object _variableType;
         private List<object> _items;
 
         public override string Identifier
@@ -119,7 +119,7 @@ namespace Invert.uFrame.ECS
 
         public bool IsSubVariable { get; set; }
 
-        public string VariableType
+        public object VariableType
         {
             get { return _variableType ?? (_variableType = Source.RelatedTypeName); }
             set { _variableType = value; }
@@ -672,17 +672,18 @@ namespace Invert.uFrame.ECS
     {
         ActionFieldInfo ActionFieldInfo { get; set; }
         string VariableName { get; }
-
+        object VariableType { get;  }
 
     }
     public interface IActionIn : IActionItem
     {
         IContextVariable Item { get; }
+        
     }
 
     public interface IActionOut : IActionItem
     {
-        string VariableType { get; }
+        
     }
 
     public class GroupIn : SelectionFor<IMappingsConnectable, GroupSelection>, IActionIn
@@ -691,7 +692,7 @@ namespace Invert.uFrame.ECS
         {
             get { return false; }
         }
-
+        
         public override IEnumerable<IGraphItem> GetAllowed()
         {
             foreach (var item in Repository.AllOf<IMappingsConnectable>())
@@ -709,6 +710,8 @@ namespace Invert.uFrame.ECS
                 return actionNode.Meta.Type.Name + "_" + Name;
             }
         }
+
+        public object VariableType { get { return typeof (Type).Name; } }
 
         public override string Name
         {
@@ -738,6 +741,22 @@ namespace Invert.uFrame.ECS
             }
         }
 
+        public object VariableType
+        {
+            get
+            {
+                if (ActionFieldInfo != null)
+                {
+                    return ActionFieldInfo.Type.FullName;
+                }
+                return "object";
+                //var item = Item;
+                //if (item == null)
+                //    return "object";
+                //return Item.VariableType;
+            }
+        }
+
         public override string Name
         {
             get { return ActionFieldInfo.Name; }
@@ -759,7 +778,7 @@ namespace Invert.uFrame.ECS
             }
         }
     }
-    public class PropertyIn : SelectionFor<IContextVariable, VariableSelection>
+    public class PropertyIn : SelectionFor<IContextVariable, VariableSelection>, IActionIn
     {
         public bool DoesAllowInputs;
         public override bool AllowInputs
@@ -771,13 +790,30 @@ namespace Invert.uFrame.ECS
         {
             get { return Node.Filter as IVariableContextProvider; }
         }
+
+        public ActionFieldInfo ActionFieldInfo { get; set; }
+
         public string VariableName
         {
             get
             {
+                var item = Item;
+                if (item == null)
+                {
+                    return "...";
+                }
+                return item.VariableName;
+            }
+        }
 
-                var actionNode = Node as ActionNode;
-                return actionNode.Meta.Type.Name + "_" + Name;
+        public virtual object VariableType
+        {
+            get
+            {
+                var item = Item;
+                if (item == null)
+                    return "object";
+                return Item.VariableType;
             }
         }
 
@@ -878,7 +914,7 @@ namespace Invert.uFrame.ECS
 
         public bool IsSubVariable { get; set; }
 
-        public string VariableType
+        public object VariableType
         {
             get
             {
@@ -937,7 +973,7 @@ namespace Invert.uFrame.ECS
             set { base.Name = value; }
         }
 
-        public string VariableType { get; set; }
+        public object VariableType { get; set; }
 
 
         public IEnumerable<IContextVariable> GetAllContextVariables()

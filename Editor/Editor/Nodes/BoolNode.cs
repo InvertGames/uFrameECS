@@ -20,7 +20,7 @@ namespace Invert.uFrame.ECS {
             set { this.Changed("Value", ref _value, value); }
         }
 
-        public override string VariableType
+        public override object VariableType
         {
             get { return typeof(bool).FullName; }
         }

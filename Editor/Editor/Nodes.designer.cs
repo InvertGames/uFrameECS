@@ -400,14 +400,7 @@ namespace Invert.uFrame.ECS {
     
     public class SetVariableNodeBase : SequenceItemNode {
         
-        private string _VariableInputSlotId;
-        
-        private string _ValueInputSlotId;
-        
-        private Variable _Variable;
-        
-        private Value _Value;
-        
+   
         public override bool AllowMultipleInputs {
             get {
                 return true;
@@ -420,57 +413,7 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        [Invert.Json.JsonProperty()]
-        public virtual string VariableInputSlotId {
-            get {
-                if (_VariableInputSlotId == null) {
-                    _VariableInputSlotId = Guid.NewGuid().ToString();
-                }
-                return _VariableInputSlotId;
-            }
-            set {
-                _VariableInputSlotId = value;
-            }
-        }
-        
-        [Invert.Json.JsonProperty()]
-        public virtual string ValueInputSlotId {
-            get {
-                if (_ValueInputSlotId == null) {
-                    _ValueInputSlotId = Guid.NewGuid().ToString();
-                }
-                return _ValueInputSlotId;
-            }
-            set {
-                _ValueInputSlotId = value;
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.InputSlot("Variable", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual Variable VariableInputSlot {
-            get {
-                if (Repository == null) {
-                    return null;
-                }
-                if (_Variable != null) {
-                    return _Variable;
-                }
-                return _Variable ?? (_Variable = new Variable() { Repository = Repository, Node = this, Identifier = VariableInputSlotId });
-            }
-        }
-        
-        [Invert.Core.GraphDesigner.InputSlot("Value", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
-        public virtual Value ValueInputSlot {
-            get {
-                if (Repository == null) {
-                    return null;
-                }
-                if (_Value != null) {
-                    return _Value;
-                }
-                return _Value ?? (_Value = new Value() { Repository = Repository, Node = this, Identifier = ValueInputSlotId });
-            }
-        }
+     
     }
     
     public partial interface ISetVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

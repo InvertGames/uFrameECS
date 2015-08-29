@@ -168,7 +168,7 @@ namespace Invert.uFrame.ECS
 
             outputtedNodes.Add(actionNode);
 
-            foreach (var input in actionNode.InputVars)
+            foreach (var input in actionNode.GraphItems.OfType<IActionIn>())
             {
                 Visit(input);
             }

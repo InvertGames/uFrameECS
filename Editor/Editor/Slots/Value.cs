@@ -43,7 +43,8 @@ namespace Invert.uFrame.ECS {
             }
         }
 
-        
+        public object VariableType { get; private set; }
+
 
         IContextVariable IActionIn.Item
         {

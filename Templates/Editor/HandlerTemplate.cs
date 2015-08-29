@@ -156,11 +156,11 @@ namespace Invert.uFrame.ECS.Templates
             //if (output.Name == "Result") return;
             _.TryAddNamespace(output.ActionFieldInfo.Type.Namespace);
             var varDecl = new CodeMemberField(
-                output.VariableType.Replace("&", "").ToCodeReference(), 
+                output.VariableType.ToString().Replace("&", "").ToCodeReference(), 
                 output.VariableName
                 )
             {
-                InitExpression = new CodeSnippetExpression(string.Format("default( {0} )", output.VariableType.Replace("&", "")))
+                InitExpression = new CodeSnippetExpression(string.Format("default( {0} )", output.VariableType.ToString().Replace("&", "")))
             };
             _.CurrentDeclaration.Members.Add(varDecl);
             //var variableReference = output.OutputTo<IContextVariable>();
@@ -234,24 +234,25 @@ namespace Invert.uFrame.ECS.Templates
         public override void VisitInput(IActionIn input)
         {
             base.VisitInput(input);
-            if (input.ActionFieldInfo == null) return;
-            _.TryAddNamespace(input.ActionFieldInfo.Type.Namespace);
-            var varDecl = new CodeMemberField(
-                input.ActionFieldInfo.Type.FullName.ToCodeReference(), 
-                input.VariableName
-               
-                )
+            //if (input.ActionFieldInfo == null) return;
+            if (input.ActionFieldInfo != null)
             {
-                InitExpression = new CodeSnippetExpression(string.Format("default( {0} )", input.ActionFieldInfo.Type.FullName))
-            };
+                _.TryAddNamespace(input.ActionFieldInfo.Type.Namespace);
+                var varDecl = new CodeMemberField(
+                    input.VariableType.ToCodeReference(),
+                    input.VariableName
+                    )
+                {
+                    InitExpression = new CodeSnippetExpression(string.Format("default( {0} )", input.VariableType))
+                };
 
-            _.CurrentDeclaration.Members.Add(varDecl);
-
-            var variableReference = input.Item;
-            if (variableReference != null)
-            _.CurrentStatements.Add(new CodeAssignStatement(new CodeSnippetExpression(input.VariableName),
-                new CodeSnippetExpression(variableReference.VariableName)));
-
+                _.CurrentDeclaration.Members.Add(varDecl);
+         
+                var variableReference = input.Item;
+                if (variableReference != null)
+                _.CurrentStatements.Add(new CodeAssignStatement(new CodeSnippetExpression(input.VariableName),
+                    new CodeSnippetExpression(variableReference.VariableName)));
+            }
             var inputVariable = input.InputFrom<VariableNode>();
             if (inputVariable != null)
             {

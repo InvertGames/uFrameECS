@@ -37,24 +37,12 @@ namespace Invert.uFrame.ECS {
      
         }
 
-        public override IEnumerable<string> Tags
-        {
-            get { yield return ChangedNode.DisplayName; }
-        }
+
 
         public PropertyChangedNode ChangedNode
         {
             get { return GraphItem as PropertyChangedNode; }
         }
-        //public override string Name
-        //{
-        //    get { return ChangedNode.DisplayName; }
-        //    set { base.Name = value; }
-        //}
 
-        //public override bool IsEditable
-        //{
-        //    get { return false; }
-        //}
     }
 }

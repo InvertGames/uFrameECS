@@ -28,7 +28,7 @@ using Invert.Data;
             set { this.Changed("Y", ref _y, value); }
         }
 
-        public override string VariableType
+        public override object VariableType
         {
             get { return "UnityEngine.Vector2"; }
         }

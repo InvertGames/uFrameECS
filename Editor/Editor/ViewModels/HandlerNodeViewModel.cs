@@ -18,36 +18,12 @@ namespace Invert.uFrame.ECS {
             get { return GraphItem as HandlerNode; }
         }
 
-        //public override string SubTitle
-        //{
-        //    get
-        //    {
-        //        if (Handler == null) return "EVENT NODE FOUND";
-        //        if (Handler.Meta == null)
-        //        {
-        //             return "Event Not Found"; 
-          
-        //        }
-        //         return Handler.Meta.Attribute.Title;
-        //    }
-        //}
-         
-        //public override bool IsEditable
-        //{
-        //    get { return false; }
-        //}
-
         public override IEnumerable<string> Tags
         {
             get
             {
-                if (Handler == null) yield break;
-                if (Handler.Meta == null)
-                {
-                    yield return "Event Not Found";
-                    yield break;
-                }
-                yield return Handler.Meta.Attribute.Title;
+                yield return Handler.DisplayName;
+             
             }
         }
 

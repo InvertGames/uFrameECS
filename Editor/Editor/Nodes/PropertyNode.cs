@@ -89,7 +89,7 @@ namespace Invert.uFrame.ECS
            
         }
 
-        public string VariableType
+        public object VariableType
         {
             get
             {

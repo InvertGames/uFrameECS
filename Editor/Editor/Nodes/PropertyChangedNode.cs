@@ -61,7 +61,7 @@ namespace Invert.uFrame.ECS {
             }
         }
 
-        public string DisplayName
+        public override string DisplayName
         {
             get
             {

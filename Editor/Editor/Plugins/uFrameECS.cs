@@ -39,14 +39,14 @@ namespace Invert.uFrame.ECS {
             VariableReference.AllowAddingInMenu = false;
             CustomAction.Name = "Custom Action";
             System.Name = "System";
+            ComponentCreated.Name = "Component Created";
+            ComponentDestroyed.Name = "Component Destroyed";
             Action.NodeColor.Literal = NodeColor.Green;
             System.HasSubNode<TypeReferenceNode>();
             Module.HasSubNode<TypeReferenceNode>();
             //System.HasSubNode<ComponentNode>();
            // System.HasSubNode<ContextNode>(); 
             
-         
-            Component.AddFlag("Blackboard"); 
 
             Module.HasSubNode<ComponentNode>();
             container.RegisterDrawer<ItemViewModel<IContextVariable>, ItemDrawer>();
@@ -65,12 +65,22 @@ namespace Invert.uFrame.ECS {
             LoadActions();
             LoadEvents();
 
-            var propertyTypes = FilterExtensions.AllowedFilterNodes[typeof(PropertyChangedNode)] = new List<Type>();
-            foreach (var item in FilterExtensions.AllowedFilterNodes[typeof(HandlerNode)])
+            AddHandlerType(typeof (PropertyChangedNode));
+            AddHandlerType(typeof (ComponentDestroyedNode));
+            AddHandlerType(typeof (ComponentCreatedNode));
+
+
+        }
+
+        private static void AddHandlerType(Type type)
+        {
+            var propertyTypes = FilterExtensions.AllowedFilterNodes[type] = new List<Type>();
+            foreach (var item in FilterExtensions.AllowedFilterNodes[typeof (HandlerNode)])
             {
                 propertyTypes.Add(item);
             }
         }
+
 
         private void LoadActions()
         {

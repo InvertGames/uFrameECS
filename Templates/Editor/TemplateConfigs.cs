@@ -34,7 +34,7 @@ namespace Invert.uFrame.ECS.Templates
             //          RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentGroupNode,ComponentGroupManagerTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<EventNode, EventTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<GroupNode, GroupTemplate>();
-            RegisteredTemplateGeneratorsFactory.RegisterTemplate<GroupNode, ContextItemTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<GroupNode, GroupItemTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<HandlerNode, HandlerTemplate>();
             //RegisteredTemplateGeneratorsFactory.RegisterTemplate<PropertyChangedNode, PropertyHandlerTemplate>();
             //            RegisteredTemplateGeneratorsFactory.RegisterTemplate<EntityNode, EntityTemplate>();
@@ -283,7 +283,7 @@ namespace Invert.uFrame.ECS.Templates
     [RequiresNamespace("uFrame.ECS")]
     [RequiresNamespace("uFrame.Kernel")]
     [RequiresNamespace("UniRx")]
-    public partial class GroupTemplate : IClassTemplate<GroupNode>
+    public partial class GroupTemplate : IClassTemplate<GroupNode>,ITemplateCustomFilename
     {
 
         public IEnumerable<ComponentNode> SelectComponents
@@ -293,10 +293,15 @@ namespace Invert.uFrame.ECS.Templates
                 return Ctx.Data.Require.Select(p => p.SourceItem).OfType<ComponentNode>();
             }
         }
-        public string OutputPath
+         public string Filename
         {
-            get { return Path2.Combine("Modules", Ctx.Data.Graph.Name, "Groups"); }
+            get
+            {
+                return Path2.Combine("Library", Ctx.Data.Graph.Name, "Groups", Ctx.Data.Name + "Group.cs");
+            }
         }
+
+        public string OutputPath { get; set; }
 
         public bool CanGenerate
         {
@@ -316,7 +321,7 @@ namespace Invert.uFrame.ECS.Templates
     [RequiresNamespace("uFrame.ECS")]
     [RequiresNamespace("uFrame.Kernel")]
     [RequiresNamespace("UniRx")]
-    public partial class ContextItemTemplate : GroupItem, IClassTemplate<GroupNode>, ITemplateCustomFilename
+    public partial class GroupItemTemplate : GroupItem, IClassTemplate<GroupNode>, ITemplateCustomFilename
     {
 
         public IEnumerable<ComponentNode> SelectComponents

@@ -22,6 +22,19 @@ namespace Invert.uFrame.ECS
             get { return Color.blue; }
         }
 
+        public virtual string DisplayName
+        {
+            get
+            {
+              
+                if (Meta == null)
+                {
+
+                    return "Event Not Found";
+                }
+                return Meta.Attribute.Title;
+            }
+        }
         private EntityGroupIn[] _contextInputs;
         private EntityGroupIn _entityGroup;
         private string _eventIdentifier;
@@ -179,6 +192,8 @@ namespace Invert.uFrame.ECS
         {
             get { return GetAllContextVariables(); }
         }
+
+        public virtual int SetupOrder { get { return 0; } }
 
         public void Accept(IHandlerNodeVisitor visitor)
         {

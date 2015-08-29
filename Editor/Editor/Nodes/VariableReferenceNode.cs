@@ -67,7 +67,7 @@ namespace Invert.uFrame.ECS {
 
         public bool IsSubVariable { get; set; }
 
-        public string VariableType
+        public object VariableType
         {
             get { return Source.RelatedTypeName; }
         }

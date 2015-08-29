@@ -12,7 +12,7 @@ namespace Invert.uFrame.ECS
 
     public class VariableNode : VariableNodeBase, IContextVariable , ITypedItem
     {
-        public virtual string VariableType
+        public virtual object VariableType
         {
             get { return typeof(int).Name; }
         }
@@ -28,11 +28,11 @@ namespace Invert.uFrame.ECS
 
         public virtual CodeVariableDeclarationStatement GetDeclerationStatement()
         {
-            return new CodeVariableDeclarationStatement(VariableType, VariableName, GetCreateExpression());
+            return new CodeVariableDeclarationStatement(VariableType.ToCodeReference(), VariableName, GetCreateExpression());
         }
         public virtual CodeMemberField GetFieldStatement()
         {
-            return new CodeMemberField(VariableType, VariableName)
+            return new CodeMemberField(VariableType.ToCodeReference(), VariableName)
             {
                 InitExpression = GetCreateExpression()
             };

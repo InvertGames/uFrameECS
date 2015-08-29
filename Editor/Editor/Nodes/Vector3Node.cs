@@ -41,7 +41,7 @@ namespace Invert.uFrame.ECS {
             get { return string.Format("new Vector3({0}, {1}, {2})", X, Y, Z); }
         }
 
-        public override string VariableType
+        public override object VariableType
         {
             get { return "UnityEngine.Vector3"; }
         }

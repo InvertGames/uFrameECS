@@ -25,7 +25,7 @@ namespace Invert.uFrame.ECS {
             get { return string.Format("\"{0}\"", JSONNode.Escape(Value)); }
         }
 
-        public override string VariableType
+        public override object VariableType
         {
             get { return typeof (string).FullName; }
         }
