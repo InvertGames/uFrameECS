@@ -10,5 +10,11 @@ namespace Invert.uFrame.ECS {
         public PropertyNodeViewModel(PropertyNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
         }
+
+        public override string Name
+        {
+            get { return "Property"; }
+            set { base.Name = value; }
+        }
     }
 }

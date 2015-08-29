@@ -87,7 +87,11 @@ namespace uFrame.ECS
         {
             if (!_components.ContainsKey(component.EntityId))
             {
-                _components.Add(component.EntityId,new List<TComponentType>());
+                _components.Add(component.EntityId, new List<TComponentType>());
+            }
+            else
+            {
+                return;
             }
             _components[component.EntityId].Add((TComponentType)component);
             if (_CreatedObservable != null)
@@ -98,7 +102,9 @@ namespace uFrame.ECS
 
         protected override void RemoveItem(IEcsComponent component)
         {
+            if (component == null) return;
             if (_components == null || !_components.ContainsKey(component.EntityId)) return;
+
             _components[component.EntityId].Remove((TComponentType)component);
             if (_RemovedObservable != null)
             {

@@ -79,6 +79,20 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class AllFalseNodeDrawerBase : GenericNodeDrawer<AllFalseNode,AllFalseNodeViewModel> {
+        
+        public AllFalseNodeDrawerBase(AllFalseNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class BoolExpressionNodeDrawerBase : GenericNodeDrawer<BoolExpressionNode,BoolExpressionNodeViewModel> {
+        
+        public BoolExpressionNodeDrawerBase(BoolExpressionNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
     public class FloatNodeDrawerBase : GenericNodeDrawer<FloatNode,FloatNodeViewModel> {
         
         public FloatNodeDrawerBase(FloatNodeViewModel viewModel) : 
@@ -89,6 +103,13 @@ namespace Invert.uFrame.ECS {
     public class UserMethodNodeDrawerBase : GenericNodeDrawer<UserMethodNode,UserMethodNodeViewModel> {
         
         public UserMethodNodeDrawerBase(UserMethodNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class AnyFalseNodeDrawerBase : GenericNodeDrawer<AnyFalseNode,AnyFalseNodeViewModel> {
+        
+        public AnyFalseNodeDrawerBase(AnyFalseNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
@@ -170,9 +191,23 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class AllTrueNodeDrawerBase : GenericNodeDrawer<AllTrueNode,AllTrueNodeViewModel> {
+        
+        public AllTrueNodeDrawerBase(AllTrueNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
     public class StartTimerNodeDrawerBase : GenericNodeDrawer<StartTimerNode,StartTimerNodeViewModel> {
         
         public StartTimerNodeDrawerBase(StartTimerNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class ConditionNodeDrawerBase : GenericNodeDrawer<ConditionNode,ConditionNodeViewModel> {
+        
+        public ConditionNodeDrawerBase(ConditionNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
@@ -219,9 +254,30 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class AnyTrueNodeDrawerBase : GenericNodeDrawer<AnyTrueNode,AnyTrueNodeViewModel> {
+        
+        public AnyTrueNodeDrawerBase(AnyTrueNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
     public class SequenceItemNodeDrawerBase : GenericNodeDrawer<SequenceItemNode,SequenceItemNodeViewModel> {
         
         public SequenceItemNodeDrawerBase(SequenceItemNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class ComponentCreatedNodeDrawerBase : GenericNodeDrawer<ComponentCreatedNode,ComponentCreatedNodeViewModel> {
+        
+        public ComponentCreatedNodeDrawerBase(ComponentCreatedNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class ComponentDestroyedNodeDrawerBase : GenericNodeDrawer<ComponentDestroyedNode,ComponentDestroyedNodeViewModel> {
+        
+        public ComponentDestroyedNodeDrawerBase(ComponentDestroyedNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }

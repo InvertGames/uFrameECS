@@ -17,9 +17,13 @@ namespace Invert.uFrame.ECS
             get { return typeof(int).Name; }
         }
 
-        public IEnumerable<IContextVariable> GetPropertyDescriptions()
+        public virtual string ValueExpression
         {
-            yield break;
+            get { return string.Empty; }
+        }
+
+        public IEnumerable<IContextVariable> GetPropertyDescriptions()
+        {yield break;
         }
 
         public virtual CodeVariableDeclarationStatement GetDeclerationStatement()
@@ -42,6 +46,8 @@ namespace Invert.uFrame.ECS
         {
             get { return Name; }
         }
+
+     
 
         public ITypedItem Source
         {

@@ -25,7 +25,15 @@ namespace Invert.uFrame.ECS {
         {
             get { return VariableName.Split('.').LastOrDefault(); }
         }
-        
+
+        public string ValueExpression { get; private set; }
+
+        public string Value
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
         public ITypedItem Source
         {
             get

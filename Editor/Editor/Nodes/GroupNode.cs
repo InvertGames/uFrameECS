@@ -7,8 +7,17 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
 
 
-    public class GroupNode : GroupNodeBase,IRequireConnectable, IMappingsConnectable, IHandlerConnectable {
-       
+    public class GroupNode : GroupNodeBase,IRequireConnectable, IMappingsConnectable, IHandlerConnectable, IVariableContextProvider {
+        public override bool AllowOutputs
+        {
+            get { return false; }
+        }
+
+        public override bool AllowMultipleInputs
+        {
+            get { return false; }
+        }
+
         public void WriteCode(TemplateContext ctx)
         {
             
@@ -79,6 +88,52 @@ namespace Invert.uFrame.ECS {
                     yield return p;
                 }
             }
+        }
+
+        public IEnumerable<IContextVariable> GetAllContextVariables()
+        {
+            return GetContextVariables();
+        }
+
+        public BoolExpressionNode ExpressionNode
+        {
+            get { return this.InputFrom<BoolExpressionNode>(); }
+        }
+
+        public IEnumerable<PropertiesChildItem> Observables
+        {
+            get
+            {
+                foreach (var item in FilterNodes.OfType<PropertyNode>())
+                {
+                    var variable = item.PropertySelection.Item;
+                    if (variable != null && variable.Source != null)
+                    {
+                        var s = variable.Source as PropertiesChildItem;
+                        if (s != null)
+                            yield return s;
+                    }
+                }
+            }
+        }
+        public IEnumerable<IContextVariable> GetContextVariables()
+        {
+            foreach (var item in Require)
+            {
+                yield return new ContextVariable(item.Name)
+                {
+                    Repository = this.Repository, 
+                    Node = this, 
+                    VariableType = this.Name, 
+                    Source = item.SourceItem as ITypedItem,
+                    Identifier = this.Identifier + ":" + this.Name
+                };
+            }
+        }
+
+        public IVariableContextProvider Left
+        {
+            get { return null; }
         }
     }
     

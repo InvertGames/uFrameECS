@@ -8,15 +8,27 @@ namespace Invert.uFrame.ECS {
     using System.Linq;
     using Invert.Core;
     using Invert.Core.GraphDesigner;
-    
+    using Invert.Data;
     
     public class IntNode : IntNodeBase {
+        private int _value;
+
         public override string VariableType
         {
-            get { return typeof(int).Name; }
+            get { return typeof(int).FullName; }
         }
+
+        public override string ValueExpression
+        {
+            get { return Value.ToString(); }
+        }
+
         [NodeProperty, JsonProperty]
-        public int Value { get; set; }
+        public int Value
+        {
+            get { return _value; }
+            set { this.Changed("Value", ref _value, value); }
+        }
 
         public override CodeExpression GetCreateExpression()
         {

@@ -11,7 +11,7 @@ namespace Invert.uFrame.ECS {
     
     public class LiteralNode : LiteralNodeBase {
 
-
+        
        
     }
     

@@ -25,14 +25,16 @@ namespace Invert.uFrame.ECS.Templates
         [ForEach("Properties"), GenerateProperty, WithLazyField(typeof(Subject<_ITEMTYPE_>), true)]
         public IObservable<_ITEMTYPE_> _Name_Observable { get { return null; } }
 
-        [ForEach("Properties"), GenerateProperty, WithName, WithField(null, typeof(SerializeField))]
+        [ForEach("Properties"), GenerateProperty, WithName, WithField(null, typeof(SerializeField),ManualSetter = true)]
         public _ITEMTYPE_ Property
         {
             get { return null; }
             set
             {
+                Ctx._("_{0} = value", Ctx.Item.Name);
                 Ctx._if("_{0}Observable != null", Ctx.Item.Name).TrueStatements
                     ._("_{0}Observable.OnNext(value)", Ctx.Item.Name);
+                
             }
         }
 

@@ -17,6 +17,8 @@ namespace Invert.uFrame.ECS
         ITypedItem Source { get; }
         string VariableName { get; }
         string VariableType { get; }
+        string ShortName { get; }
+        string ValueExpression { get; }
         IEnumerable<IContextVariable> GetPropertyDescriptions();
     }
 
@@ -123,8 +125,20 @@ namespace Invert.uFrame.ECS
             set { _variableType = value; }
         }
 
+        public Type TypeInfo
+        {
+            get;
+            set;
+        }
         public IEnumerable<IContextVariable> GetPropertyDescriptions()
         {
+            if (TypeInfo != null)
+            {
+                foreach (var item in TypeInfo.GetPropertyDescriptions(this))
+                {
+                    yield return item;
+                }
+            }
             if (Source != null)
             {
                 var sourceNode = Source as GraphNode;
@@ -153,6 +167,12 @@ namespace Invert.uFrame.ECS
         public string ShortName
         {
             get { return Items.Last() as string; }
+        }
+
+        public string ValueExpression
+        {
+            get { return VariableName; }
+            
         }
 
         public ITypedItem Source { get; set; }
@@ -747,9 +767,9 @@ namespace Invert.uFrame.ECS
             get { return DoesAllowInputs; }
 
         }
-        public HandlerNode Handler
+        public IVariableContextProvider Handler
         {
-            get { return Node.Filter as HandlerNode; }
+            get { return Node.Filter as IVariableContextProvider; }
         }
         public string VariableName
         {
@@ -844,6 +864,11 @@ namespace Invert.uFrame.ECS
             }
         }
 
+        public string ValueExpression
+        {
+            get { return VariableName; }
+        }
+
         public ITypedItem Source { get; set; }
 
         public string AsParameter
@@ -864,19 +889,27 @@ namespace Invert.uFrame.ECS
 
         public IEnumerable<IContextVariable> GetPropertyDescriptions()
         {
-            foreach (var item in ActionFieldInfo.Type.GetProperties())
-            {
-                yield return new ContextVariable(VariableName,item.Name)
-                {
-                    Repository = Repository,
-                    Node = this.Node,
-                   
-                };
-            }
-            
+            return ActionFieldInfo.Type.GetPropertyDescriptions(this);
         }
     }
 
+    public static class EcsReflectionExtensions
+    {
+        public static IEnumerable<IContextVariable> GetPropertyDescriptions(this Type type, IContextVariable parent)
+        {
+            if (parent == null) throw new ArgumentNullException("parent");
+
+            foreach (var item in type.GetProperties())
+            {
+                yield return new ContextVariable(parent.VariableName, item.Name)
+                {
+                    Repository = parent.Repository,
+                    Node = parent.Node,
+                    TypeInfo = item.PropertyType
+                };
+            }
+        }
+    }
     public class ActionBranch : SingleOutputSlot<ActionNode>, IActionOut, IVariableContextProvider
     {
         public override Color Color

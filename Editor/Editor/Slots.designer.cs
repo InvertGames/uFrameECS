@@ -124,6 +124,42 @@ namespace Invert.uFrame.ECS {
     public partial interface IPropertyConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
+    public class ExpressionsBase : MultiInputSlot<IExpressionsConnectable> {
+        
+        public override string Name {
+            get {
+                return "Expressions";
+            }
+            set {
+            }
+        }
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return false;
+            }
+        }
+        
+        public override bool AllowSelection {
+            get {
+                return false;
+            }
+        }
+        
+        public override System.Collections.Generic.IEnumerable<Invert.Core.GraphDesigner.IGraphItem> GetAllowed() {
+            return Repository.AllOf<IExpressionsConnectable>().OfType<IGraphItem>();;
+        }
+    }
+    
+    public partial interface IExpressionsConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
     public class TimerBase : SingleInputSlot<ITimerConnectable> {
         
         public override string Name {

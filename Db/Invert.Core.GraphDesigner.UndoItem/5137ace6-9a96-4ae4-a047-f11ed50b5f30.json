@@ -1,0 +1,8 @@
+{
+	"Identifier":"5137ace6-9a96-4ae4-a047-f11ed50b5f30"	, 
+	"Time":"8/28/2015 10:45:02 AM"	, 
+	"Group":"10452"	, 
+	"DataRecordId":"9b5e77ce-275a-40ca-9543-6b8623334035"	, 
+	"Type":2	, 
+	"RecordType":"Invert.Core.GraphDesigner.ConnectionData, Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"	, 
+	"Data":"{\r\n\t\"OutputIdentifier\":\"292ca1e9-08be-4d0f-b31f-89b5ab866175\"\t, \r\n\t\"Identifier\":\"9b5e77ce-275a-40ca-9543-6b8623334035\"}\r\n"}

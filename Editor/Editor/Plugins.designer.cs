@@ -37,9 +37,15 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<StopTimerNode> _StopTimer;
         
+        private Invert.Core.GraphDesigner.NodeConfig<AllFalseNode> _AllFalse;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<BoolExpressionNode> _BoolExpression;
+        
         private Invert.Core.GraphDesigner.NodeConfig<FloatNode> _Float;
         
         private Invert.Core.GraphDesigner.NodeConfig<UserMethodNode> _UserMethod;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<AnyFalseNode> _AnyFalse;
         
         private Invert.Core.GraphDesigner.NodeConfig<GetPropertyNode> _GetProperty;
         
@@ -63,7 +69,11 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<Vector2Node> _Vector2;
         
+        private Invert.Core.GraphDesigner.NodeConfig<AllTrueNode> _AllTrue;
+        
         private Invert.Core.GraphDesigner.NodeConfig<StartTimerNode> _StartTimer;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ConditionNode> _Condition;
         
         private Invert.Core.GraphDesigner.NodeConfig<ActionNode> _Action;
         
@@ -77,7 +87,13 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<ColorNode> _Color;
         
+        private Invert.Core.GraphDesigner.NodeConfig<AnyTrueNode> _AnyTrue;
+        
         private Invert.Core.GraphDesigner.NodeConfig<SequenceItemNode> _SequenceItem;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ComponentCreatedNode> _ComponentCreated;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ComponentDestroyedNode> _ComponentDestroyed;
         
         public Invert.Core.GraphDesigner.NodeConfig<CustomActionNode> CustomAction {
             get {
@@ -160,6 +176,24 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<AllFalseNode> AllFalse {
+            get {
+                return _AllFalse;
+            }
+            set {
+                _AllFalse = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<BoolExpressionNode> BoolExpression {
+            get {
+                return _BoolExpression;
+            }
+            set {
+                _BoolExpression = value;
+            }
+        }
+        
         public Invert.Core.GraphDesigner.NodeConfig<FloatNode> Float {
             get {
                 return _Float;
@@ -175,6 +209,15 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _UserMethod = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<AnyFalseNode> AnyFalse {
+            get {
+                return _AnyFalse;
+            }
+            set {
+                _AnyFalse = value;
             }
         }
         
@@ -277,12 +320,30 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<AllTrueNode> AllTrue {
+            get {
+                return _AllTrue;
+            }
+            set {
+                _AllTrue = value;
+            }
+        }
+        
         public Invert.Core.GraphDesigner.NodeConfig<StartTimerNode> StartTimer {
             get {
                 return _StartTimer;
             }
             set {
                 _StartTimer = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ConditionNode> Condition {
+            get {
+                return _Condition;
+            }
+            set {
+                _Condition = value;
             }
         }
         
@@ -340,12 +401,39 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<AnyTrueNode> AnyTrue {
+            get {
+                return _AnyTrue;
+            }
+            set {
+                _AnyTrue = value;
+            }
+        }
+        
         public Invert.Core.GraphDesigner.NodeConfig<SequenceItemNode> SequenceItem {
             get {
                 return _SequenceItem;
             }
             set {
                 _SequenceItem = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ComponentCreatedNode> ComponentCreated {
+            get {
+                return _ComponentCreated;
+            }
+            set {
+                _ComponentCreated = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ComponentDestroyedNode> ComponentDestroyed {
+            get {
+                return _ComponentDestroyed;
+            }
+            set {
+                _ComponentDestroyed = value;
             }
         }
         
@@ -394,10 +482,16 @@ namespace Invert.uFrame.ECS {
             VariableReference.Color(NodeColor.Purple);
             StopTimer = container.AddNode<StopTimerNode,StopTimerNodeViewModel,StopTimerNodeDrawer>("StopTimer");
             StopTimer.Color(NodeColor.Gray);
+            AllFalse = container.AddNode<AllFalseNode,AllFalseNodeViewModel,AllFalseNodeDrawer>("AllFalse");
+            AllFalse.Color(NodeColor.Orange);
+            BoolExpression = container.AddNode<BoolExpressionNode,BoolExpressionNodeViewModel,BoolExpressionNodeDrawer>("BoolExpression");
+            BoolExpression.Color(NodeColor.Gray);
             Float = container.AddNode<FloatNode,FloatNodeViewModel,FloatNodeDrawer>("Float");
             Float.Color(NodeColor.Purple);
             UserMethod = container.AddNode<UserMethodNode,UserMethodNodeViewModel,UserMethodNodeDrawer>("UserMethod");
             UserMethod.Color(NodeColor.Blue);
+            AnyFalse = container.AddNode<AnyFalseNode,AnyFalseNodeViewModel,AnyFalseNodeDrawer>("AnyFalse");
+            AnyFalse.Color(NodeColor.Orange);
             GetProperty = container.AddNode<GetPropertyNode,GetPropertyNodeViewModel,GetPropertyNodeDrawer>("GetProperty");
             GetProperty.Color(NodeColor.Blue);
             SetVariable = container.AddNode<SetVariableNode,SetVariableNodeViewModel,SetVariableNodeDrawer>("SetVariable");
@@ -408,10 +502,19 @@ namespace Invert.uFrame.ECS {
             Variable.Color(NodeColor.Gray);
             Group = container.AddNode<GroupNode,GroupNodeViewModel,GroupNodeDrawer>("Group");
             Group.Color(NodeColor.Yellow);
-            Group.HasSubNode<StringLiteralNode>();
-            Group.HasSubNode<LiteralNode>();
-            Group.HasSubNode<VariableNode>();
-            Group.HasSubNode<ComponentNode>();
+            Group.HasSubNode<Vector3Node>();
+            Group.HasSubNode<Vector2Node>();
+            Group.HasSubNode<ConditionNode>();
+            Group.HasSubNode<AnyFalseNode>();
+            Group.HasSubNode<AnyTrueNode>();
+            Group.HasSubNode<BoolExpressionNode>();
+            Group.HasSubNode<PropertyNode>();
+            Group.HasSubNode<AllTrueNode>();
+            Group.HasSubNode<AllFalseNode>();
+            Group.HasSubNode<FloatNode>();
+            Group.HasSubNode<StringNode>();
+            Group.HasSubNode<IntNode>();
+            Group.HasSubNode<BoolNode>();
             Vector3 = container.AddNode<Vector3Node,Vector3NodeViewModel,Vector3NodeDrawer>("Vector3");
             Vector3.Color(NodeColor.Purple);
             Event = container.AddNode<EventNode,EventNodeViewModel,EventNodeDrawer>("Event");
@@ -428,14 +531,17 @@ namespace Invert.uFrame.ECS {
             Int.Color(NodeColor.Purple);
             Vector2 = container.AddNode<Vector2Node,Vector2NodeViewModel,Vector2NodeDrawer>("Vector2");
             Vector2.Color(NodeColor.Purple);
+            AllTrue = container.AddNode<AllTrueNode,AllTrueNodeViewModel,AllTrueNodeDrawer>("AllTrue");
+            AllTrue.Color(NodeColor.Orange);
             StartTimer = container.AddNode<StartTimerNode,StartTimerNodeViewModel,StartTimerNodeDrawer>("StartTimer");
             StartTimer.Color(NodeColor.Gray);
+            Condition = container.AddNode<ConditionNode,ConditionNodeViewModel,ConditionNodeDrawer>("Condition");
+            Condition.Color(NodeColor.Orange);
             Action = container.AddNode<ActionNode,ActionNodeViewModel,ActionNodeDrawer>("Action");
             Action.Color(NodeColor.Green);
             Handler = container.AddNode<HandlerNode,HandlerNodeViewModel,HandlerNodeDrawer>("Handler");
             Handler.Color(NodeColor.Red);
             Handler.HasSubNode<SetVariableNode>();
-            Handler.HasSubNode<ColorNode>();
             Handler.HasSubNode<UserMethodNode>();
             Handler.HasSubNode<GetPropertyNode>();
             Handler.HasSubNode<ActionNode>();
@@ -456,14 +562,24 @@ namespace Invert.uFrame.ECS {
             System.Color(NodeColor.Blue);
             System.HasSubNode<PropertyChangedNode>();
             System.HasSubNode<HandlerNode>();
+            System.HasSubNode<ComponentCreatedNode>();
+            System.HasSubNode<ComponentDestroyedNode>();
             Entity = container.AddNode<EntityNode,EntityNodeViewModel,EntityNodeDrawer>("Entity");
             Entity.Color(NodeColor.Gray);
             Color = container.AddNode<ColorNode,ColorNodeViewModel,ColorNodeDrawer>("Color");
             Color.Color(NodeColor.Purple);
+            AnyTrue = container.AddNode<AnyTrueNode,AnyTrueNodeViewModel,AnyTrueNodeDrawer>("AnyTrue");
+            AnyTrue.Color(NodeColor.Orange);
             SequenceItem = container.AddNode<SequenceItemNode,SequenceItemNodeViewModel,SequenceItemNodeDrawer>("SequenceItem");
             SequenceItem.Color(NodeColor.Green);
+            ComponentCreated = container.AddNode<ComponentCreatedNode,ComponentCreatedNodeViewModel,ComponentCreatedNodeDrawer>("ComponentCreated");
+            ComponentCreated.Color(NodeColor.Red);
+            ComponentDestroyed = container.AddNode<ComponentDestroyedNode,ComponentDestroyedNodeViewModel,ComponentDestroyedNodeDrawer>("ComponentDestroyed");
+            ComponentDestroyed.Color(NodeColor.Red);
             container.Connectable<VariableReferenceNode,Value>();
             container.Connectable<VariableReferenceNode,Variable>();
+            container.Connectable<BoolExpressionNode,Expressions>();
+            container.Connectable<BoolExpressionNode,GroupNode>();
             container.Connectable<LiteralNode,Value>();
             container.Connectable<ComponentNode,RequireReference>();
             container.Connectable<ComponentNode,ComponentsReference>();

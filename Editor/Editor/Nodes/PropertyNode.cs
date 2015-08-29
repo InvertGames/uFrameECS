@@ -58,11 +58,17 @@ namespace Invert.uFrame.ECS
             }
         }
 
-        public override string Name
+        public override string Title
         {
-            get { return base.Name; }
-            set { base.Name = value; }
+            get
+            {
+                var item = PropertySelection.Item;
+                if (item == null) return "Select A Property";
+                return item.ShortName;
+            }
         }
+
+        
 
         public ITypedItem Source
         {
@@ -92,10 +98,43 @@ namespace Invert.uFrame.ECS
             }
         }
 
+        public string ShortName
+        {
+            get
+            {
+                if (PropertySelection.Item == null) return "Property";
+                return PropertySelection.Item.ShortName;
+            }
+        }
+
+        public string ValueExpression
+        {
+            get
+            {
+                if (PropertySelection.Item == null) return "null";
+                return PropertySelection.Item.VariableName;
+            }
+        }
+
+        public string Value
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
         public IEnumerable<IContextVariable> GetPropertyDescriptions()
         {
             if (PropertySelection.Item == null) yield break;
             foreach (var item in  PropertySelection.Item.GetPropertyDescriptions()) yield return item;
+        } 
+
+        public override void Validate(List<ErrorInfo> errors)
+        {
+            base.Validate(errors);
+            if (PropertySelection.Item == null)
+            {
+                errors.AddError("Please select a property.",this.Identifier);
+            }
         }
     }
 
@@ -107,7 +146,11 @@ namespace Invert.uFrame.ECS
             get { return false; }
         }
 
-      
+        public override string ItemDisplayName(IContextVariable item)
+        {
+            return item.ShortName;
+        }
+
         public PropertyIn ObjectSelector { get; set; }
 
         public override IEnumerable<IGraphItem> GetAllowed()

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace uFrame.ECS
 {
-    public interface IComponentSystem
+    public interface IComponentSystem : IEcsSystem
     {
         bool HasAny(int entityId, params Type[] type);
         bool TryGetComponent<TComponent>(int entityId, out TComponent component) where TComponent : class, IEcsComponent;
