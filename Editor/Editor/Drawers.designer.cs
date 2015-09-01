@@ -114,6 +114,13 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class ComponentCreatedNodeDrawerBase : GenericNodeDrawer<ComponentCreatedNode,ComponentCreatedNodeViewModel> {
+        
+        public ComponentCreatedNodeDrawerBase(ComponentCreatedNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
     public class GetPropertyNodeDrawerBase : GenericNodeDrawer<GetPropertyNode,GetPropertyNodeViewModel> {
         
         public GetPropertyNodeDrawerBase(GetPropertyNodeViewModel viewModel) : 
@@ -180,6 +187,13 @@ namespace Invert.uFrame.ECS {
     public class IntNodeDrawerBase : GenericNodeDrawer<IntNode,IntNodeViewModel> {
         
         public IntNodeDrawerBase(IntNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
+    public class ComponentDestroyedNodeDrawerBase : GenericNodeDrawer<ComponentDestroyedNode,ComponentDestroyedNodeViewModel> {
+        
+        public ComponentDestroyedNodeDrawerBase(ComponentDestroyedNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
@@ -264,20 +278,6 @@ namespace Invert.uFrame.ECS {
     public class SequenceItemNodeDrawerBase : GenericNodeDrawer<SequenceItemNode,SequenceItemNodeViewModel> {
         
         public SequenceItemNodeDrawerBase(SequenceItemNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class ComponentCreatedNodeDrawerBase : GenericNodeDrawer<ComponentCreatedNode,ComponentCreatedNodeViewModel> {
-        
-        public ComponentCreatedNodeDrawerBase(ComponentCreatedNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class ComponentDestroyedNodeDrawerBase : GenericNodeDrawer<ComponentDestroyedNode,ComponentDestroyedNodeViewModel> {
-        
-        public ComponentDestroyedNodeDrawerBase(ComponentDestroyedNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }

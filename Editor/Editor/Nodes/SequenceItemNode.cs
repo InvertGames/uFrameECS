@@ -16,7 +16,7 @@ namespace Invert.uFrame.ECS {
         public override bool AllowMultipleInputs
         {
             get { return false; }
-        }
+        } 
 
         public override bool AllowMultipleOutputs
         {

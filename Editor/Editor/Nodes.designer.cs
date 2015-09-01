@@ -380,6 +380,24 @@ namespace Invert.uFrame.ECS {
     public partial interface IAnyFalseConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
+    public class ComponentCreatedNodeBase : HandlerNode {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IComponentCreatedConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
     public class GetPropertyNodeBase : SequenceItemNode {
         
         public override bool AllowMultipleInputs {
@@ -400,30 +418,13 @@ namespace Invert.uFrame.ECS {
     
     public class SetVariableNodeBase : SequenceItemNode {
         
-   
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
+        private string _VariableInputSlotId;
         
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
+        private string _ValueInputSlotId;
         
-     
-    }
-    
-    public partial interface ISetVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
-    public class PropertyChangedNodeBase : HandlerNode {
+        private Variable _Variable;
         
-        private string _PropertyInputSlotId;
-        
-        private Property _Property;
+        private Value _Value;
         
         public override bool AllowMultipleInputs {
             get {
@@ -438,28 +439,72 @@ namespace Invert.uFrame.ECS {
         }
         
         [Invert.Json.JsonProperty()]
-        public virtual string PropertyInputSlotId {
+        public virtual string VariableInputSlotId {
             get {
-                if (_PropertyInputSlotId == null) {
-                    _PropertyInputSlotId = Guid.NewGuid().ToString();
+                if (_VariableInputSlotId == null) {
+                    _VariableInputSlotId = Guid.NewGuid().ToString();
                 }
-                return _PropertyInputSlotId;
+                return _VariableInputSlotId;
             }
             set {
-                _PropertyInputSlotId = value;
+                _VariableInputSlotId = value;
             }
         }
         
-        [Invert.Core.GraphDesigner.InputSlot("Property", false, SectionVisibility.WhenNodeIsNotFilter, OrderIndex=0, IsNewRow=true)]
-        public virtual Property PropertyInputSlot {
+        [Invert.Json.JsonProperty()]
+        public virtual string ValueInputSlotId {
+            get {
+                if (_ValueInputSlotId == null) {
+                    _ValueInputSlotId = Guid.NewGuid().ToString();
+                }
+                return _ValueInputSlotId;
+            }
+            set {
+                _ValueInputSlotId = value;
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Variable", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Variable VariableInputSlot {
             get {
                 if (Repository == null) {
                     return null;
                 }
-                if (_Property != null) {
-                    return _Property;
+                if (_Variable != null) {
+                    return _Variable;
                 }
-                return _Property ?? (_Property = new Property() { Repository = Repository, Node = this, Identifier = PropertyInputSlotId });
+                return _Variable ?? (_Variable = new Variable() { Repository = Repository, Node = this, Identifier = VariableInputSlotId });
+            }
+        }
+        
+        [Invert.Core.GraphDesigner.InputSlot("Value", false, SectionVisibility.Always, OrderIndex=0, IsNewRow=true)]
+        public virtual Value ValueInputSlot {
+            get {
+                if (Repository == null) {
+                    return null;
+                }
+                if (_Value != null) {
+                    return _Value;
+                }
+                return _Value ?? (_Value = new Value() { Repository = Repository, Node = this, Identifier = ValueInputSlotId });
+            }
+        }
+    }
+    
+    public partial interface ISetVariableConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class PropertyChangedNodeBase : HandlerNode {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
             }
         }
     }
@@ -638,6 +683,24 @@ namespace Invert.uFrame.ECS {
     }
     
     public partial interface IIntConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class ComponentDestroyedNodeBase : HandlerNode {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IComponentDestroyedConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
     public class Vector2NodeBase : LiteralNode {
@@ -970,41 +1033,5 @@ namespace Invert.uFrame.ECS {
     }
     
     public partial interface ISequenceItemConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
-    public class ComponentCreatedNodeBase : HandlerNode {
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface IComponentCreatedConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
-    }
-    
-    public class ComponentDestroyedNodeBase : HandlerNode {
-        
-        public override bool AllowMultipleInputs {
-            get {
-                return true;
-            }
-        }
-        
-        public override bool AllowMultipleOutputs {
-            get {
-                return true;
-            }
-        }
-    }
-    
-    public partial interface IComponentDestroyedConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
 }

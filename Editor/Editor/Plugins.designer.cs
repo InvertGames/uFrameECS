@@ -47,6 +47,8 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<AnyFalseNode> _AnyFalse;
         
+        private Invert.Core.GraphDesigner.NodeConfig<ComponentCreatedNode> _ComponentCreated;
+        
         private Invert.Core.GraphDesigner.NodeConfig<GetPropertyNode> _GetProperty;
         
         private Invert.Core.GraphDesigner.NodeConfig<SetVariableNode> _SetVariable;
@@ -66,6 +68,8 @@ namespace Invert.uFrame.ECS {
         private Invert.Core.GraphDesigner.NodeConfig<ComponentNode> _Component;
         
         private Invert.Core.GraphDesigner.NodeConfig<IntNode> _Int;
+        
+        private Invert.Core.GraphDesigner.NodeConfig<ComponentDestroyedNode> _ComponentDestroyed;
         
         private Invert.Core.GraphDesigner.NodeConfig<Vector2Node> _Vector2;
         
@@ -90,10 +94,6 @@ namespace Invert.uFrame.ECS {
         private Invert.Core.GraphDesigner.NodeConfig<AnyTrueNode> _AnyTrue;
         
         private Invert.Core.GraphDesigner.NodeConfig<SequenceItemNode> _SequenceItem;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<ComponentCreatedNode> _ComponentCreated;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<ComponentDestroyedNode> _ComponentDestroyed;
         
         public Invert.Core.GraphDesigner.NodeConfig<CustomActionNode> CustomAction {
             get {
@@ -221,6 +221,15 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<ComponentCreatedNode> ComponentCreated {
+            get {
+                return _ComponentCreated;
+            }
+            set {
+                _ComponentCreated = value;
+            }
+        }
+        
         public Invert.Core.GraphDesigner.NodeConfig<GetPropertyNode> GetProperty {
             get {
                 return _GetProperty;
@@ -308,6 +317,15 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _Int = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ComponentDestroyedNode> ComponentDestroyed {
+            get {
+                return _ComponentDestroyed;
+            }
+            set {
+                _ComponentDestroyed = value;
             }
         }
         
@@ -419,24 +437,6 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<ComponentCreatedNode> ComponentCreated {
-            get {
-                return _ComponentCreated;
-            }
-            set {
-                _ComponentCreated = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<ComponentDestroyedNode> ComponentDestroyed {
-            get {
-                return _ComponentDestroyed;
-            }
-            set {
-                _ComponentDestroyed = value;
-            }
-        }
-        
         public virtual Invert.Core.GraphDesigner.SelectTypeCommand GetOutputsSelectionCommand() {
             return new SelectTypeCommand() { IncludePrimitives = true, AllowNone = false };
         }
@@ -492,6 +492,8 @@ namespace Invert.uFrame.ECS {
             UserMethod.Color(NodeColor.Blue);
             AnyFalse = container.AddNode<AnyFalseNode,AnyFalseNodeViewModel,AnyFalseNodeDrawer>("AnyFalse");
             AnyFalse.Color(NodeColor.Orange);
+            ComponentCreated = container.AddNode<ComponentCreatedNode,ComponentCreatedNodeViewModel,ComponentCreatedNodeDrawer>("ComponentCreated");
+            ComponentCreated.Color(NodeColor.Red);
             GetProperty = container.AddNode<GetPropertyNode,GetPropertyNodeViewModel,GetPropertyNodeDrawer>("GetProperty");
             GetProperty.Color(NodeColor.Blue);
             SetVariable = container.AddNode<SetVariableNode,SetVariableNodeViewModel,SetVariableNodeDrawer>("SetVariable");
@@ -529,6 +531,8 @@ namespace Invert.uFrame.ECS {
             Component.Color(NodeColor.Yellow);
             Int = container.AddNode<IntNode,IntNodeViewModel,IntNodeDrawer>("Int");
             Int.Color(NodeColor.Purple);
+            ComponentDestroyed = container.AddNode<ComponentDestroyedNode,ComponentDestroyedNodeViewModel,ComponentDestroyedNodeDrawer>("ComponentDestroyed");
+            ComponentDestroyed.Color(NodeColor.Red);
             Vector2 = container.AddNode<Vector2Node,Vector2NodeViewModel,Vector2NodeDrawer>("Vector2");
             Vector2.Color(NodeColor.Purple);
             AllTrue = container.AddNode<AllTrueNode,AllTrueNodeViewModel,AllTrueNodeDrawer>("AllTrue");
@@ -539,7 +543,7 @@ namespace Invert.uFrame.ECS {
             Condition.Color(NodeColor.Orange);
             Action = container.AddNode<ActionNode,ActionNodeViewModel,ActionNodeDrawer>("Action");
             Action.Color(NodeColor.Green);
-            Handler = container.AddNode<HandlerNode,HandlerNodeViewModel,HandlerNodeDrawer>("Handler");
+            Handler = container.AddGraph<HandlerGraph, HandlerNode>("HandlerGraph");
             Handler.Color(NodeColor.Red);
             Handler.HasSubNode<SetVariableNode>();
             Handler.HasSubNode<UserMethodNode>();
@@ -561,8 +565,8 @@ namespace Invert.uFrame.ECS {
             System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
             System.Color(NodeColor.Blue);
             System.HasSubNode<PropertyChangedNode>();
-            System.HasSubNode<HandlerNode>();
             System.HasSubNode<ComponentCreatedNode>();
+            System.HasSubNode<HandlerNode>();
             System.HasSubNode<ComponentDestroyedNode>();
             Entity = container.AddNode<EntityNode,EntityNodeViewModel,EntityNodeDrawer>("Entity");
             Entity.Color(NodeColor.Gray);
@@ -572,10 +576,6 @@ namespace Invert.uFrame.ECS {
             AnyTrue.Color(NodeColor.Orange);
             SequenceItem = container.AddNode<SequenceItemNode,SequenceItemNodeViewModel,SequenceItemNodeDrawer>("SequenceItem");
             SequenceItem.Color(NodeColor.Green);
-            ComponentCreated = container.AddNode<ComponentCreatedNode,ComponentCreatedNodeViewModel,ComponentCreatedNodeDrawer>("ComponentCreated");
-            ComponentCreated.Color(NodeColor.Red);
-            ComponentDestroyed = container.AddNode<ComponentDestroyedNode,ComponentDestroyedNodeViewModel,ComponentDestroyedNodeDrawer>("ComponentDestroyed");
-            ComponentDestroyed.Color(NodeColor.Red);
             container.Connectable<VariableReferenceNode,Value>();
             container.Connectable<VariableReferenceNode,Variable>();
             container.Connectable<BoolExpressionNode,Expressions>();
@@ -586,7 +586,6 @@ namespace Invert.uFrame.ECS {
             container.Connectable<ActionNode,ActionNode>();
             container.Connectable<HandlerNode,SequenceItemNode>();
             container.Connectable<SequenceItemNode,SequenceItemNode>();
-            container.Connectable<PropertiesChildItem,Property>();
         }
     }
 }

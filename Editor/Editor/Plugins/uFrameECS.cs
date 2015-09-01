@@ -29,20 +29,21 @@ namespace Invert.uFrame.ECS {
         private static Dictionary<string, EventMetaInfo> _events;
             
         public override void Initialize(UFrameContainer container)
-        {
+        { 
             base.Initialize(container);
             Handler.AllowAddingInMenu = false;
 //            ComponentGroup.AllowAddingInMenu = false;
+            PropertyChanged.Name = "Property Changed Handler";
             UserMethod.AllowAddingInMenu = false;
             Action.AllowAddingInMenu = false;
             SequenceItem.AllowAddingInMenu = false;
             VariableReference.AllowAddingInMenu = false;
             CustomAction.Name = "Custom Action";
             System.Name = "System";
-            ComponentCreated.Name = "Component Created";
-            ComponentDestroyed.Name = "Component Destroyed";
+            ComponentCreated.Name = "Component Created Handler";
+            ComponentDestroyed.Name = "Component Destroyed Handler";
             Action.NodeColor.Literal = NodeColor.Green;
-            System.HasSubNode<TypeReferenceNode>();
+            //System.HasSubNode<TypeReferenceNode>();
             Module.HasSubNode<TypeReferenceNode>();
             //System.HasSubNode<ComponentNode>();
            // System.HasSubNode<ContextNode>(); 
@@ -52,7 +53,7 @@ namespace Invert.uFrame.ECS {
             container.RegisterDrawer<ItemViewModel<IContextVariable>, ItemDrawer>();
             container.AddItemFlag<ComponentsReference>("Multiple", UnityEngine.Color.blue);
             container.AddNodeFlag<EventNode>("Dispatcher");
-            System.HasSubNode<EnumNode>();
+            //System.HasSubNode<EnumNode>();
             container.Connectable<IContextVariable, IActionIn>();
             container.Connectable<IActionOut, IContextVariable>();
            // container.Connectable<ActionOut, ActionIn>(UnityEngine.Color.blue);
@@ -560,14 +561,18 @@ namespace Invert.uFrame.ECS {
             if (d != null)
             {
                 // When we've clicked nothing
-                if (d.DrawersAtMouse.Length < 1)
+                if (d.DrawersAtMouse.Length < 1) 
                 {
                     LastMouseEvent = mouseEvent;
-                    InvertApplication.SignalEvent<IWindowsEvents>(_ =>
+                    InvertApplication.SignalEvent<IEnableQuickAccess>(_=> _.EnableQuickAccess(new QuickAccessContext()
                     {
-                        _.ShowWindow("QuickAccessWindowFactory", "Add Node", null, mouseEvent.LastMousePosition,
-                            new Vector2(500, 600));
-                    });
+                        ContextType = typeof(IInsertQuickAccessContext)
+                    },mouseEvent.LastMousePosition));
+                    //InvertApplication.SignalEvent<IWindowsEvents>(_ =>
+                    //{
+                    //    _.ShowWindow("QuickAccessWindowFactory", "Add Node", null, mouseEvent.LastMousePosition,
+                    //        new Vector2(500, 600));
+                    //});
                 }
                 else
                 {
