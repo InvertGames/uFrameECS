@@ -406,69 +406,81 @@ namespace Invert.uFrame.ECS {
 
       
 
-        public void QuickAccessItemsEvents(QuickAccessContext context, List<IEnumerable<QuickAccessItem>> items)
+        public void QuickAccessItemsEvents(QuickAccessContext context, List<IItem> items)
         {
 
-            if (context.ContextType == typeof (IInsertQuickAccessContext))
-            {
-                items.Clear();
-                items.Add(QueryInsert(context));
-            }
-            if (context.ContextType == typeof (IConnectionQuickAccessContext))
-            {
-                if (InvertApplication.Container.Resolve<WorkspaceService>().CurrentWorkspace.CurrentGraph.CurrentFilter is HandlerNode)
-                {
-             
-                    items.Clear();
-                    items.Add(QueryConntectionActions(context));
-                }
-                
-            }
+//            if (context.ContextType == typeof (IInsertQuickAccessContext))
+//            {
+//                items.Clear();
+//                items.AddRange(QueryInsert(context));
+//            }
+//            if (context.ContextType == typeof (IConnectionQuickAccessContext))
+//            {
+//                if (InvertApplication.Container.Resolve<WorkspaceService>().CurrentWorkspace.CurrentGraph.CurrentFilter is HandlerNode)
+//                {
+//             
+//                    items.Clear();
+//                    items.AddRange(QueryConntectionActions(context));
+//                }
+//                
+//            }
         }
 
-        private IEnumerable<QuickAccessItem> QueryInsert(QuickAccessContext context)
+        private void QueryInsert(SelectionMenu menu)
         {
             var mousePosition = UnityEngine.Event.current.mousePosition;
             var currentGraph = InvertApplication.Container.Resolve<WorkspaceService>().CurrentWorkspace.CurrentGraph;
             if (currentGraph.CurrentFilter is SystemNode)
             {
+
+                var category = new SelectionMenuCategory()
+                {
+                    Title = "Events",
+                    Description = "This category includes events exposed by ECS as well as any custom events."
+                };
+
+                menu.AddItem(category);
+
                 foreach (var item in Events)
                 {
                     var item1 = item;
-                    var qa = new QuickAccessItem(item.Value.Category, item.Value.Attribute.Title, _ =>
+                    var qa = new SelectionMenuItem(item.Value, () =>
                     {
                         var eventNode = new HandlerNode()
                         {
-                            Meta = _ as EventMetaInfo
+                            Meta = item1.Value
                         };
-                        InvertGraphEditor.CurrentDiagramViewModel.AddNode(eventNode, LastMouseEvent.MousePosition);
-                    })
-                    {
-                        Item = item1.Value
-                    };
-                    yield return qa;
+                        InvertGraphEditor.CurrentDiagramViewModel.AddNode(eventNode, LastMouseEvent != null ? LastMouseEvent.MousePosition : new Vector2(0,0));
+                    });
+                    menu.AddItem(qa,category);
                 }
             }
             if (currentGraph.CurrentFilter is SequenceItemNode)
             {
                 var vm = InvertGraphEditor.CurrentDiagramViewModel;
 
+                var category = new SelectionMenuCategory()
+                {
+                    Title = "ECS Variables"
+                };
 
-                yield return new QuickAccessItem("Set", "Set Variable", _ => { vm.AddNode(new SetVariableNode(), vm.LastMouseEvent.LastMousePosition); });
+                menu.AddItem(category);
 
-                yield return new QuickAccessItem("Create", "Bool Variable", _ =>
+                menu.AddItem(new SelectionMenuItem("Set", "Set Variable", () => { vm.AddNode(new SetVariableNode(), vm.LastMouseEvent.LastMousePosition); }),category);
+
+                menu.AddItem(new SelectionMenuItem("Create", "Bool Variable", () =>
                 {
                     Execute(new CreateNodeCommand() { GraphData = vm.GraphData, Position = vm.LastMouseEvent.MouseDownPosition, NodeType = typeof(BoolNode)});
                    
-                });
-                yield return new QuickAccessItem("Create", "Vector2 Variable", _ => { vm.AddNode(new Vector2Node(), vm.LastMouseEvent.LastMousePosition); });
-                yield return new QuickAccessItem("Create", "Vector3 Variable", _ => { vm.AddNode(new Vector3Node(), vm.LastMouseEvent.LastMousePosition); });
-                yield return new QuickAccessItem("Create", "String Variable", _ => { vm.AddNode(new StringNode(), vm.LastMouseEvent.LastMousePosition); });
-                yield return new QuickAccessItem("Create", "Float Variable", _ => { vm.AddNode(new FloatNode(), vm.LastMouseEvent.LastMousePosition); });
-                yield return new QuickAccessItem("Create", "Integer Variable", _ => { vm.AddNode(new IntNode(), vm.LastMouseEvent.LastMousePosition); });
-                yield return new QuickAccessItem("Create", "Literal", _ => { vm.AddNode(new LiteralNode(), vm.LastMouseEvent.LastMousePosition); });
+                }),category);
+                menu.AddItem(new SelectionMenuItem("Create", "Vector2 Variable", () => { vm.AddNode(new Vector2Node(), vm.LastMouseEvent.LastMousePosition); }),category);
+                menu.AddItem(new SelectionMenuItem("Create", "Vector3 Variable", () => { vm.AddNode(new Vector3Node(), vm.LastMouseEvent.LastMousePosition); }),category);
+                menu.AddItem(new SelectionMenuItem("Create", "String Variable", () => { vm.AddNode(new StringNode(), vm.LastMouseEvent.LastMousePosition); }),category);
+                menu.AddItem(new SelectionMenuItem("Create", "Float Variable", () => { vm.AddNode(new FloatNode(), vm.LastMouseEvent.LastMousePosition); }),category);
+                menu.AddItem(new SelectionMenuItem("Create", "Integer Variable", () => { vm.AddNode(new IntNode(), vm.LastMouseEvent.LastMousePosition); }),category);
+                menu.AddItem(new SelectionMenuItem("Create", "Literal", () => { vm.AddNode(new LiteralNode(), vm.LastMouseEvent.LastMousePosition); }),category);
 
-  
+       
                 //var currentFilter = currentGraph.CurrentFilter as HandlerNode;
                 //foreach (var item in currentFilter.GetAllContextVariables())
                 //{
@@ -489,46 +501,58 @@ namespace Invert.uFrame.ECS {
                 //    };
                 //    yield return qa;
                 //}
-                foreach (var item in QueryActions(context))
-                {
-                    yield return item;
-                }
-
+                QueryActions(menu);
             }
           
           
         }
-        private IEnumerable<QuickAccessItem> QueryActions(QuickAccessContext context)
+        private void QueryActions(SelectionMenu menu)
         {
             var mousePosition = UnityEngine.Event.current.mousePosition;
             var diagramViewModel = InvertGraphEditor.CurrentDiagramViewModel;
 
-            foreach (var item in Actions)
+            var _categoryTitles = uFrameECS.Actions
+                .Where(_ => _.Value.Category != null)
+                .SelectMany(_ => _.Value.Category.Title)
+                .Distinct();
+
+            foreach (var categoryTitle in _categoryTitles)
             {
-                var qaItem = new QuickAccessItem(item.Value.CategoryPath.FirstOrDefault() ?? string.Empty, item.Value.TitleText, item.Value.TitleText, _ =>
+                var category = new SelectionMenuCategory()
                 {
-                    var actionInfo = _ as ActionMetaInfo;
-                    var node = new ActionNode()
-                    {
-                        Meta = actionInfo,
-                        //FilterId = diagramViewModel.GraphData.CurrentFilter.Identifier
-                    };
-                    node.Graph = diagramViewModel.GraphData;
-                    diagramViewModel.AddNode(node,mousePosition);
-                 
-                    node.IsSelected = true;
-                    node.Name = "";
-                })
-                {
-                    Item = item.Value
+                    Title = categoryTitle
                 };
-                yield return qaItem;
+                menu.AddItem(category);
+                var title = categoryTitle;
+
+                foreach (var action in   uFrameECS.Actions.Values.Where( _ => _.Category != null && _.Category.Title.Contains(title)))
+                {
+                    menu.AddItem(new SelectionMenuItem(action, () =>
+                            {
+                                var actionInfo = action as ActionMetaInfo;
+                                var node = new ActionNode
+                                {
+                                    Meta = actionInfo,
+                                    Graph = diagramViewModel.GraphData,
+                                    //FilterId = diagramViewModel.GraphData.CurrentFilter.Identifier
+                                };
+                                diagramViewModel.AddNode(node, mousePosition);
+                                node.IsSelected = true;
+                                node.Name = "";
+                            }), category);
+                }
+
             }
         }
-        private IEnumerable<QuickAccessItem> QueryConntectionActions(QuickAccessContext context)
+        private IEnumerable<IItem> QueryConntectionActions(QuickAccessContext context)
         {
             var connectionHandler = context.Data as ConnectionHandler;
             var diagramViewModel = connectionHandler.DiagramViewModel;
+
+            var category = new QuickAccessCategory()
+            {
+                Title = "Connections"
+            };
 
             foreach (var item in Actions)
             {
@@ -551,8 +575,9 @@ namespace Invert.uFrame.ECS {
                 {
                     Item= item.Value
                 };
-                yield return qaItem;
+                category.Add(qaItem);
             }
+            yield return category;
         }
 
         public void OnMouseDoubleClick(Drawer drawer, MouseEvent mouseEvent)
@@ -564,15 +589,15 @@ namespace Invert.uFrame.ECS {
                 if (d.DrawersAtMouse.Length < 1) 
                 {
                     LastMouseEvent = mouseEvent;
-                    InvertApplication.SignalEvent<IEnableQuickAccess>(_=> _.EnableQuickAccess(new QuickAccessContext()
-                    {
-                        ContextType = typeof(IInsertQuickAccessContext)
-                    },mouseEvent.LastMousePosition));
-                    //InvertApplication.SignalEvent<IWindowsEvents>(_ =>
-                    //{
-                    //    _.ShowWindow("QuickAccessWindowFactory", "Add Node", null, mouseEvent.LastMousePosition,
-                    //        new Vector2(500, 600));
-                    //});
+//                    InvertApplication.SignalEvent<IWindowsEvents>(_ =>
+//                    {
+//                        _.ShowWindow("QuickAccessWindowFactory", "Add Node", null, mouseEvent.LastMousePosition,
+//                            new Vector2(500, 600));
+//                    });
+
+                    ShowQuickAccess(mouseEvent);
+
+
                 }
                 else
                 {
@@ -581,6 +606,23 @@ namespace Invert.uFrame.ECS {
                 
             }
             
+        }
+
+        private void ShowQuickAccess(MouseEvent mouseEvent)
+        {
+
+            var menu = new SelectionMenu();
+
+            QueryInsert(menu);
+
+             InvertApplication.SignalEvent<IShowSelectionMenu>(_=>_.ShowSelectionMenu(menu,mouseEvent.LastMousePosition));
+
+//            InvertApplication.SignalEvent<IShowSelectionMenu>(_ => _.ShowSelectionMenu(new QuickAccessContext()
+//            {
+//                ContextType = typeof(IInsertQuickAccessContext),
+//                MouseData = mouseEvent
+//            }, mouseEvent.LastMousePosition));
+
         }
 
         public MouseEvent LastMouseEvent { get; set; }
@@ -621,6 +663,7 @@ namespace Invert.uFrame.ECS {
             });
             
         }
+
     }
 
     public class LibraryWorkspace : Workspace
@@ -632,7 +675,7 @@ namespace Invert.uFrame.ECS {
     {
         
     }
-    public class EventMetaInfo
+    public class EventMetaInfo : IItem
     {
         private List<EventFieldInfo> _members;
         private uFrameCategory _categoryAttribute;
@@ -679,6 +722,28 @@ namespace Invert.uFrame.ECS {
         }
 
         public IHandlerCodeWriter CodeWriter { get; set; }
+
+        public string Title
+        {
+            get { return Type.Name; }
+        }
+
+        public string Group
+        {
+            get { return Category; }
+        }
+
+        public string SearchTag
+        {
+            get { return Title + Category; }
+        }
+
+        public string Description
+        {
+            get { return ""; }
+            set { }
+        }
+
     }
 
     public class EventFieldInfo
@@ -703,12 +768,13 @@ namespace Invert.uFrame.ECS {
     }
 
 
-    public class ActionMetaInfo
+    public class ActionMetaInfo : IItem
     {
         private ActionDescription _description;
         private ActionTitle _title;
         private List<ActionFieldInfo> _actionFields;
         private uFrameCategory _category;
+        private string _searchTag;
         public Type Type { get; set; }
         public MethodInfo Method { get; set; }
         public ActionTitle Title
@@ -716,6 +782,15 @@ namespace Invert.uFrame.ECS {
             get { return _title ?? (_title = MetaAttributes.OfType<ActionTitle>().FirstOrDefault()); }
             set { _title = value; }
         }
+
+        public string Group { get; private set; }
+
+        public string SearchTag
+        {
+            get { return _searchTag ?? (_searchTag = TitleText + string.Join(" ",CategoryPath.ToArray())); }
+        }
+
+        string IItem.Description { get; set; }
 
         public string FullName
         {
@@ -747,6 +822,11 @@ namespace Invert.uFrame.ECS {
                 }
                 return Description.Description;
             }
+        }
+
+        string IItem.Title
+        {
+            get { return TitleText; }
         }
 
         public ActionDescription Description
