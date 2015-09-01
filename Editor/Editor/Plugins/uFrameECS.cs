@@ -527,9 +527,10 @@ namespace Invert.uFrame.ECS {
 
                 foreach (var action in   uFrameECS.Actions.Values.Where( _ => _.Category != null && _.Category.Title.Contains(title)))
                 {
+                    var action1 = action;
                     menu.AddItem(new SelectionMenuItem(action, () =>
                             {
-                                var actionInfo = action as ActionMetaInfo;
+                                var actionInfo = action1 as ActionMetaInfo;
                                 var node = new ActionNode
                                 {
                                     Meta = actionInfo,
@@ -541,7 +542,6 @@ namespace Invert.uFrame.ECS {
                                 node.Name = "";
                             }), category);
                 }
-
             }
         }
         private IEnumerable<IItem> QueryConntectionActions(QuickAccessContext context)
