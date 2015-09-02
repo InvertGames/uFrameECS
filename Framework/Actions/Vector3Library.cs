@@ -1,4 +1,5 @@
 using uFrame.Attributes;
+using uFrame.ECS;
 using UnityEngine;
 
 namespace uFrame.Actions
@@ -6,6 +7,19 @@ namespace uFrame.Actions
     [ActionLibrary, uFrameCategory("Vector3")]
     public static class Vector3Library
     {
+
+        [ActionTitle("Translate With Time")]
+        public static void TranslateWithTime(EcsComponent component, Vector3 direction)
+        {
+            component.transform.position += Time.deltaTime*direction;
+        }
+
+        [ActionTitle("Translate")]
+        public static void Translate(EcsComponent component, float x, float y, float z)
+        {
+            component.transform.position += new Vector3(x, y, z);
+        }
+
         [ActionTitle("Get Indices")]
         public static void GetIndices(Vector3 vector,out float x, out float y, out float z)
         {
