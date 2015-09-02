@@ -12,7 +12,14 @@ using Invert.Data;
     public class Vector2Node : Vector2NodeBase {
         private float _x;
         private float _y;
+        public override string Name
+        {
+            get { return "Vector2 Variable"; }
+            set
+            {
 
+            }
+        }
 
         [NodeProperty, JsonProperty]
         public float X

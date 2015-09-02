@@ -12,9 +12,23 @@ namespace Invert.uFrame.ECS
 
     public class VariableNode : VariableNodeBase, IContextVariable , ITypedItem
     {
+        public static int VariableCount;
+        private string _variableName;
+
+        public static string NewVariable
+        {
+            get { return string.Format("variable{0}", VariableCount++); }
+        }
+
+        public override string Name
+        {
+            get { return VariableType + " Variable"; }
+            set { base.Name = value; }
+        }
+
         public virtual object VariableType
         {
-            get { return typeof(int).Name; }
+            get { return typeof(int).FullName; }
         }
 
         public virtual string ValueExpression
@@ -62,7 +76,11 @@ namespace Invert.uFrame.ECS
         {
             get
             {
-                return Name;
+                if (string.IsNullOrEmpty(_variableName))
+                {
+                    _variableName = NewVariable;
+                }
+                return _variableName;
             }
             set { Name = value; }
         }

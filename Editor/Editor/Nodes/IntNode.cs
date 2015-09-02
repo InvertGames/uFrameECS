@@ -18,6 +18,15 @@ namespace Invert.uFrame.ECS {
             get { return typeof(int).FullName; }
         }
 
+        public override string Name
+        {
+            get { return "Integer Variable"; }
+            set
+            {
+                
+            }
+        }
+
         public override string ValueExpression
         {
             get { return Value.ToString(); }

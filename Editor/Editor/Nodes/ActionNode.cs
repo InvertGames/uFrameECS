@@ -172,7 +172,7 @@ namespace Invert.uFrame.ECS
         public string ValueExpression
         {
             get { return VariableName; }
-            
+
         }
 
         public ITypedItem Source { get; set; }
@@ -318,7 +318,6 @@ namespace Invert.uFrame.ECS
                     outputtedNodes.Add(actionNode);
                 }
             }
-
 
             if (Meta.Method == null)
             {
@@ -672,18 +671,18 @@ namespace Invert.uFrame.ECS
     {
         ActionFieldInfo ActionFieldInfo { get; set; }
         string VariableName { get; }
-        object VariableType { get;  }
+        object VariableType { get; }
 
     }
     public interface IActionIn : IActionItem
     {
         IContextVariable Item { get; }
-        
+
     }
 
     public interface IActionOut : IActionItem
     {
-        
+
     }
 
     public class GroupIn : SelectionFor<IMappingsConnectable, GroupSelection>, IActionIn
@@ -692,7 +691,7 @@ namespace Invert.uFrame.ECS
         {
             get { return false; }
         }
-        
+
         public override IEnumerable<IGraphItem> GetAllowed()
         {
             foreach (var item in Repository.AllOf<IMappingsConnectable>())
@@ -711,7 +710,7 @@ namespace Invert.uFrame.ECS
             }
         }
 
-        public object VariableType { get { return typeof (Type).Name; } }
+        public object VariableType { get { return typeof(Type).Name; } }
 
         public override string Name
         {
@@ -847,6 +846,75 @@ namespace Invert.uFrame.ECS
                     }
                 }
             }
+
+        }
+    }
+    public class VariableIn : SelectionFor<IContextVariable, VariableSelection>, IActionIn
+    {
+        public bool DoesAllowInputs;
+        public override bool AllowInputs
+        {
+            get { return DoesAllowInputs; }
+
+        }
+        public IVariableContextProvider Handler
+        {
+            get { return Node.Filter as IVariableContextProvider; }
+        }
+
+        public ActionFieldInfo ActionFieldInfo { get; set; }
+
+        public string VariableName
+        {
+            get
+            {
+                var item = Item;
+                if (item == null)
+                {
+                    return "...";
+                }
+                return item.VariableName;
+            }
+        }
+
+        public virtual object VariableType
+        {
+            get
+            {
+                var item = Item;
+                if (item == null)
+                    return "object";
+                return Item.VariableType;
+            }
+        }
+
+        //public override string Name
+        //{
+        //    get { return "Property"; }
+        //    set { base.Name = value; }
+        //}
+
+        public override IEnumerable<IGraphItem> GetAllowed()
+        {
+            //var action = this.Node as IVariableContextProvider;
+            //if (action != null)
+            //{
+            //    foreach (var item in action.GetContextVariables())
+            //    {
+            //        yield return item;
+            //    }
+            //}
+            //else
+            //{
+                var hn = Handler;
+                if (hn != null)
+                {
+                    foreach (var item in hn.GetContextVariables())
+                    {
+                        yield return item;
+                    }
+                }
+            //}
 
         }
     }

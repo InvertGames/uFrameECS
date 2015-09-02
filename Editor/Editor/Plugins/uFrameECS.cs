@@ -23,7 +23,8 @@ namespace Invert.uFrame.ECS {
         IPrefabNodeProvider, 
         IContextMenuQuery, IQuickAccessEvents, IOnMouseDoubleClickEvent,
         IExecuteCommand<AddSlotInputNodeCommand>,
-        IExecuteCommand<NewModuleWorkspace>
+        IExecuteCommand<NewModuleWorkspace>,
+        IQueryPossibleConnections
     { 
         private static Dictionary<string, ActionMetaInfo> _actions;
         private static Dictionary<string, EventMetaInfo> _events;
@@ -31,15 +32,17 @@ namespace Invert.uFrame.ECS {
         public override void Initialize(UFrameContainer container)
         { 
             base.Initialize(container);
+            container.RegisterGraphItem<HandlerNode, HandlerNodeViewModel, HandlerNodeDrawer>();
             Handler.AllowAddingInMenu = false;
 //            ComponentGroup.AllowAddingInMenu = false;
             PropertyChanged.Name = "Property Changed Handler";
             UserMethod.AllowAddingInMenu = false;
             Action.AllowAddingInMenu = false;
             SequenceItem.AllowAddingInMenu = false;
-            VariableReference.AllowAddingInMenu = false;
+//            VariableReference.AllowAddingInMenu = false;
             CustomAction.Name = "Custom Action";
             System.Name = "System";
+            Handler.Name = "Handler";
             ComponentCreated.Name = "Component Created Handler";
             ComponentDestroyed.Name = "Component Destroyed Handler";
             Action.NodeColor.Literal = NodeColor.Green;
@@ -47,8 +50,8 @@ namespace Invert.uFrame.ECS {
             Module.HasSubNode<TypeReferenceNode>();
             //System.HasSubNode<ComponentNode>();
            // System.HasSubNode<ContextNode>(); 
-            
 
+            Library.HasSubNode<TypeReferenceNode>();
             Module.HasSubNode<ComponentNode>();
             container.RegisterDrawer<ItemViewModel<IContextVariable>, ItemDrawer>();
             container.AddItemFlag<ComponentsReference>("Multiple", UnityEngine.Color.blue);
@@ -59,9 +62,9 @@ namespace Invert.uFrame.ECS {
            // container.Connectable<ActionOut, ActionIn>(UnityEngine.Color.blue);
             container.Connectable<ActionBranch, SequenceItemNode>();
             container.Connectable<IMappingsConnectable, HandlerIn>();
-            container.AddWorkspaceConfig<LibraryWorkspace>("Library").WithGraph<DataGraph>("Data Graph");
+            container.AddWorkspaceConfig<LibraryWorkspace>("Library").WithGraph<LibraryGraph>("Library Graph");
             container.AddWorkspaceConfig<BehaviourWorkspace>("Behaviour").WithGraph<SystemGraph>("System Graph");
-            VariableReference.Name = "Var";
+//            VariableReference.Name = "Var";
 
             LoadActions();
             LoadEvents();
@@ -511,6 +514,23 @@ namespace Invert.uFrame.ECS {
             var mousePosition = UnityEngine.Event.current.mousePosition;
             var diagramViewModel = InvertGraphEditor.CurrentDiagramViewModel;
 
+            GetActionsMenu(menu,_ =>
+            {
+                var actionInfo = _ as ActionMetaInfo;
+                var node = new ActionNode
+                {
+                    Meta = actionInfo,
+                    Graph = diagramViewModel.GraphData,
+                    //FilterId = diagramViewModel.GraphData.CurrentFilter.Identifier
+                };
+                diagramViewModel.AddNode(node, mousePosition);
+                node.IsSelected = true;
+                node.Name = "";
+            });
+        }
+
+        private static void GetActionsMenu(SelectionMenu menu, Action<ActionMetaInfo> onSelect)
+        {
             var _categoryTitles = uFrameECS.Actions
                 .Where(_ => _.Value.Category != null)
                 .SelectMany(_ => _.Value.Category.Title)
@@ -525,24 +545,49 @@ namespace Invert.uFrame.ECS {
                 menu.AddItem(category);
                 var title = categoryTitle;
 
-                foreach (var action in   uFrameECS.Actions.Values.Where( _ => _.Category != null && _.Category.Title.Contains(title)))
+                foreach (
+                    var action in   uFrameECS.Actions.Values.Where(_ => _.Category != null && _.Category.Title.Contains(title)))
                 {
                     var action1 = action;
                     menu.AddItem(new SelectionMenuItem(action, () =>
-                            {
-                                var actionInfo = action1 as ActionMetaInfo;
-                                var node = new ActionNode
-                                {
-                                    Meta = actionInfo,
-                                    Graph = diagramViewModel.GraphData,
-                                    //FilterId = diagramViewModel.GraphData.CurrentFilter.Identifier
-                                };
-                                diagramViewModel.AddNode(node, mousePosition);
-                                node.IsSelected = true;
-                                node.Name = "";
-                            }), category);
+                    {
+                        onSelect(action1);
+                    }), category);
                 }
             }
+            foreach (
+                var action in uFrameECS.Actions.Values.Where(_ => _.Category == null))
+            {
+                var action1 = action;
+                menu.AddItem(new SelectionMenuItem(action, () =>
+                {
+                    onSelect(action1);
+                }));
+            }
+        }
+
+        public void QueryPossibleConnections(SelectionMenu menu, DiagramViewModel diagramViewModel,
+            ConnectorViewModel startConnector,
+            Vector2 mousePosition)
+        {
+            if (startConnector.ConnectorFor.DataObject is IVariableContextProvider)
+            {
+                menu.Items.Clear();
+                GetActionsMenu(menu, _ =>
+                {
+                    var actionInfo = _ as ActionMetaInfo;
+                    var node = new ActionNode
+                    {
+                        Meta = actionInfo,
+                        Graph = diagramViewModel.GraphData,
+                    };
+                    diagramViewModel.AddNode(node, mousePosition);
+                    diagramViewModel.GraphData.AddConnection(startConnector.ConnectorFor.DataObject as IConnectable, node);
+                    node.IsSelected = true;
+                    node.Name = "";
+                });
+            }
+           
         }
         private IEnumerable<IItem> QueryConntectionActions(QuickAccessContext context)
         {
@@ -628,18 +673,18 @@ namespace Invert.uFrame.ECS {
         public MouseEvent LastMouseEvent { get; set; }
         public void Execute(AddSlotInputNodeCommand command)
         {
-            var referenceNode = new VariableReferenceNode()
-            {
+            //var referenceNode = new VariableReferenceNode()
+            //{
 
-                VariableId = command.Variable.Identifier,
-                HandlerId = command.Handler.Identifier
-            };
+            //    VariableId = command.Variable.Identifier,
+            //    HandlerId = command.Handler.Identifier
+            //};
             
-            command.DiagramViewModel.AddNode(referenceNode, command.Position);
-            var connectionData = command.DiagramViewModel.CurrentRepository.Create<ConnectionData>();
-            connectionData.InputIdentifier = command.Input.Identifier;
-            connectionData.OutputIdentifier = referenceNode.Identifier;
-            referenceNode.Name = command.Variable.VariableName;
+            //command.DiagramViewModel.AddNode(referenceNode, command.Position);
+            //var connectionData = command.DiagramViewModel.CurrentRepository.Create<ConnectionData>();
+            //connectionData.InputIdentifier = command.Input.Identifier;
+            //connectionData.OutputIdentifier = referenceNode.Identifier;
+            //referenceNode.Name = command.Variable.VariableName;
         }
 
         public void Execute(NewModuleWorkspace command)

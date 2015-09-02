@@ -12,7 +12,14 @@ namespace Invert.uFrame.ECS {
     
     public class StringNode : StringNodeBase {
         private string _value;
+        public override string Name
+        {
+            get { return "String Variable"; }
+            set
+            {
 
+            }
+        }
         [NodeProperty, JsonProperty]
         public string Value
         {

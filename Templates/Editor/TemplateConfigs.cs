@@ -473,8 +473,8 @@ namespace Invert.uFrame.ECS.Templates
         public void TemplateSetup()
         {
             this.Ctx.CurrentDeclaration.BaseTypes.Clear();
-            var method = Ctx.CurrentDeclaration.public_override_func(typeof(bool), "Execute");
-            method.Statements.Add(new CodeSnippetExpression("return base.Execute()"));
+            var method = Ctx.CurrentDeclaration.public_override_func(typeof(void), "Execute");
+            
         }
 
         public TemplateContext<CustomActionNode> Ctx { get; set; }

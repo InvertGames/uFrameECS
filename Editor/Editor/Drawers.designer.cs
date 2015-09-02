@@ -30,6 +30,13 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class LibraryNodeDrawerBase : GenericNodeDrawer<LibraryNode,LibraryNodeViewModel> {
+        
+        public LibraryNodeDrawerBase(LibraryNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
     public class StringLiteralNodeDrawerBase : GenericNodeDrawer<StringLiteralNode,StringLiteralNodeViewModel> {
         
         public StringLiteralNodeDrawerBase(StringLiteralNodeViewModel viewModel) : 
@@ -61,13 +68,6 @@ namespace Invert.uFrame.ECS {
     public class ModuleNodeDrawerBase : GenericNodeDrawer<ModuleNode,ModuleNodeViewModel> {
         
         public ModuleNodeDrawerBase(ModuleNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class VariableReferenceNodeDrawerBase : GenericNodeDrawer<VariableReferenceNode,VariableReferenceNodeViewModel> {
-        
-        public VariableReferenceNodeDrawerBase(VariableReferenceNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
@@ -117,13 +117,6 @@ namespace Invert.uFrame.ECS {
     public class ComponentCreatedNodeDrawerBase : GenericNodeDrawer<ComponentCreatedNode,ComponentCreatedNodeViewModel> {
         
         public ComponentCreatedNodeDrawerBase(ComponentCreatedNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class GetPropertyNodeDrawerBase : GenericNodeDrawer<GetPropertyNode,GetPropertyNodeViewModel> {
-        
-        public GetPropertyNodeDrawerBase(GetPropertyNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }
@@ -236,13 +229,6 @@ namespace Invert.uFrame.ECS {
     public class HandlerNodeDrawerBase : GenericNodeDrawer<HandlerNode,HandlerNodeViewModel> {
         
         public HandlerNodeDrawerBase(HandlerNodeViewModel viewModel) : 
-                base(viewModel) {
-        }
-    }
-    
-    public class SetPropertyNodeDrawerBase : GenericNodeDrawer<SetPropertyNode,SetPropertyNodeViewModel> {
-        
-        public SetPropertyNodeDrawerBase(SetPropertyNodeViewModel viewModel) : 
                 base(viewModel) {
         }
     }

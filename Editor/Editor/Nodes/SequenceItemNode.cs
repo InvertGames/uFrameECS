@@ -117,7 +117,7 @@ namespace Invert.uFrame.ECS {
             }
      
         }
-
+        
         //public override IEnumerable<IDiagramNode> FilterNodes
         //{
         //    get

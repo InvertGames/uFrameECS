@@ -19,7 +19,14 @@ namespace Invert.uFrame.ECS {
             get { return _value; }
             set { this.Changed("Value", ref _value, value); }
         }
+        public override string Name
+        {
+            get { return "Bool Variable"; }
+            set
+            {
 
+            }
+        }
         public override object VariableType
         {
             get { return typeof(bool).FullName; }

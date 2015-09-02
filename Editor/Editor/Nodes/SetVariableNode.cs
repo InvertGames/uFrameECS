@@ -12,10 +12,16 @@ namespace Invert.uFrame.ECS {
 
         private string _ValueInputSlotId;
 
-        private PropertyIn _Variable;
+        private VariableIn _Variable;
 
         private ValueIn _Value;
-        
+
+        public override string Name
+        {
+            get { return "Set Variable"; }
+            set { base.Name = value; }
+        }
+
         [Invert.Json.JsonProperty()]
         public virtual string VariableInputSlotId
         {
@@ -51,7 +57,7 @@ namespace Invert.uFrame.ECS {
         }
 
         [InputSlot("Variable")]
-        public virtual PropertyIn VariableInputSlot
+        public virtual VariableIn VariableInputSlot
         {
             get
             {
@@ -63,7 +69,7 @@ namespace Invert.uFrame.ECS {
                 {
                     return _Variable;
                 }
-                return _Variable ?? (_Variable = new PropertyIn()
+                return _Variable ?? (_Variable = new VariableIn()
                 {
                     Repository = Repository, Node = this, Identifier = VariableInputSlotId,
                     Name="Variable",
@@ -105,9 +111,9 @@ namespace Invert.uFrame.ECS {
                 errors.AddError("Variable and Value must be set.");
                 return;
             }
-            if (VariableInputSlot.Item.VariableType == ValueInputSlot.Item.VariableType)
+            if (VariableInputSlot.Item.VariableType.Equals(ValueInputSlot.Item.VariableType))
             {
-                errors.AddError("Variable types do not match.");
+                errors.AddError(string.Format("Variable types {0} and {1} do not match.", VariableInputSlot.Item.VariableType, ValueInputSlot.Item.VariableType));
             }
         }
 
@@ -131,9 +137,9 @@ namespace Invert.uFrame.ECS {
         }
     }
 
-    public class ValueIn : PropertyIn
+    public class ValueIn : VariableIn
     {
-        public PropertyIn Variable { get; set; }
+        public VariableIn Variable { get; set; }
 
         public override object VariableType
         {

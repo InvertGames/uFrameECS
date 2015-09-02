@@ -197,7 +197,7 @@ namespace Invert.uFrame.ECS
         {
             get { return GetAllContextVariables(); }
         }
-
+        
         public virtual int SetupOrder { get { return 0; } }
 
         public void Accept(IHandlerNodeVisitor visitor)
@@ -274,9 +274,10 @@ namespace Invert.uFrame.ECS
                 }
             }
         }
-
+    
         public override void WriteCode(TemplateContext ctx)
         {
+            VariableNode.VariableCount = 0;
             var handlerMethod = WriteHandler(ctx);
             var filterMethod = WriteHandlerFilter(ctx, handlerMethod);
             WriteEventSubscription(ctx, filterMethod, handlerMethod);

@@ -52,13 +52,10 @@ namespace Invert.uFrame.ECS.Templates
     public class HandlerCsharpVisitor : HandlerNodeVisitor
     {
         public TemplateContext _ { get; set; }
-        public int VariableCount;
+       
         private CodeMethodInvokeExpression _currentActionInvoker;
 
-        public string NewVariable
-        {
-            get { return string.Format("variable{0}", VariableCount++); }
-        }
+        
 
         public override void BeforeVisitAction(ActionNode actionNode)
         {
@@ -71,7 +68,11 @@ namespace Invert.uFrame.ECS.Templates
 
         public override void VisitAction(ActionNode actionNode)
         {
-            if (actionNode.Meta == null) return;
+            if (actionNode.Meta == null)
+            {
+                _._comment("Skipping {0}",actionNode.Name);
+                return;
+            }
             base.VisitAction(actionNode);
             _._comment("Visit {0}", actionNode.Meta.FullName);
             var methodInfo = actionNode.Meta.Method;
@@ -173,7 +174,7 @@ namespace Invert.uFrame.ECS.Templates
         public override void VisitSetVariable(SetVariableNode setVariableNode)
         {
             base.VisitSetVariable(setVariableNode);
-            var ctxVariable = setVariableNode.VariableInputSlot.InputFrom<IContextVariable>();
+            var ctxVariable = setVariableNode.VariableInputSlot.Item;
             if (ctxVariable == null) return;
 
             _._("{0} = ({1}){2}", ctxVariable.VariableName, ctxVariable.VariableType,

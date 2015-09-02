@@ -12,7 +12,14 @@ namespace Invert.uFrame.ECS {
     
     public class FloatNode : FloatNodeBase {
         private float _value;
+        public override string Name
+        {
+            get { return "Float Variable"; }
+            set
+            {
 
+            }
+        }
         public override object VariableType
         {
             get { return typeof (float).FullName; }

@@ -23,6 +23,8 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<DataNode> _Data;
         
+        private Invert.Core.GraphDesigner.NodeConfig<LibraryNode> _Library;
+        
         private Invert.Core.GraphDesigner.NodeConfig<StringLiteralNode> _StringLiteral;
         
         private Invert.Core.GraphDesigner.NodeConfig<PropertyNode> _Property;
@@ -32,8 +34,6 @@ namespace Invert.uFrame.ECS {
         private Invert.Core.GraphDesigner.NodeConfig<BoolNode> _Bool;
         
         private Invert.Core.GraphDesigner.NodeConfig<ModuleNode> _Module;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<VariableReferenceNode> _VariableReference;
         
         private Invert.Core.GraphDesigner.NodeConfig<StopTimerNode> _StopTimer;
         
@@ -48,8 +48,6 @@ namespace Invert.uFrame.ECS {
         private Invert.Core.GraphDesigner.NodeConfig<AnyFalseNode> _AnyFalse;
         
         private Invert.Core.GraphDesigner.NodeConfig<ComponentCreatedNode> _ComponentCreated;
-        
-        private Invert.Core.GraphDesigner.NodeConfig<GetPropertyNode> _GetProperty;
         
         private Invert.Core.GraphDesigner.NodeConfig<SetVariableNode> _SetVariable;
         
@@ -83,8 +81,6 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<HandlerNode> _Handler;
         
-        private Invert.Core.GraphDesigner.NodeConfig<SetPropertyNode> _SetProperty;
-        
         private Invert.Core.GraphDesigner.NodeConfig<SystemNode> _System;
         
         private Invert.Core.GraphDesigner.NodeConfig<EntityNode> _Entity;
@@ -110,6 +106,15 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _Data = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<LibraryNode> Library {
+            get {
+                return _Library;
+            }
+            set {
+                _Library = value;
             }
         }
         
@@ -155,15 +160,6 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _Module = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<VariableReferenceNode> VariableReference {
-            get {
-                return _VariableReference;
-            }
-            set {
-                _VariableReference = value;
             }
         }
         
@@ -227,15 +223,6 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _ComponentCreated = value;
-            }
-        }
-        
-        public Invert.Core.GraphDesigner.NodeConfig<GetPropertyNode> GetProperty {
-            get {
-                return _GetProperty;
-            }
-            set {
-                _GetProperty = value;
             }
         }
         
@@ -383,15 +370,6 @@ namespace Invert.uFrame.ECS {
             }
         }
         
-        public Invert.Core.GraphDesigner.NodeConfig<SetPropertyNode> SetProperty {
-            get {
-                return _SetProperty;
-            }
-            set {
-                _SetProperty = value;
-            }
-        }
-        
         public Invert.Core.GraphDesigner.NodeConfig<SystemNode> System {
             get {
                 return _System;
@@ -468,6 +446,12 @@ namespace Invert.uFrame.ECS {
             Data.HasSubNode<GroupNode>();
             Data.HasSubNode<EventNode>();
             Data.HasSubNode<ComponentNode>();
+            Library = container.AddGraph<LibraryGraph, LibraryNode>("LibraryGraph");
+            Library.Color(NodeColor.Yellow);
+            Library.HasSubNode<ComponentNode>();
+            Library.HasSubNode<GroupNode>();
+            Library.HasSubNode<CustomActionNode>();
+            Library.HasSubNode<EventNode>();
             StringLiteral = container.AddNode<StringLiteralNode,StringLiteralNodeViewModel,StringLiteralNodeDrawer>("StringLiteral");
             StringLiteral.Color(NodeColor.Gray);
             Property = container.AddNode<PropertyNode,PropertyNodeViewModel,PropertyNodeDrawer>("Property");
@@ -478,8 +462,6 @@ namespace Invert.uFrame.ECS {
             Bool.Color(NodeColor.Purple);
             Module = container.AddGraph<ModuleGraph, ModuleNode>("ModuleGraph");
             Module.Color(NodeColor.Black);
-            VariableReference = container.AddNode<VariableReferenceNode,VariableReferenceNodeViewModel,VariableReferenceNodeDrawer>("VariableReference");
-            VariableReference.Color(NodeColor.Purple);
             StopTimer = container.AddNode<StopTimerNode,StopTimerNodeViewModel,StopTimerNodeDrawer>("StopTimer");
             StopTimer.Color(NodeColor.Gray);
             AllFalse = container.AddNode<AllFalseNode,AllFalseNodeViewModel,AllFalseNodeDrawer>("AllFalse");
@@ -494,8 +476,6 @@ namespace Invert.uFrame.ECS {
             AnyFalse.Color(NodeColor.Orange);
             ComponentCreated = container.AddNode<ComponentCreatedNode,ComponentCreatedNodeViewModel,ComponentCreatedNodeDrawer>("ComponentCreated");
             ComponentCreated.Color(NodeColor.Red);
-            GetProperty = container.AddNode<GetPropertyNode,GetPropertyNodeViewModel,GetPropertyNodeDrawer>("GetProperty");
-            GetProperty.Color(NodeColor.Blue);
             SetVariable = container.AddNode<SetVariableNode,SetVariableNodeViewModel,SetVariableNodeDrawer>("SetVariable");
             SetVariable.Color(NodeColor.Gray);
             PropertyChanged = container.AddNode<PropertyChangedNode,PropertyChangedNodeViewModel,PropertyChangedNodeDrawer>("PropertyChanged");
@@ -547,11 +527,8 @@ namespace Invert.uFrame.ECS {
             Handler.Color(NodeColor.Red);
             Handler.HasSubNode<SetVariableNode>();
             Handler.HasSubNode<UserMethodNode>();
-            Handler.HasSubNode<GetPropertyNode>();
             Handler.HasSubNode<ActionNode>();
             Handler.HasSubNode<ComponentNode>();
-            Handler.HasSubNode<SetPropertyNode>();
-            Handler.HasSubNode<VariableReferenceNode>();
             Handler.HasSubNode<IntNode>();
             Handler.HasSubNode<PropertyNode>();
             Handler.HasSubNode<Vector2Node>();
@@ -560,8 +537,6 @@ namespace Invert.uFrame.ECS {
             Handler.HasSubNode<SequenceItemNode>();
             Handler.HasSubNode<Vector3Node>();
             Handler.HasSubNode<StringNode>();
-            SetProperty = container.AddNode<SetPropertyNode,SetPropertyNodeViewModel,SetPropertyNodeDrawer>("SetProperty");
-            SetProperty.Color(NodeColor.Blue);
             System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
             System.Color(NodeColor.Blue);
             System.HasSubNode<PropertyChangedNode>();
@@ -576,11 +551,8 @@ namespace Invert.uFrame.ECS {
             AnyTrue.Color(NodeColor.Orange);
             SequenceItem = container.AddNode<SequenceItemNode,SequenceItemNodeViewModel,SequenceItemNodeDrawer>("SequenceItem");
             SequenceItem.Color(NodeColor.Green);
-            container.Connectable<VariableReferenceNode,Value>();
-            container.Connectable<VariableReferenceNode,Variable>();
             container.Connectable<BoolExpressionNode,Expressions>();
             container.Connectable<BoolExpressionNode,GroupNode>();
-            container.Connectable<LiteralNode,Value>();
             container.Connectable<ComponentNode,RequireReference>();
             container.Connectable<ComponentNode,ComponentsReference>();
             container.Connectable<ActionNode,ActionNode>();
