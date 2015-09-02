@@ -221,6 +221,7 @@ namespace Invert.uFrame.ECS.Templates
             }
            
             base.VisitBranch(output);
+            _._("yield break");
             _.PopStatements();
             _.CurrentDeclaration.Members.Add(branchMethod);
 
