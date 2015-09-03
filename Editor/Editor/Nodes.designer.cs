@@ -398,7 +398,7 @@ namespace Invert.uFrame.ECS {
     public partial interface IComponentCreatedConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
-    public class SetVariableNodeBase : ActionNode {
+    public class SetVariableNodeBase : SequenceItemNode {
         
         public override bool AllowMultipleInputs {
             get {
@@ -871,6 +871,24 @@ namespace Invert.uFrame.ECS {
     }
     
     public partial interface IColorConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
+    }
+    
+    public class EnumValueNodeBase : LiteralNode {
+        
+        public override bool AllowMultipleInputs {
+            get {
+                return true;
+            }
+        }
+        
+        public override bool AllowMultipleOutputs {
+            get {
+                return true;
+            }
+        }
+    }
+    
+    public partial interface IEnumValueConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
     
     public class AnyTrueNodeBase : BoolExpressionNode {

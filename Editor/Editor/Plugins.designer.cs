@@ -87,6 +87,8 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<ColorNode> _Color;
         
+        private Invert.Core.GraphDesigner.NodeConfig<EnumValueNode> _EnumValue;
+        
         private Invert.Core.GraphDesigner.NodeConfig<AnyTrueNode> _AnyTrue;
         
         private Invert.Core.GraphDesigner.NodeConfig<SequenceItemNode> _SequenceItem;
@@ -397,6 +399,15 @@ namespace Invert.uFrame.ECS {
             }
         }
         
+        public Invert.Core.GraphDesigner.NodeConfig<EnumValueNode> EnumValue {
+            get {
+                return _EnumValue;
+            }
+            set {
+                _EnumValue = value;
+            }
+        }
+        
         public Invert.Core.GraphDesigner.NodeConfig<AnyTrueNode> AnyTrue {
             get {
                 return _AnyTrue;
@@ -448,10 +459,10 @@ namespace Invert.uFrame.ECS {
             Data.HasSubNode<ComponentNode>();
             Library = container.AddGraph<LibraryGraph, LibraryNode>("LibraryGraph");
             Library.Color(NodeColor.Yellow);
-            Library.HasSubNode<ComponentNode>();
             Library.HasSubNode<GroupNode>();
-            Library.HasSubNode<CustomActionNode>();
             Library.HasSubNode<EventNode>();
+            Library.HasSubNode<CustomActionNode>();
+            Library.HasSubNode<ComponentNode>();
             StringLiteral = container.AddNode<StringLiteralNode,StringLiteralNodeViewModel,StringLiteralNodeDrawer>("StringLiteral");
             StringLiteral.Color(NodeColor.Gray);
             Property = container.AddNode<PropertyNode,PropertyNodeViewModel,PropertyNodeDrawer>("Property");
@@ -537,6 +548,7 @@ namespace Invert.uFrame.ECS {
             Handler.HasSubNode<SequenceItemNode>();
             Handler.HasSubNode<Vector3Node>();
             Handler.HasSubNode<StringNode>();
+            Handler.HasSubNode<EnumValueNode>();
             System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
             System.Color(NodeColor.Blue);
             System.HasSubNode<PropertyChangedNode>();
@@ -547,6 +559,8 @@ namespace Invert.uFrame.ECS {
             Entity.Color(NodeColor.Gray);
             Color = container.AddNode<ColorNode,ColorNodeViewModel,ColorNodeDrawer>("Color");
             Color.Color(NodeColor.Purple);
+            EnumValue = container.AddNode<EnumValueNode,EnumValueNodeViewModel,EnumValueNodeDrawer>("EnumValue");
+            EnumValue.Color(NodeColor.Purple);
             AnyTrue = container.AddNode<AnyTrueNode,AnyTrueNodeViewModel,AnyTrueNodeDrawer>("AnyTrue");
             AnyTrue.Color(NodeColor.Orange);
             SequenceItem = container.AddNode<SequenceItemNode,SequenceItemNodeViewModel,SequenceItemNodeDrawer>("SequenceItem");

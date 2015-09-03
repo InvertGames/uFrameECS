@@ -746,7 +746,7 @@ namespace Invert.uFrame.ECS
             {
                 if (ActionFieldInfo != null)
                 {
-                    return ActionFieldInfo.Type.FullName;
+                    return ActionFieldInfo.Type;
                 }
                 return "object";
                 //var item = Item;

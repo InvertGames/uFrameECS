@@ -254,6 +254,13 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class EnumValueNodeDrawerBase : GenericNodeDrawer<EnumValueNode,EnumValueNodeViewModel> {
+        
+        public EnumValueNodeDrawerBase(EnumValueNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
     public class AnyTrueNodeDrawerBase : GenericNodeDrawer<AnyTrueNode,AnyTrueNodeViewModel> {
         
         public AnyTrueNodeDrawerBase(AnyTrueNodeViewModel viewModel) : 

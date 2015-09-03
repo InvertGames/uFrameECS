@@ -64,7 +64,16 @@ namespace Invert.uFrame.ECS {
             container.Connectable<IMappingsConnectable, HandlerIn>();
             container.AddWorkspaceConfig<LibraryWorkspace>("Library").WithGraph<LibraryGraph>("Library Graph");
             container.AddWorkspaceConfig<BehaviourWorkspace>("Behaviour").WithGraph<SystemGraph>("System Graph");
+            EnumValue.Name = "Enum Value";
 //            VariableReference.Name = "Var";
+            
+            StaticLibraries.Add(typeof(Input));
+            StaticLibraries.Add(typeof(Math));
+            StaticLibraries.Add(typeof(Mathf));
+            StaticLibraries.Add(typeof(Vector2));
+            StaticLibraries.Add(typeof(Vector3));
+            StaticLibraries.Add(typeof(Physics));
+            StaticLibraries.Add(typeof(Physics2D));
 
             LoadActions();
             LoadEvents();
@@ -73,6 +82,7 @@ namespace Invert.uFrame.ECS {
             AddHandlerType(typeof (ComponentDestroyedNode));
             AddHandlerType(typeof (ComponentCreatedNode));
 
+        
 
         }
 
@@ -129,6 +139,12 @@ namespace Invert.uFrame.ECS {
             }
         }
 
+        public static HashSet<Type> StaticLibraries
+        {
+            get { return _staticLibraries ?? (_staticLibraries = new HashSet<Type>()); }
+            set { _staticLibraries = value; }
+        }
+
         private static void LoadActionLibrary()
         {
             foreach (var assembly in InvertApplication.CachedAssemblies)
@@ -136,11 +152,11 @@ namespace Invert.uFrame.ECS {
                 foreach (
                     var type in
                         assembly.GetTypes()
-                            .Where(p => p.IsSealed && p.IsSealed && p.IsDefined(typeof (ActionLibrary), true)))
+                            .Where(p => p.IsSealed && p.IsDefined(typeof (ActionLibrary), true) || StaticLibraries.Contains(p)))
                 {
                  
                     var category = type.GetCustomAttributes(typeof (uFrameCategory), true).OfType<uFrameCategory>().FirstOrDefault();
-                    var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static);
+                    var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static |  BindingFlags.Default);
                     foreach (var method in methods)
                     {
                         var actionInfo = new ActionMetaInfo()
@@ -149,13 +165,16 @@ namespace Invert.uFrame.ECS {
                             Category = category,
                             Method = method,
                         };
-                
+                        
                         actionInfo.MetaAttributes =
                             method.GetCustomAttributes(typeof (ActionMetaAttribute), true)
                                 .OfType<ActionMetaAttribute>()
                                 .ToArray();
 
-
+                        if (actionInfo.Category == null)
+                        {
+                            actionInfo.Category = new uFrameCategory(type.Name);
+                        }
                         var vars = method.GetParameters();
                         foreach (var parameter in vars)
                         {
@@ -241,6 +260,8 @@ namespace Invert.uFrame.ECS {
         }
 
         private IHandlerCodeWriter[] _codeWriters;
+        private static HashSet<Type> _staticLibraries;
+
         public IHandlerCodeWriter[] CodeWriters
         {
             get
@@ -713,7 +734,10 @@ namespace Invert.uFrame.ECS {
 
     public class LibraryWorkspace : Workspace
     {
-        
+        public override CompilationMode CompilationMode
+        {
+            get { return CompilationMode.Always; }
+        }
     }
 
     public class BehaviourWorkspace : Workspace
@@ -850,6 +874,9 @@ namespace Invert.uFrame.ECS {
         {
             get
             {
+                if (Title == null && Method != null)
+                    return Type.Name + " " + Method.Name;
+                
                 if (Title == null)
                     return Type.Name;
 

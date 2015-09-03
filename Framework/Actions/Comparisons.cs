@@ -5,9 +5,23 @@ using UnityEngine;
 
 namespace uFrame.Actions
 {
-    [ActionLibrary, uFrameCategory("Condition", "Floats")]
+    [ActionLibrary, uFrameCategory("Condition")]
     public static class Comparisons
     {
+        public static void InputTest(KeyCode code)
+        {
+            
+        }
+        [ActionTitle("Is True")]
+        public static void IsTrue(bool value, Action yes, Action no)
+        {
+            if (value)
+                if (yes != null) yes();
+                else
+                {
+                    if (no != null) no();
+                }
+        }
         [ActionTitle("Compare Floats")]
         public static bool CompareFloats(float a, float b)
         {

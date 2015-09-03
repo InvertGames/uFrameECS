@@ -6,6 +6,6 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class uFrameECSDocumentationProvider : uFrameECSDocumentationProviderBase {
-    }
+    //public class uFrameECSDocumentationProvider : uFrameECSDocumentationProviderBase {
+    //}
 }

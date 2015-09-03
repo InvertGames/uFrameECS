@@ -36,6 +36,7 @@ namespace Invert.uFrame.ECS.Templates
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<GroupNode, GroupTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<GroupNode, GroupItemTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<HandlerNode, HandlerTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<uFrameDatabaseConfig, DbLoaderTemplate>();
             //RegisteredTemplateGeneratorsFactory.RegisterTemplate<PropertyChangedNode, PropertyHandlerTemplate>();
             //            RegisteredTemplateGeneratorsFactory.RegisterTemplate<EntityNode, EntityTemplate>();
 
@@ -89,6 +90,56 @@ namespace Invert.uFrame.ECS.Templates
             Ctx._("EcsSystem system = null");
             Ctx._("system = this.AddSystem<{0}>()", Ctx.Data.Name);
          
+        }
+
+
+    }
+
+    [TemplateClass(TemplateLocation.DesignerFile, "{0}Loader"), AsPartial]
+    [RequiresNamespace("uFrame.Kernel")]
+    [RequiresNamespace("uFrame.ECS")]
+    [ForceBaseType(typeof(SystemLoader))]
+    public partial class DbLoaderTemplate : IClassTemplate<uFrameDatabaseConfig>, ITemplateCustomFilename
+    {
+        public string OutputPath
+        {
+            get { return Path2.Combine("Modules", Ctx.Data.Title + "Loader.cs"); }
+        }
+
+        public string Filename
+        {
+            get
+            {
+                return Path2.Combine("Modules", Ctx.Data.Title + "Loader.cs");
+            }
+        }
+
+        public bool CanGenerate
+        {
+            get { return Systems.Any(); }
+        }
+
+        public void TemplateSetup()
+        {
+            this.Ctx.CurrentDeclaration.Name = Ctx.Data.Title + "Loader";
+        }
+
+        public TemplateContext<uFrameDatabaseConfig> Ctx { get; set; }
+        public IEnumerable<SystemNode> Systems
+        {
+            get { return Ctx.Data.Database.AllOf<SystemNode>(); }
+        }
+
+        [GenerateMethod, AsOverride]
+        public void Load()
+        {
+            Ctx._("EcsSystem system = null");
+            foreach (var system in Systems)
+            {
+                Ctx._("system = this.AddSystem<{0}>()", system.Name);
+            }
+           
+
         }
 
 

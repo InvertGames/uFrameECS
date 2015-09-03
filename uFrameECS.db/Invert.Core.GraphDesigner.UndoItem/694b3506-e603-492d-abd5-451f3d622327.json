@@ -1,0 +1,8 @@
+{
+	"Identifier":"694b3506-e603-492d-abd5-451f3d622327"	, 
+	"Time":"9/3/2015 3:52:07 AM"	, 
+	"Group":"3527"	, 
+	"DataRecordId":"1ae3a5ea-f6bb-41f7-aeb8-bca08a055e55"	, 
+	"Type":2	, 
+	"RecordType":"Invert.Core.GraphDesigner.Workspace, Invert.Core.GraphDesigner, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null"	, 
+	"Data":"{\r\n\t\"Identifier\":\"1ae3a5ea-f6bb-41f7-aeb8-bca08a055e55\"\t, \r\n\t\"Name\":\"ECS Design\"\t, \r\n\t\"CurrentGraphId\":\"5f0e4e63-96ee-4a23-b1e3-4cfce292bfaf\"}\r\n"}
