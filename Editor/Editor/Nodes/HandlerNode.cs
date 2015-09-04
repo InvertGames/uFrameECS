@@ -17,6 +17,11 @@ namespace Invert.uFrame.ECS
 
     public class HandlerNode : HandlerNodeBase, ISetupCodeWriter, ICodeOutput, ISequenceNode, ISystemGroupProvider
     {
+        public override bool AllowMultipleOutputs
+        {
+            get { return false; }
+        }
+
         public override bool AllowExternalNodes
         {
             get { return false; }

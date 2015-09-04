@@ -14,7 +14,10 @@ namespace uFrame.ECS
             if (colliderEntity == null) return;
             ColliderId = colliderEntity.EntityId;
             EntityId = gameObject.GetComponent<Entity>().EntityId;
+            CollisionData = coll;
             Publish(this);
         }
+
+        public Collision CollisionData { get; set; }
     }
 }

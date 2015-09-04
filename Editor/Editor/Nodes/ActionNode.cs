@@ -717,6 +717,21 @@ namespace Invert.uFrame.ECS
 
     public class ActionIn : SelectionFor<IContextVariable, VariableSelection>, IActionIn
     {
+        private string _variableName;
+
+        public override bool CanInputFrom(IConnectable output)
+        {
+            var outputVariable = output as IContextVariable;
+            if (outputVariable != null)
+            {
+                if (!outputVariable.VariableType.IsAssignableTo(VariableType))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public ActionFieldInfo ActionFieldInfo { get; set; }
 
         public string VariableName
@@ -724,8 +739,7 @@ namespace Invert.uFrame.ECS
             get
             {
 
-                var actionNode = Node as ActionNode;
-                return actionNode.Meta.Type.Name + "_" + Name;
+                return _variableName ?? (_variableName = VariableNode.NewVariable);
             }
         }
 
@@ -757,7 +771,7 @@ namespace Invert.uFrame.ECS
             if (action != null)
             {
 
-                foreach (var item in action.GetAllContextVariables())
+                foreach (var item in action.GetAllContextVariables().Where(p=>p.VariableType.IsAssignableTo(VariableType)))
                     yield return item;
             }
             else
@@ -917,6 +931,15 @@ namespace Invert.uFrame.ECS
     }
     public class ActionOut : SingleOutputSlot<IContextVariable>, IActionOut, IContextVariable
     {
+        private string _variableName;
+
+        public override bool CanOutputTo(IConnectable input)
+        {
+
+            return true;
+            return base.CanOutputTo(input);
+        }
+
         public ActionFieldInfo ActionFieldInfo { get; set; }
         public override string Name
         {
@@ -927,6 +950,7 @@ namespace Invert.uFrame.ECS
         {
             get
             {
+                return _variableName ?? (_variableName = VariableNode.NewVariable);
                 var actionNode = Node as ActionNode;
                 var str = actionNode.Meta.Type.Name + "_";
                 if (actionNode.Meta.Method != null)

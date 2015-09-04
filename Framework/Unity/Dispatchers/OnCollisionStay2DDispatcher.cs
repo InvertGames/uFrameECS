@@ -3,21 +3,21 @@ using UnityEngine;
 
 namespace uFrame.ECS
 {
-    [UFrameEventDispatcher("On Collision Enter"), uFrameCategory("Unity Messages")]
-    public class OnCollisionEnterDispatcher : EcsDispatcher
+    [UFrameEventDispatcher("On Collision Stay 2D"), uFrameCategory("Unity Messages")]
+    public class OnCollisionStay2DDispatcher : EcsDispatcher
     {
-        [uFrameEventMapping("Collider")]
         public int ColliderId { get; set; }
-        public Collision CollisionData { get; set; }
-        public void OnCollisionEnter(Collision coll)
+        public void OnCollisionStay2D(Collision2D coll)
         {
 
             var colliderEntity = coll.collider.gameObject.GetComponent<Entity>();
             if (colliderEntity == null) return;
             ColliderId = colliderEntity.EntityId;
-            EntityId = gameObject.GetComponent<Entity>().EntityId;
             CollisionData = coll;
+            EntityId = gameObject.GetComponent<Entity>().EntityId;
             Publish(this);
         }
+
+        public Collision2D CollisionData { get; set; }
     }
 }

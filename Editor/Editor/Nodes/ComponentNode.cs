@@ -36,6 +36,19 @@ namespace Invert.uFrame.ECS {
         //{
             
         //}
+        
+        public override bool IsAssignableTo(ITypeInfo info)
+        {
+            var systemInfo = info as SystemTypeInfo;
+            if (systemInfo != null)
+            {
+                if (systemInfo.SystemType == typeof (MonoBehaviour)) return true;
+                if (systemInfo.SystemType.Name == "IEcsComponent") return true;
+                if (systemInfo.SystemType.Name == "EcsComponent") return true;
+                if (systemInfo.SystemType.Name == "uFrameComponent") return true;
+            }
+            return base.IsAssignableTo(info);
+        }
 
         public IEnumerable<IContextVariable> GetVariables(IFilterInput input)
         {

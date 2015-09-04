@@ -174,11 +174,11 @@ namespace Invert.uFrame.ECS.Templates
             //if (output.Name == "Result") return;
             _.TryAddNamespace(output.ActionFieldInfo.Type.Namespace);
             var varDecl = new CodeMemberField(
-                output.VariableType.ToString().Replace("&", "").ToCodeReference(), 
+                output.VariableType.FullName.Replace("&", "").ToCodeReference(), 
                 output.VariableName
                 )
             {
-                InitExpression = new CodeSnippetExpression(string.Format("default( {0} )", output.VariableType.ToString().Replace("&", "")))
+                InitExpression = new CodeSnippetExpression(string.Format("default( {0} )", output.VariableType.FullName.Replace("&", "")))
             };
             _.CurrentDeclaration.Members.Add(varDecl);
             //var variableReference = output.OutputTo<IContextVariable>();
@@ -259,11 +259,11 @@ namespace Invert.uFrame.ECS.Templates
                 if (input.ActionFieldInfo.IsGenericArgument) return;
                 _.TryAddNamespace(input.ActionFieldInfo.Type.Namespace);
                 var varDecl = new CodeMemberField(
-                    input.VariableType.ToCodeReference(),
+                    input.VariableType.FullName.ToCodeReference(),
                     input.VariableName
                     )
                 {
-                    InitExpression = new CodeSnippetExpression(string.Format("default( {0} )", input.VariableType))
+                    InitExpression = new CodeSnippetExpression(string.Format("default( {0} )", input.VariableType.FullName))
                 };
 
                 _.CurrentDeclaration.Members.Add(varDecl);

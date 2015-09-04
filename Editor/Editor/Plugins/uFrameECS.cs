@@ -60,6 +60,16 @@ namespace Invert.uFrame.ECS {
             //System.HasSubNode<EnumNode>();
             container.Connectable<IContextVariable, IActionIn>();
             container.Connectable<IActionOut, IContextVariable>();
+            //container.RegisterInstance<RegisteredConnection>(new RegisteredConnection()
+            //{
+            //    TInputType = typeof(IContextVariable),
+            //    TOutputType = typeof(IActionIn)
+            //}, "Context Variables");
+            //container.RegisterInstance<RegisteredConnection>(new RegisteredConnection()
+            //{
+            //    TInputType = typeof(IActionOut),
+            //    TOutputType = typeof(IContextVariable)
+            //}, "Context Variables2");
            // container.Connectable<ActionOut, ActionIn>(UnityEngine.Color.blue);
             container.Connectable<ActionBranch, SequenceItemNode>();
             container.Connectable<IMappingsConnectable, HandlerIn>();
@@ -617,7 +627,7 @@ namespace Invert.uFrame.ECS {
                 foreach (var item in contextVar.GetPropertyDescriptions())
                 {
                     var item1 = item;
-                    menu.AddItem(new SelectionMenuItem(contextVar.VariableName,item.VariableName, () =>
+                    menu.AddItem(new SelectionMenuItem(contextVar.ShortName, item.ShortName, () =>
                     {
                         var node = new PropertyNode()
                         {
@@ -784,6 +794,9 @@ namespace Invert.uFrame.ECS {
     {
         
     }
+
+    
+
     public class EventMetaInfo : IItem
     {
         private List<EventFieldInfo> _members;

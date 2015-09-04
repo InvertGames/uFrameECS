@@ -7,6 +7,7 @@ namespace uFrame.ECS
     public class OnTriggerEnterDispatcher : EcsDispatcher
     {
         public int ColliderId { get; set; }
+        public Collider ColliderData { get; set; }
         public void OnTriggerEnter(Collider coll)
         {
 
@@ -14,7 +15,10 @@ namespace uFrame.ECS
             if (colliderEntity == null) return;
             ColliderId = colliderEntity.EntityId;
             EntityId = gameObject.GetComponent<Entity>().EntityId;
+            ColliderData = coll;
             Publish(this);
         }
+
+     
     }
 }
