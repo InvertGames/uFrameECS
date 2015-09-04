@@ -141,7 +141,7 @@ namespace Invert.uFrame.ECS {
     {
         public VariableIn Variable { get; set; }
 
-        public override object VariableType
+        public override ITypeInfo VariableType
         {
             get
             {

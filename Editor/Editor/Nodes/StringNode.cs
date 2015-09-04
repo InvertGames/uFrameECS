@@ -32,9 +32,9 @@ namespace Invert.uFrame.ECS {
             get { return string.Format("\"{0}\"", JSONNode.Escape(Value)); }
         }
 
-        public override object VariableType
+        public override ITypeInfo VariableType
         {
-            get { return typeof (string).FullName; }
+            get { return new SystemTypeInfo(typeof(string)); }
         }
 
         public override CodeExpression GetCreateExpression()

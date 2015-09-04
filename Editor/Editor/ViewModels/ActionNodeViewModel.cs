@@ -107,7 +107,7 @@ namespace Invert.uFrame.ECS {
                         IsOutput = false,
                         IsInput = true,
                         DataObject = item,
-                        IsNewLine = item.ActionFieldInfo.DisplayType.IsNewLine,
+                        IsNewLine =  item.ActionFieldInfo.DisplayType.IsNewLine,
                         DiagramViewModel = DiagramViewModel
                     };
                     ContentItems.Add(vm);

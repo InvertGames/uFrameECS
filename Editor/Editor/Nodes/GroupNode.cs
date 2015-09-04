@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -7,7 +9,14 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
 
 
-    public class GroupNode : GroupNodeBase,IRequireConnectable, IMappingsConnectable, IHandlerConnectable, IVariableContextProvider {
+    public class GroupNode : GroupNodeBase,
+        IRequireConnectable, 
+        IMappingsConnectable, 
+        IHandlerConnectable, 
+        IVariableContextProvider 
+    
+    {
+        
         public override bool AllowOutputs
         {
             get { return false; }
@@ -47,25 +56,54 @@ namespace Invert.uFrame.ECS {
             get { return string.Format("{0}.Components", SystemPropertyName); }
         }
 
+        public override IEnumerable<IMemberInfo> GetMembers()
+        {
+            foreach (var item in SelectComponents)
+            {
+                var info = item as ITypeInfo;
+                if (info != null)
+                yield return new DefaultMemberInfo()
+                {
+                    MemberName = item.Name,
+                    MemberType = new SystemTypeInfo(typeof(MonoBehaviour),item)
+                };
+            }
+        }
+
         public IEnumerable<IContextVariable> GetVariables(IFilterInput input)
         {
-            foreach (var select in SelectComponents)
+
+            foreach (var select in GetMembers())
             {
 
-                yield return new ContextVariable(input.HandlerPropertyName, select.Name) { Repository = this.Repository, Node = this, VariableType = this.Name };
-                yield return new ContextVariable(input.HandlerPropertyName, select.Name, "EntityId") { Repository = this.Repository, Node = this, VariableType = "int" };
-                yield return new ContextVariable(input.HandlerPropertyName, select.Name, "Entity") { Repository = this.Repository, Node = this, VariableType = "uFrame.ECS.Entity" };
-
-                foreach (var item in select.PersistedItems.OfType<ITypedItem>())
+                yield return new ContextVariable(input.HandlerPropertyName, select.MemberName)
                 {
-                    yield return new ContextVariable(input.HandlerPropertyName, select.Name, item.Name)
+                    Repository = this.Repository, 
+                    Node = this, 
+                    VariableType = this
+                };
+                foreach (var item in select.MemberType.GetMembers())
+                {
+                    yield return new ContextVariable(input.HandlerPropertyName, select.MemberName, item.MemberName)
                     {
                         Repository = this.Repository,
-                        Source = item,
-                        VariableType = item.RelatedTypeName,
-                        Node = this
+                        Node = this,
+                        VariableType = this
                     };
                 }
+                //yield return new ContextVariable(input.HandlerPropertyName, select.Name, "EntityId") { Repository = this.Repository, Node = this, VariableType = "int" };
+                //yield return new ContextVariable(input.HandlerPropertyName, select.Name, "Entity") { Repository = this.Repository, Node = this, VariableType = "uFrame.ECS.Entity" };
+
+                //foreach (var item in select.PersistedItems.OfType<ITypedItem>())
+                //{
+                //    yield return new ContextVariable(input.HandlerPropertyName, select.Name, item.Name)
+                //    {
+                //        Repository = this.Repository,
+                //        Source = item,
+                //        VariableType = item.RelatedTypeName,
+                //        Node = this
+                //    };
+                //}
             }
         }
 
@@ -118,17 +156,18 @@ namespace Invert.uFrame.ECS {
         }
         public IEnumerable<IContextVariable> GetContextVariables()
         {
-            foreach (var item in Require)
-            {
-                yield return new ContextVariable(item.Name)
-                {
-                    Repository = this.Repository, 
-                    Node = this, 
-                    VariableType = this.Name, 
-                    Source = item.SourceItem as ITypedItem,
-                    Identifier = this.Identifier + ":" + this.Name
-                };
-            }
+            //foreach (var item in Require)
+            //{
+            //    yield return new ContextVariable(item.Name)
+            //    {
+            //        Repository = this.Repository, 
+            //        Node = this, 
+            //        VariableType = this.Name, 
+            //        Source = item.SourceItem as ITypedItem,
+            //        Identifier = this.Identifier + ":" + this.Name
+            //    };
+            //}
+            yield break;
         }
 
         public IVariableContextProvider Left

@@ -7,7 +7,20 @@ namespace uFrame.Actions
     [ActionLibrary, uFrameCategory("Vector3")]
     public static class Vector3Library
     {
+        public static Vector3 Multiply(Vector3 a, float b)
+        {
+            return a*b;
+        }
 
+        public static Vector3 Add(Vector3 a, Vector3 b)
+        {
+            return a + b;
+        }
+
+        public static Vector3 Subtract(Vector3 a, Vector3 b)
+        {
+            return a - b;
+        }
         [ActionTitle("Translate With Time")]
         public static void TranslateWithTime(EcsComponent component, Vector3 direction)
         {

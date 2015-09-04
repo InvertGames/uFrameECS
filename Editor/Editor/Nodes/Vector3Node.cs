@@ -1,5 +1,6 @@
 using System.CodeDom;
 using Invert.Json;
+using UnityEngine;
 
 namespace Invert.uFrame.ECS {
     using System;
@@ -41,9 +42,9 @@ namespace Invert.uFrame.ECS {
             get { return string.Format("new Vector3({0}, {1}, {2})", X, Y, Z); }
         }
 
-        public override object VariableType
+        public override ITypeInfo VariableType
         {
-            get { return "UnityEngine.Vector3"; }
+            get { return new SystemTypeInfo(typeof(Vector3)); }
         }
         public override CodeExpression GetCreateExpression()
         {

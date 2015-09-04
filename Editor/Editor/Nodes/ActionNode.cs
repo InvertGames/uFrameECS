@@ -3,10 +3,12 @@ using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Invert.Core;
 using Invert.Core.GraphDesigner;
 using Invert.Data;
 using Invert.Json;
+using JetBrains.Annotations;
 using uFrame.Attributes;
 using UnityEngine;
 
@@ -16,11 +18,12 @@ namespace Invert.uFrame.ECS
     {
         ITypedItem Source { get; }
         string VariableName { get; }
-        object VariableType { get; }
+        ITypeInfo VariableType { get; }
         string ShortName { get; }
         string ValueExpression { get; }
         IEnumerable<IContextVariable> GetPropertyDescriptions();
     }
+
 
     public interface IVariableExpressionItem
     {
@@ -32,7 +35,7 @@ namespace Invert.uFrame.ECS
     {
 
         private string _memberExpression;
-        private object _variableType;
+        private ITypeInfo _variableType;
         private List<object> _items;
 
         public override string Identifier
@@ -75,7 +78,7 @@ namespace Invert.uFrame.ECS
 
         public override string Title
         {
-            get { return MemberExpression; }
+            get { return ShortName; }
         }
 
         public override string Group
@@ -119,49 +122,31 @@ namespace Invert.uFrame.ECS
 
         public bool IsSubVariable { get; set; }
 
-        public object VariableType
+        public ITypeInfo VariableType
         {
-            get { return _variableType ?? (_variableType = Source.RelatedTypeName); }
+            get { return _variableType ?? (_variableType = (Source as ITypeInfo)); }
             set { _variableType = value; }
         }
 
-        public Type TypeInfo
-        {
-            get;
-            set;
-        }
+
         public IEnumerable<IContextVariable> GetPropertyDescriptions()
         {
-            if (TypeInfo != null)
+            var sourceNode = VariableType;
+            if (sourceNode != null)
             {
-                foreach (var item in TypeInfo.GetPropertyDescriptions(this))
+                foreach (var item in sourceNode.GetMembers())
                 {
-                    yield return item;
-                }
-            }
-            if (Source != null)
-            {
-                var sourceNode = Source as GraphNode;
-                if (sourceNode != null)
-                {
-                    foreach (var item in sourceNode.PersistedItems.OfType<PropertiesChildItem>())
+                    yield return new ContextVariable(VariableName, item.MemberName)
                     {
-                        yield return new ContextVariable(VariableName, item.Name)
-                        {
-                            Source = item,
-                            Repository = Repository,
-                            Name = item.Name,
-                            Node = this.Node,
-                            VariableType = item.RelatedTypeName
-                        };
-                    }
+                        Source = item as ITypedItem,
+                        Repository = Repository,
+                        Name = item.MemberName,
+                        Node = this.Node,
+                        VariableType = item.MemberType
+                    };
                 }
-                else // Reflection based
-                {
-
-                }
-
             }
+
         }
 
         public string ShortName
@@ -557,22 +542,26 @@ namespace Invert.uFrame.ECS
                 //// Get the generic contraints
                 //foreach (var item in meta.Type.GetGenericArguments())
                 //{
-                //    var typeConstraints = item.GetGenericParameterConstraints().Select(p=>p.Name);
-                //    if (!typeConstraints.Contains("IEcsComponent")) continue;
-                //    var variableIn = new GroupIn()
-                //    {
-
-                //    };
+                //    //var typeConstraints = item.GetGenericParameterConstraints().Select(p => p.Name);
+                //    var variableIn = new TypeSelection();
                 //    variableIn.Node = this;
                 //    variableIn.Repository = Repository;
-                //    variableIn.Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name;
+                //    variableIn.Identifier = this.Identifier + ":" + item.Name;
+                //    variableIn.ActionFieldInfo = new ActionFieldInfo()
+                //    {
+                //        DisplayType = new FieldDisplayTypeAttribute(item.Name,item.Name,true),
+                //        Name = item.Name,
+                //        Type = typeof(Type),
+                //        MetaAttributes = new ActionAttribute[] { }
+                //    };
+                //    yield return variableIn;
                 //}
 
                 foreach (var item in Meta.ActionFields.Where(p => p.DisplayType is In))
                 {
                     IActionIn variableIn;
 
-                    variableIn = new ActionIn();
+                    variableIn = item.IsGenericArgument ? (IActionIn)new TypeSelection() : new ActionIn();
                     variableIn.Node = this;
                     variableIn.Repository = Repository;
                     variableIn.ActionFieldInfo = item;
@@ -671,7 +660,7 @@ namespace Invert.uFrame.ECS
     {
         ActionFieldInfo ActionFieldInfo { get; set; }
         string VariableName { get; }
-        object VariableType { get; }
+        ITypeInfo VariableType { get; }
 
     }
     public interface IActionIn : IActionItem
@@ -685,46 +674,46 @@ namespace Invert.uFrame.ECS
 
     }
 
-    public class GroupIn : SelectionFor<IMappingsConnectable, GroupSelection>, IActionIn
-    {
-        public override bool AllowInputs
-        {
-            get { return false; }
-        }
+    //public class GroupIn : SelectionFor<IMappingsConnectable, GroupSelection>, IActionIn
+    //{
+    //    public override bool AllowInputs
+    //    {
+    //        get { return false; }
+    //    }
 
-        public override IEnumerable<IGraphItem> GetAllowed()
-        {
-            foreach (var item in Repository.AllOf<IMappingsConnectable>())
-            {
-                yield return item;
-            }
-        }
+    //    public override IEnumerable<IDataRecord> GetAllowed()
+    //    {
+    //        foreach (var item in Repository.AllOf<IMappingsConnectable>())
+    //        {
+    //            yield return item;
+    //        }
+    //    }
 
-        public ActionFieldInfo ActionFieldInfo { get; set; }
-        public string VariableName
-        {
-            get
-            {
-                var actionNode = Node as ActionNode;
-                return actionNode.Meta.Type.Name + "_" + Name;
-            }
-        }
+    //    public ActionFieldInfo ActionFieldInfo { get; set; }
+    //    public string VariableName
+    //    {
+    //        get
+    //        {
+    //            var actionNode = Node as ActionNode;
+    //            return actionNode.Meta.Type.Name + "_" + Name;
+    //        }
+    //    }
 
-        public object VariableType { get { return typeof(Type).Name; } }
+    //    public object VariableType { get { return typeof(Type).Name; } }
 
-        public override string Name
-        {
-            get { return ActionFieldInfo.Name; }
-            set { base.Name = value; }
-        }
+    //    public override string Name
+    //    {
+    //        get { return ActionFieldInfo.Name; }
+    //        set { base.Name = value; }
+    //    }
 
 
 
-        IContextVariable IActionIn.Item
-        {
-            get { return null; }
-        }
-    }
+    //    IContextVariable IActionIn.Item
+    //    {
+    //        get { return null; }
+    //    }
+    //}
 
     public class ActionIn : SelectionFor<IContextVariable, VariableSelection>, IActionIn
     {
@@ -740,15 +729,15 @@ namespace Invert.uFrame.ECS
             }
         }
 
-        public object VariableType
+        public ITypeInfo VariableType
         {
             get
             {
                 if (ActionFieldInfo != null)
                 {
-                    return ActionFieldInfo.Type;
+                    return new SystemTypeInfo(ActionFieldInfo.Type);
                 }
-                return "object";
+                return new SystemTypeInfo(typeof(object));
                 //var item = Item;
                 //if (item == null)
                 //    return "object";
@@ -762,7 +751,7 @@ namespace Invert.uFrame.ECS
             set { base.Name = value; }
         }
 
-        public override IEnumerable<IGraphItem> GetAllowed()
+        public override IEnumerable<IDataRecord> GetAllowed()
         {
             var action = this.Node as IVariableContextProvider;
             if (action != null)
@@ -805,13 +794,13 @@ namespace Invert.uFrame.ECS
             }
         }
 
-        public virtual object VariableType
+        public virtual ITypeInfo VariableType
         {
             get
             {
                 var item = Item;
                 if (item == null)
-                    return "object";
+                    return new SystemTypeInfo(typeof(object));
                 return Item.VariableType;
             }
         }
@@ -822,7 +811,7 @@ namespace Invert.uFrame.ECS
         //    set { base.Name = value; }
         //}
 
-        public override IEnumerable<IGraphItem> GetAllowed()
+        public override IEnumerable<IDataRecord> GetAllowed()
         {
             var action = this.Node as IVariableContextProvider;
             if (action != null)
@@ -877,13 +866,13 @@ namespace Invert.uFrame.ECS
             }
         }
 
-        public virtual object VariableType
+        public virtual ITypeInfo VariableType
         {
             get
             {
                 var item = Item;
                 if (item == null)
-                    return "object";
+                    return new SystemTypeInfo(typeof(object));
                 return Item.VariableType;
             }
         }
@@ -894,7 +883,7 @@ namespace Invert.uFrame.ECS
         //    set { base.Name = value; }
         //}
 
-        public override IEnumerable<IGraphItem> GetAllowed()
+        public override IEnumerable<IDataRecord> GetAllowed()
         {
             //var action = this.Node as IVariableContextProvider;
             //if (action != null)
@@ -906,14 +895,14 @@ namespace Invert.uFrame.ECS
             //}
             //else
             //{
-                var hn = Handler;
-                if (hn != null)
+            var hn = Handler;
+            if (hn != null)
+            {
+                foreach (var item in hn.GetContextVariables())
                 {
-                    foreach (var item in hn.GetContextVariables())
-                    {
-                        yield return item;
-                    }
+                    yield return item;
                 }
+            }
             //}
 
         }
@@ -982,34 +971,53 @@ namespace Invert.uFrame.ECS
 
         public bool IsSubVariable { get; set; }
 
-        public object VariableType
+        public ITypeInfo VariableType
         {
             get
             {
-
-                return ActionFieldInfo.Type.FullName;
+                if (ActionFieldInfo.Type.IsGenericParameter)
+                {
+                    var typeSelection = this.Node.GraphItems.OfType<TypeSelection>()
+                        .FirstOrDefault(
+                            p =>
+                                p.ActionFieldInfo.IsGenericArgument &&
+                                p.ActionFieldInfo.Name == ActionFieldInfo.Type.Name);
+                    if (typeSelection != null)
+                    {
+                        var item = typeSelection.Item as ITypeInfo;
+                        if (item != null)
+                        {
+                            return item;
+                        }
+                    }
+                }
+                return new SystemTypeInfo(ActionFieldInfo.Type);
             }
         }
 
+        public ActionNode ActionNode
+        {
+            get { return this.Node as ActionNode; }
+        }
         public IEnumerable<IContextVariable> GetPropertyDescriptions()
         {
-            return ActionFieldInfo.Type.GetPropertyDescriptions(this);
+            
+            return VariableType.GetPropertyDescriptions(this);
         }
     }
 
     public static class EcsReflectionExtensions
     {
-        public static IEnumerable<IContextVariable> GetPropertyDescriptions(this Type type, IContextVariable parent)
+        public static IEnumerable<IContextVariable> GetPropertyDescriptions(this ITypeInfo type, IContextVariable parent)
         {
             if (parent == null) throw new ArgumentNullException("parent");
-
-            foreach (var item in type.GetProperties())
+            foreach (var item in type.GetMembers())
             {
-                yield return new ContextVariable(parent.VariableName, item.Name)
+                yield return new ContextVariable(parent.VariableName, item.MemberName)
                 {
                     Repository = parent.Repository,
                     Node = parent.Node,
-                    TypeInfo = item.PropertyType
+                    VariableType = item.MemberType
                 };
             }
         }
@@ -1041,7 +1049,7 @@ namespace Invert.uFrame.ECS
             set { base.Name = value; }
         }
 
-        public object VariableType { get; set; }
+        public ITypeInfo VariableType { get; set; }
 
 
         public IEnumerable<IContextVariable> GetAllContextVariables()

@@ -27,9 +27,9 @@ namespace Invert.uFrame.ECS {
 
             }
         }
-        public override object VariableType
+        public override ITypeInfo VariableType
         {
-            get { return typeof(bool).FullName; }
+            get { return new SystemTypeInfo(typeof(bool)); }
         }
 
         public override string ValueExpression

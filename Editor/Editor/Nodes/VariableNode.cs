@@ -22,13 +22,13 @@ namespace Invert.uFrame.ECS
 
         public override string Name
         {
-            get { return VariableType + " Variable"; }
+            get { return VariableType + " Variable"; } 
             set { base.Name = value; }
         }
 
-        public virtual object VariableType
+        public virtual ITypeInfo VariableType
         {
-            get { return typeof(int).FullName; }
+            get { return new SystemTypeInfo(typeof(object)); }
         }
 
         public virtual string ValueExpression

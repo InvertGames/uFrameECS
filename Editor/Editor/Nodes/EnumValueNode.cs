@@ -15,9 +15,9 @@ namespace Invert.uFrame.ECS {
     public class EnumValueNode : EnumValueNodeBase {
         private int _value;
 
-        public override object VariableType
+        public override ITypeInfo VariableType
         {
-            get { return EnumType; }
+            get { return new SystemTypeInfo(EnumType); }
         }
 
         public IActionIn OutputItem

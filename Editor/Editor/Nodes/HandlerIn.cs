@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Invert.Core.GraphDesigner;
+using Invert.Data;
 
 namespace Invert.uFrame.ECS
 {
@@ -32,9 +33,9 @@ namespace Invert.uFrame.ECS
             get { return Name; }
         }
 
-        public override IEnumerable<IGraphItem> GetAllowed()
+        public override IEnumerable<IDataRecord> GetAllowed()
         {
-            return Repository.AllOf<IMappingsConnectable>().OfType<IGraphItem>();
+            return Repository.AllOf<IMappingsConnectable>().OfType<IDataRecord>();
         }
         public override bool AllowInputs
         {

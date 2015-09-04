@@ -16,12 +16,19 @@ namespace Invert.uFrame.ECS
             var actionOut = item as IActionOut;
             var actionIn = item as IActionIn;
             var setVariableNode = item as SetVariableNode;
+            var groupNode = item as ActionGroupNode;
             var handlerIn = item as HandlerIn;
             if (handlerIn != null)
             {
                 BeforeVisitHandlerIn(handlerIn);
                 VisitHandlerIn(handlerIn);
                 AfterVisitHandlerIn(handlerIn); return;
+            }
+            if (groupNode != null)
+            {
+                BeforeVisitGroup(groupNode);
+                VisitGroup(groupNode);
+                AfterVisitGroup(groupNode); return;
             }
             if (setVariableNode != null)
             {
@@ -67,6 +74,21 @@ namespace Invert.uFrame.ECS
                 return;
             }
                 
+        }
+
+        public virtual void AfterVisitGroup(ActionGroupNode groupNode)
+        {
+                
+        }
+
+        public virtual void VisitGroup(ActionGroupNode groupNode)
+        {
+           Visit(groupNode.Right);
+        }
+
+        public virtual void BeforeVisitGroup(ActionGroupNode groupNode)
+        {
+            
         }
 
         public virtual void AfterVisitHandlerIn(HandlerIn handlerIn)

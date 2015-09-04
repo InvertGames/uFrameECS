@@ -25,7 +25,8 @@ namespace Invert.uFrame.ECS {
         IExecuteCommand<AddSlotInputNodeCommand>,
         IExecuteCommand<NewModuleWorkspace>,
         IQueryPossibleConnections
-    { 
+    {
+        
         private static Dictionary<string, ActionMetaInfo> _actions;
         private static Dictionary<string, EventMetaInfo> _events;
             
@@ -81,7 +82,7 @@ namespace Invert.uFrame.ECS {
             AddHandlerType(typeof (PropertyChangedNode));
             AddHandlerType(typeof (ComponentDestroyedNode));
             AddHandlerType(typeof (ComponentCreatedNode));
-
+            AddHandlerType(typeof(ActionGroupNode));
         
 
         }
@@ -159,6 +160,8 @@ namespace Invert.uFrame.ECS {
                     var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static |  BindingFlags.Default);
                     foreach (var method in methods)
                     {
+                   
+
                         var actionInfo = new ActionMetaInfo()
                         {
                             Type = type,
@@ -175,7 +178,21 @@ namespace Invert.uFrame.ECS {
                         {
                             actionInfo.Category = new uFrameCategory(type.Name);
                         }
+                        var genericArguments = method.GetGenericArguments();
                         var vars = method.GetParameters();
+
+                        foreach (var item in genericArguments)
+                        {
+                            var fieldMetaInfo = new ActionFieldInfo()
+                            {
+                                Type = item.GetGenericParameterConstraints().FirstOrDefault(),
+                                Name = item.Name,
+                                DisplayType = new In(item.Name, item.Name),
+                                IsGenericArgument = true
+                            };
+                            actionInfo.ActionFields.Add(fieldMetaInfo);
+                        }
+
                         foreach (var parameter in vars)
                         {
                             var fieldMetaInfo = new ActionFieldInfo()
@@ -454,7 +471,8 @@ namespace Invert.uFrame.ECS {
         {
             var mousePosition = UnityEngine.Event.current.mousePosition;
             var currentGraph = InvertApplication.Container.Resolve<WorkspaceService>().CurrentWorkspace.CurrentGraph;
-            if (currentGraph.CurrentFilter is SystemNode)
+            var systemNode = currentGraph.CurrentFilter as SystemNode;
+            if (systemNode != null)
             {
 
                 var category = new SelectionMenuCategory()
@@ -472,7 +490,8 @@ namespace Invert.uFrame.ECS {
                     {
                         var eventNode = new HandlerNode()
                         {
-                            Meta = item1.Value
+                            Meta = item1.Value,
+                            Name = systemNode.Name + item1.Value.Title
                         };
                         InvertGraphEditor.CurrentDiagramViewModel.AddNode(eventNode, LastMouseEvent != null ? LastMouseEvent.MousePosition : new Vector2(0,0));
                     });
@@ -591,6 +610,27 @@ namespace Invert.uFrame.ECS {
             ConnectorViewModel startConnector,
             Vector2 mousePosition)
         {
+            var contextVar = startConnector.ConnectorFor.DataObject as IContextVariable;
+            if (contextVar != null)
+            {
+                menu.Items.Clear();
+                foreach (var item in contextVar.GetPropertyDescriptions())
+                {
+                    var item1 = item;
+                    menu.AddItem(new SelectionMenuItem(contextVar.VariableName,item.VariableName, () =>
+                    {
+                        var node = new PropertyNode()
+                        {
+                            Graph = diagramViewModel.GraphData,
+                        };
+                        diagramViewModel.AddNode(node, mousePosition);
+                        diagramViewModel.GraphData.AddConnection(startConnector.ConnectorFor.DataObject as IConnectable, node.Object);
+                        node.PropertySelection.SetInput(item1);
+                        node.IsSelected = true;
+                    }));
+                }
+            }
+
             if (startConnector.ConnectorFor.DataObject is IVariableContextProvider)
             {
                 menu.Items.Clear();
@@ -794,7 +834,11 @@ namespace Invert.uFrame.ECS {
 
         public string Title
         {
-            get { return Type.Name; }
+            get
+            {
+                if (SystemEvent) return (Attribute as SystemUFrameEvent).Title;
+                return Type.Name;
+            }
         }
 
         public string Group
@@ -957,6 +1001,8 @@ namespace Invert.uFrame.ECS {
             get { return _displayType ?? (_displayType = MetaAttributes.OfType<FieldDisplayTypeAttribute>().FirstOrDefault()); }
             set { _displayType = value; }
         }
+
+        public bool IsGenericArgument { get; set; }
     }
 
 

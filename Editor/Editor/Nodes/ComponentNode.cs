@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -30,6 +32,11 @@ namespace Invert.uFrame.ECS {
             get { return Name; }
         }
 
+        //public override IEnumerable<IMemberInfo> GetMembers()
+        //{
+            
+        //}
+
         public IEnumerable<IContextVariable> GetVariables(IFilterInput input)
         {
             yield return new ContextVariable(input.HandlerPropertyName)
@@ -37,31 +44,32 @@ namespace Invert.uFrame.ECS {
                 Repository = this.Repository,
                 Node = this,
                 Source = this,
-                VariableType = this.Name
+                VariableType = this,
+                //TypeInfo =  typeof(MonoBehaviour)
             };
             yield return new ContextVariable(input.HandlerPropertyName, "EntityId")
             {
                 Repository = this.Repository,
                 Node = this,
-                VariableType = "int",
+                VariableType = new SystemTypeInfo(typeof(int)),
 
             };
             yield return new ContextVariable(input.HandlerPropertyName, "Entity")
             {
                 Repository = this.Repository,
                 Node = this,
-                VariableType = "uFrameECS.Entity",
-                
+                VariableType = new SystemTypeInfo(typeof(MonoBehaviour)),
+                //TypeInfo = typeof(MonoBehaviour)
             };
 
-            foreach (var item in PersistedItems.OfType<ITypedItem>())
+            foreach (var item in PersistedItems.OfType<IMemberInfo>())
             {
-                yield return new ContextVariable(input.HandlerPropertyName,item.Name)
+                yield return new ContextVariable(input.HandlerPropertyName,item.MemberName)
                 {
                     Repository = this.Repository,
                     Node = this,
-                    Source = item,
-                    VariableType = item.RelatedTypeName
+                    Source = item as ITypedItem,
+                    VariableType = item.MemberType
                 };
             }
         }
@@ -90,6 +98,8 @@ namespace Invert.uFrame.ECS {
         {
             return Properties;
         }
+
+       
     }
     
     public partial interface IComponentConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

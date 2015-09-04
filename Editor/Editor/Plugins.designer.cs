@@ -31,6 +31,8 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<StringNode> _String;
         
+        private Invert.Core.GraphDesigner.NodeConfig<ActionGroupNode> _ActionGroup;
+        
         private Invert.Core.GraphDesigner.NodeConfig<BoolNode> _Bool;
         
         private Invert.Core.GraphDesigner.NodeConfig<ModuleNode> _Module;
@@ -144,6 +146,15 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _String = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<ActionGroupNode> ActionGroup {
+            get {
+                return _ActionGroup;
+            }
+            set {
+                _ActionGroup = value;
             }
         }
         
@@ -469,6 +480,8 @@ namespace Invert.uFrame.ECS {
             Property.Color(NodeColor.Blue);
             String = container.AddNode<StringNode,StringNodeViewModel,StringNodeDrawer>("String");
             String.Color(NodeColor.Purple);
+            ActionGroup = container.AddNode<ActionGroupNode,ActionGroupNodeViewModel,ActionGroupNodeDrawer>("ActionGroup");
+            ActionGroup.Color(NodeColor.Red);
             Bool = container.AddNode<BoolNode,BoolNodeViewModel,BoolNodeDrawer>("Bool");
             Bool.Color(NodeColor.Purple);
             Module = container.AddGraph<ModuleGraph, ModuleNode>("ModuleGraph");
@@ -537,18 +550,18 @@ namespace Invert.uFrame.ECS {
             Handler = container.AddGraph<HandlerGraph, HandlerNode>("HandlerGraph");
             Handler.Color(NodeColor.Red);
             Handler.HasSubNode<SetVariableNode>();
-            Handler.HasSubNode<UserMethodNode>();
+            Handler.HasSubNode<ActionGroupNode>();
             Handler.HasSubNode<ActionNode>();
             Handler.HasSubNode<ComponentNode>();
             Handler.HasSubNode<IntNode>();
             Handler.HasSubNode<PropertyNode>();
+            Handler.HasSubNode<EnumValueNode>();
             Handler.HasSubNode<Vector2Node>();
             Handler.HasSubNode<FloatNode>();
             Handler.HasSubNode<BoolNode>();
             Handler.HasSubNode<SequenceItemNode>();
             Handler.HasSubNode<Vector3Node>();
             Handler.HasSubNode<StringNode>();
-            Handler.HasSubNode<EnumValueNode>();
             System = container.AddGraph<SystemGraph, SystemNode>("SystemGraph");
             System.Color(NodeColor.Blue);
             System.HasSubNode<PropertyChangedNode>();

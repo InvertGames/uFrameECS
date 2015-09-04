@@ -1,4 +1,5 @@
 using Invert.Json;
+using UnityEngine;
 
 namespace Invert.uFrame.ECS {
     using System;
@@ -35,9 +36,9 @@ using Invert.Data;
             set { this.Changed("Y", ref _y, value); }
         }
 
-        public override object VariableType
+        public override ITypeInfo VariableType
         {
-            get { return "UnityEngine.Vector2"; }
+            get { return new SystemTypeInfo(typeof(Vector2)); }
         }
         public override string ValueExpression
         {

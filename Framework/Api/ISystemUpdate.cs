@@ -7,4 +7,9 @@ namespace uFrame.ECS
     {
         void SystemUpdate();
     }
+    [SystemUFrameEvent("Fixed Update", "SystemFixedUpdate")]
+    public interface ISystemFixedUpdate
+    {
+        void SystemFixedUpdate();
+    }
 }

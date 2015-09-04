@@ -13,9 +13,9 @@ namespace Invert.uFrame.ECS {
     public class IntNode : IntNodeBase {
         private int _value;
 
-        public override object VariableType
+        public override ITypeInfo VariableType
         {
-            get { return typeof(int).FullName; }
+            get { return new SystemTypeInfo(typeof(int)); }
         }
 
         public override string Name

@@ -11,6 +11,7 @@ namespace uFrame.ECS
     {
         public List<EntityPrefabPool> Pools = new List<EntityPrefabPool>();
         private ISystemUpdate[] _items;
+        private ISystemFixedUpdate[] _itemsFixed;
 
         public override void Load()
         {
@@ -28,9 +29,26 @@ namespace uFrame.ECS
                     _items = uFrameKernel.Instance.Services.OfType<ISystemUpdate>().ToArray();
                 }
 
-                foreach (var item in _items)
+                for (int index = 0; index < _items.Length; index++)
                 {
+                    var item = _items[index];
                     item.SystemUpdate();
+                }
+            }
+        }
+        public void FixedUpdate()
+        {
+            if (uFrameKernel.IsKernelLoaded)
+            {
+                if (_itemsFixed == null)
+                {
+                    _itemsFixed = uFrameKernel.Instance.Services.OfType<ISystemFixedUpdate>().ToArray();
+                }
+
+                for (int index = 0; index < _itemsFixed.Length; index++)
+                {
+                    var item = _itemsFixed[index];
+                    item.SystemFixedUpdate();
                 }
             }
         }

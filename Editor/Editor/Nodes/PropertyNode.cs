@@ -89,7 +89,7 @@ namespace Invert.uFrame.ECS
            
         }
 
-        public object VariableType
+        public ITypeInfo VariableType
         {
             get
             {
@@ -153,7 +153,7 @@ namespace Invert.uFrame.ECS
 
         public PropertyIn ObjectSelector { get; set; }
 
-        public override IEnumerable<IGraphItem> GetAllowed()
+        public override IEnumerable<IDataRecord> GetAllowed()
         {
             var item = ObjectSelector.Item;
             if (item == null) yield break;
@@ -168,6 +168,48 @@ namespace Invert.uFrame.ECS
     {
 
     }
+
+
+    public class TypeSelection : SelectionFor<IClassTypeNode,TypeSelectionValue>, IActionIn
+    {
+        public override IEnumerable<IDataRecord> GetAllowed()
+        {
+            return Repository.AllOf<IClassTypeNode>().OfType<IDataRecord>();
+        }
+
+        public ActionFieldInfo ActionFieldInfo { get; set; }
+        public override string Name
+        {
+            get { return ActionFieldInfo.Name; }
+            set { base.Name = value; }
+        }
+        public string VariableName
+        {
+            get
+            {
+
+                var actionNode = Node as ActionNode;
+                return actionNode.Meta.Type.Name + "_" + Name;
+            }
+        }
+        public ITypeInfo VariableType { get { return new SystemTypeInfo(typeof(Type)); } }
+
+
+        IContextVariable IActionIn.Item
+        {
+            get { return null; }
+        }
+    }
+
+    public interface IQueryTypeSelection
+    {
+        void QueryTypeSelection(TypeSelection typeSelection, List<TypeSelectionValue> list);
+    }
+    public class TypeSelectionValue : InputSelectionValue
+    {
+
+    }
+
     public partial interface IPropertyConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable
     {
     }

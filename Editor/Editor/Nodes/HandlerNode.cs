@@ -199,6 +199,17 @@ namespace Invert.uFrame.ECS
         }
         
         public virtual int SetupOrder { get { return 0; } }
+        public override void Validate(List<ErrorInfo> errors)
+        {
+            base.Validate(errors);
+            if (Repository.All<HandlerNode>().Any(p =>p != this && p.Name == Name))
+            {
+                errors.AddError("This name is already being used",this, () =>
+                {
+                    Name = Name + Repository.All<HandlerNode>().Count();
+                });
+            }
+        }
 
         public void Accept(IHandlerNodeVisitor visitor)
         {
@@ -236,7 +247,8 @@ namespace Invert.uFrame.ECS
                 {
                     Repository = this.Repository,
                     Node = this,
-                    VariableType = evtNode.Type.FullName
+                    VariableType = new SystemTypeInfo(evtNode.Type),
+                    
                 };
 
                 foreach (var child in evtNode.Members)
@@ -245,7 +257,7 @@ namespace Invert.uFrame.ECS
                     {
                         Repository = this.Repository,
                         Node = this,
-                        VariableType = child.Type.FullName
+                        VariableType = new SystemTypeInfo(child.Type)
                     };
                 }
             }

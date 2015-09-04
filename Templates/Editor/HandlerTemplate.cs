@@ -78,16 +78,33 @@ namespace Invert.uFrame.ECS.Templates
             var methodInfo = actionNode.Meta.Method;
             if (methodInfo != null)
             {
-
+                var codeMethodReferenceExpression = new CodeMethodReferenceExpression(
+                    new CodeSnippetExpression(actionNode.Meta.Type.FullName),
+                    methodInfo.Name);
+                var genericInputVars = actionNode.GraphItems.OfType<TypeSelection>().Where(p => p.ActionFieldInfo.IsGenericArgument && p.Item != null).Select(p=>p.Item.Name).ToArray();
+                if (genericInputVars.Length > 0)
+                {
+                    codeMethodReferenceExpression = new CodeMethodReferenceExpression(
+                       new CodeSnippetExpression(actionNode.Meta.Type.FullName),
+                       string.Format("{0}<{1}>", methodInfo.Name, string.Join(",",genericInputVars)));
+                    
+                }   
                 _currentActionInvoker =
                     new CodeMethodInvokeExpression(
-                        new CodeMethodReferenceExpression(new CodeSnippetExpression(actionNode.Meta.Type.FullName),
-                            methodInfo.Name));
-
+                        codeMethodReferenceExpression);
+                
                 foreach (var input in actionNode.InputVars)
                 {
-                    _currentActionInvoker.Parameters.Add(
-                        new CodeSnippetExpression((input.ActionFieldInfo.Type.IsByRef ? "ref " : string.Empty) + string.Format("{0}", input.VariableName)));
+                    if (input.ActionFieldInfo.IsGenericArgument)
+                    {
+                   
+                    }
+                    else
+                    {
+                        _currentActionInvoker.Parameters.Add(
+                            new CodeSnippetExpression((input.ActionFieldInfo.Type.IsByRef ? "ref " : string.Empty) + string.Format("{0}", input.VariableName)));    
+                    }
+                    
                 }
                 ActionOut resultOut = null;
                 // The outputs that should be assigned to by the method
@@ -239,6 +256,7 @@ namespace Invert.uFrame.ECS.Templates
             //if (input.ActionFieldInfo == null) return;
             if (input.ActionFieldInfo != null)
             {
+                if (input.ActionFieldInfo.IsGenericArgument) return;
                 _.TryAddNamespace(input.ActionFieldInfo.Type.Namespace);
                 var varDecl = new CodeMemberField(
                     input.VariableType.ToCodeReference(),

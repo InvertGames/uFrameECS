@@ -93,6 +93,19 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class ActionGroupNodeViewModelBase : SequenceItemNodeViewModel {
+        
+        public ActionGroupNodeViewModelBase(ActionGroupNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
+        }
+    }
+    
     public class BoolNodeViewModelBase : LiteralNodeViewModel {
         
         public BoolNodeViewModelBase(BoolNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
