@@ -759,10 +759,9 @@ namespace Invert.uFrame.ECS
                     //                        _.ShowWindow("QuickAccessWindowFactory", "Add Node", null, mouseEvent.LastMousePosition,
                     //                            new Vector2(500, 600));
                     //                    });
-
+         
                     ShowQuickAccess(mouseEvent);
-
-
+ 
                 }
                 else
                 {
@@ -780,7 +779,7 @@ namespace Invert.uFrame.ECS
 
             QueryInsert(menu);
 
-            InvertApplication.SignalEvent<IShowSelectionMenu>(_ => _.ShowSelectionMenu(menu, mouseEvent.LastMousePosition));
+            InvertApplication.SignalEvent<IShowSelectionMenu>(_ => _.ShowSelectionMenu(menu, mouseEvent.LastMousePosition - mouseEvent.ContextScroll));
 
             //            InvertApplication.SignalEvent<IShowSelectionMenu>(_ => _.ShowSelectionMenu(new QuickAccessContext()
             //            {
