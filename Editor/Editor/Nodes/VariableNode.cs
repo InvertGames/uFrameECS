@@ -42,11 +42,11 @@ namespace Invert.uFrame.ECS
 
         public virtual CodeVariableDeclarationStatement GetDeclerationStatement()
         {
-            return new CodeVariableDeclarationStatement(VariableType.ToCodeReference(), VariableName, GetCreateExpression());
+            return new CodeVariableDeclarationStatement(VariableType.FullName.ToCodeReference(), VariableName, GetCreateExpression());
         }
         public virtual CodeMemberField GetFieldStatement()
         {
-            return new CodeMemberField(VariableType.ToCodeReference(), VariableName)
+            return new CodeMemberField(VariableType.FullName.ToCodeReference(), VariableName)
             {
                 InitExpression = GetCreateExpression()
             };

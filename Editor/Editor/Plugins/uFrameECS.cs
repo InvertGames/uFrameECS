@@ -633,7 +633,7 @@ namespace Invert.uFrame.ECS {
                         {
                             Graph = diagramViewModel.GraphData,
                         };
-                        diagramViewModel.AddNode(node, mousePosition);
+                        diagramViewModel.AddNode(node, mousePosition).Collapsed = true;
                         diagramViewModel.GraphData.AddConnection(startConnector.ConnectorFor.DataObject as IConnectable, node.Object);
                         node.PropertySelection.SetInput(item1);
                         node.IsSelected = true;

@@ -62,6 +62,8 @@ namespace Invert.uFrame.ECS
         {
             get
             {
+                if (Repository == null) return string.Empty;
+
                 var item = PropertySelection.Item;
                 if (item == null) return "Select A Property";
                 return item.ShortName;

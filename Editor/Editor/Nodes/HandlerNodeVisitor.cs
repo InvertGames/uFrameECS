@@ -10,6 +10,7 @@ namespace Invert.uFrame.ECS
 
         public void Visit(IDiagramNodeItem item)
         {
+            if (item == null) return;
             var handlerNode = item as ISequenceNode;
             var actionNode = item as ActionNode;
             var actionBranch = item as ActionBranch;
@@ -83,7 +84,12 @@ namespace Invert.uFrame.ECS
 
         public virtual void VisitGroup(ActionGroupNode groupNode)
         {
-           Visit(groupNode.Right);
+            var innerRight = groupNode.OutputsTo<SequenceItemNode>().FirstOrDefault(p => p.Filter == groupNode);
+            if (innerRight != null)
+                Visit(innerRight);
+            var outterRight = groupNode.OutputsTo<SequenceItemNode>().FirstOrDefault(p => p.Filter != groupNode);
+            if (outterRight != null)
+                Visit(outterRight);
         }
 
         public virtual void BeforeVisitGroup(ActionGroupNode groupNode)
@@ -114,7 +120,8 @@ namespace Invert.uFrame.ECS
 
         public virtual void VisitSetVariable(SetVariableNode setVariableNode)
         {
-   
+            
+            Visit(setVariableNode.Right);
         }
 
         private void AfterVisitSetVariable(SetVariableNode setVariableNode)

@@ -830,7 +830,7 @@ namespace Invert.uFrame.ECS
             var action = this.Node as IVariableContextProvider;
             if (action != null)
             {
-                foreach (var item in action.GetContextVariables())
+                foreach (var item in action.GetAllContextVariables())
                 {
                     if (item.Source is PropertiesChildItem)
                     {
@@ -843,7 +843,7 @@ namespace Invert.uFrame.ECS
                 var hn = Handler;
                 if (hn != null)
                 {
-                    foreach (var item in hn.GetContextVariables())
+                    foreach (var item in hn.GetAllContextVariables())
                     {
                         yield return item;
                     }
@@ -929,9 +929,14 @@ namespace Invert.uFrame.ECS
     {
 
     }
-    public class ActionOut : SingleOutputSlot<IContextVariable>, IActionOut, IContextVariable
+    public class ActionOut : MultiOutputSlot<IContextVariable>, IActionOut, IContextVariable
     {
         private string _variableName;
+
+        public override bool AllowMultipleOutputs
+        {
+            get { return true; }
+        }
 
         public override bool CanOutputTo(IConnectable input)
         {

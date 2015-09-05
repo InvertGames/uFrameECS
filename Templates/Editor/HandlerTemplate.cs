@@ -194,7 +194,7 @@ namespace Invert.uFrame.ECS.Templates
             var ctxVariable = setVariableNode.VariableInputSlot.Item;
             if (ctxVariable == null) return;
 
-            _._("{0} = ({1}){2}", ctxVariable.VariableName, ctxVariable.VariableType,
+            _._("{0} = ({1}){2}", ctxVariable.VariableName, ctxVariable.VariableType.FullName,
                 setVariableNode.ValueInputSlot.VariableName);
         }
 

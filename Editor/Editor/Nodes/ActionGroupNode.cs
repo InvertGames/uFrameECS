@@ -7,7 +7,9 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class ActionGroupNode : ActionGroupNodeBase {
+    public class ActionGroupNode : ActionGroupNodeBase, IVariableContextProvider {
+        
+        
         public override void WriteCode(TemplateContext ctx)
         {
             base.WriteCode(ctx);

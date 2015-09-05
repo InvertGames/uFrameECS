@@ -146,6 +146,30 @@ namespace uFrame.Actions
     }
 }
 
+[ActionLibrary, uFrameCategory("Rigidbody")]
+public static class RigidbodyLibrary
+{
+    [ActionTitle("Set Velocity")]
+    public static void SetVelocity(Rigidbody rigidBody, float x, float y, float z)
+    {
+        rigidBody.velocity = new Vector3(x,y,z);
+    }
+    [ActionTitle("Set Velocity With Speed")]
+    public static void SetVelocityWithSpeed(Rigidbody rigidBody, float x, float y, float z, float speed) 
+    {
+        rigidBody.velocity = new Vector3(x, y, z) * speed;
+    }
+    [ActionTitle("Set Rigidbody Position")]
+    public static void SetRigidbodyPosition(Rigidbody rigidBody, float x, float y, float z)
+    {
+        rigidBody.position = new Vector3(x, y, z);
+    }
+    [ActionTitle("Set Rigidbody Rotation")]
+    public static void SetRigidbodyRotation(Rigidbody rigidBody, float x, float y, float z)
+    {
+        rigidBody.rotation = Quaternion.Euler(x, y, z);
+    }
+}
 namespace uFrame.Actions.Attributes
 {
 
