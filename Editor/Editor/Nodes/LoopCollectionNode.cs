@@ -51,6 +51,12 @@ namespace Invert.uFrame.ECS {
         {
             yield return Item;
         }
+        
+        public override string Name
+        {
+            get { return "Loop Collection"; }
+            set { base.Name = value; }
+        }
 
         public VariableIn List
         {

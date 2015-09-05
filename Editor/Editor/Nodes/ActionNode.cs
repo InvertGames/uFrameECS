@@ -220,6 +220,11 @@ namespace Invert.uFrame.ECS
     {
         void WriteCode(IHandlerNodeVisitor visitor, TemplateContext ctx);
     }
+
+    public interface IVariableNameProvider
+    {
+        string GetNewVariableName(string prefix);
+    }
     public class ActionNode : ActionNodeBase, ICodeOutput, IConnectableProvider
     {
         public override bool AllowMultipleOutputs
@@ -236,6 +241,7 @@ namespace Invert.uFrame.ECS
             get { return Color.blue; }
         }
 
+
         public override IEnumerable<IGraphItem> GraphItems
         {
             get
@@ -249,18 +255,7 @@ namespace Invert.uFrame.ECS
 
         public string VarName
         {
-            get
-            {
-                var result = string.Empty;
-                for (int index = 0; index < Identifier.Length; index++)
-                {
-                    char c = Identifier[index];
-
-                    if (Char.IsLetter(c))
-                        result += c;
-                }
-                return result;
-            }
+            get { return VariableName; }
         }
 
         public override void WriteCode(IHandlerNodeVisitor visitor, TemplateContext ctx)
@@ -366,6 +361,7 @@ namespace Invert.uFrame.ECS
         private string _metaType;
         private IActionIn[] _inputVars;
         private IActionOut[] _outputVars;
+   
 
         public ActionMetaInfo Meta
         {
@@ -631,12 +627,16 @@ namespace Invert.uFrame.ECS
 
         public ActionFieldInfo ActionFieldInfo { get; set; }
 
+        public SequenceItemNode SequenceItem
+        {
+            get { return this.Node as SequenceItemNode; }
+        }
         public string VariableName
         {
             get
             {
 
-                return _variableName ?? (_variableName = VariableNode.GetNewVariable(Name));
+                return _variableName ?? (_variableName = SequenceItem.VariableName + "_" + this.Name);
             }
         }
 
@@ -857,7 +857,10 @@ namespace Invert.uFrame.ECS
     {
         private string _variableName;
         private ITypeInfo _variableType;
-
+        public SequenceItemNode SequenceItem
+        {
+            get { return this.Node as SequenceItemNode; }
+        }
         public override bool AllowMultipleOutputs
         {
             get { return true; }
@@ -884,7 +887,7 @@ namespace Invert.uFrame.ECS
         {
             get
             {
-                return _variableName ?? (_variableName = VariableNode.GetNewVariable(this.Name));
+                return _variableName ?? (_variableName = SequenceItem.VariableName + "_" + this.Name);
             }
         }
         public string ShortName
@@ -970,12 +973,15 @@ namespace Invert.uFrame.ECS
         {
             get { return Color.blue; }
         }
-
+        public SequenceItemNode SequenceItem
+        {
+            get { return this.Node as SequenceItemNode; }
+        }
         public string VariableName
         {
             get
             {
-                return _varName ?? (_varName = VariableNode.GetNewVariable(Name));
+                return _varName ?? (_varName = SequenceItem.VariableName + "_" + this.Name);
             }
         }
         public ActionFieldInfo ActionFieldInfo { get; set; }

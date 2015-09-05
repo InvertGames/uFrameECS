@@ -1,5 +1,6 @@
 using Invert.Json;
 using System.CodeDom;
+using Invert.Data;
 using UnityEngine;
 
 namespace Invert.uFrame.ECS
@@ -15,7 +16,7 @@ namespace Invert.uFrame.ECS
         IEnumerable<IMappingsConnectable> GetSystemGroups();
     }
 
-    public class HandlerNode : HandlerNodeBase, ISetupCodeWriter, ICodeOutput, ISequenceNode, ISystemGroupProvider
+    public class HandlerNode : HandlerNodeBase, ISetupCodeWriter, ICodeOutput, ISequenceNode, ISystemGroupProvider, IVariableNameProvider
     {
         public override bool AllowMultipleOutputs
         {
@@ -471,6 +472,22 @@ namespace Invert.uFrame.ECS
                 handlerMethod.Parameters.Add(new CodeParameterDeclarationExpression(filter.ContextTypeName,
                     item.HandlerPropertyName.ToLower()));
             }
+        }
+
+      
+        private int _variableCount;
+
+
+        [JsonProperty]
+        public int VariableCount
+        {
+            get { return _variableCount; }
+            set { this.Changed("VariableCount",ref _variableCount, value); }
+        }
+
+        public string GetNewVariableName(string prefix)
+        {
+            return string.Format("{0}{1}", prefix, VariableCount++);
         }
     }
 }
