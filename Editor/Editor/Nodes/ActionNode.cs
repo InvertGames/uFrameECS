@@ -884,7 +884,7 @@ namespace Invert.uFrame.ECS
         {
             get
             {
-                return _variableName ?? (_variableName = ActionNode.VarName + "_" + this.Name);
+                return _variableName ?? (_variableName = VariableNode.GetNewVariable(this.Name));
             }
         }
         public string ShortName
