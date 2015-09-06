@@ -417,7 +417,7 @@ namespace Invert.uFrame.ECS.Templates
             {
                 foreach (var item in Ctx.Data.Properties)
                 {
-                    if (item.Name == "EntityId") continue;
+                    if (item.Name == "EntityId" && Ctx.Data.Dispatcher) continue;
                     yield return item;
                 }
             }

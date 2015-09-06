@@ -57,122 +57,26 @@ namespace Invert.uFrame.ECS.Templates
 
         
 
-        public override void BeforeVisitAction(ActionNode actionNode)
+        public override void BeforeVisitAction(SequenceItemNode actionNode)
         {
-            if (actionNode.Meta == null) return;
-            _._comment("Before visit {0}", actionNode.Meta.FullName);
+           
             base.BeforeVisitAction(actionNode);
            
 
         }
 
-        public override void VisitAction(ActionNode actionNode)
+        public override void VisitAction(SequenceItemNode actionNode)
         {
-            if (actionNode.Meta == null)
-            {
-                _._comment("Skipping {0}",actionNode.Name);
-                return;
-            }
-            base.VisitAction(actionNode);
-            _._comment("Visit {0}", actionNode.Meta.FullName);
-            var methodInfo = actionNode.Meta.Method;
-            if (methodInfo != null)
-            {
-                var codeMethodReferenceExpression = new CodeMethodReferenceExpression(
-                    new CodeSnippetExpression(actionNode.Meta.Type.FullName),
-                    methodInfo.Name);
-                var genericInputVars = actionNode.GraphItems.OfType<TypeSelection>().Where(p => p.ActionFieldInfo.IsGenericArgument && p.Item != null).Select(p=>p.Item.Name).ToArray();
-                if (genericInputVars.Length > 0)
-                {
-                    codeMethodReferenceExpression = new CodeMethodReferenceExpression(
-                       new CodeSnippetExpression(actionNode.Meta.Type.FullName),
-                       string.Format("{0}<{1}>", methodInfo.Name, string.Join(",",genericInputVars)));
-                    
-                }   
-                _currentActionInvoker =
-                    new CodeMethodInvokeExpression(
-                        codeMethodReferenceExpression);
-                
-                foreach (var input in actionNode.InputVars)
-                {
-                    if (input.ActionFieldInfo.IsGenericArgument)
-                    {
-                   
-                    }
-                    else
-                    {
-                        _currentActionInvoker.Parameters.Add(
-                            new CodeSnippetExpression((input.ActionFieldInfo.Type.IsByRef ? "ref " : string.Empty) + string.Format("{0}", input.VariableName)));    
-                    }
-                    
-                }
-                ActionOut resultOut = null;
-                // The outputs that should be assigned to by the method
-                foreach (var @out in actionNode.OutputVars.OfType<ActionOut>())
-                {
-                    if (@out.Name == "Result")
-                    {
-                        resultOut = @out;
-                        continue;
-                    }
-                    _currentActionInvoker.Parameters.Add(
-                        new CodeSnippetExpression(string.Format("out {0}", @out.VariableName)));
-                }
-                foreach (var @out in actionNode.OutputVars.OfType<ActionBranch>())
-                {
-                    _currentActionInvoker.Parameters.Add(
-                        new CodeSnippetExpression(string.Format("()=> {{ System.StartCoroutine({0}()); }}", @out.VariableName)));
-                }
-                _._("while (this.DebugInfo(\"{0}\", this) == 1) yield return new WaitForEndOfFrame()", actionNode.Identifier);
-                if (resultOut == null)
-                {
-                    _.CurrentStatements.Add(_currentActionInvoker);
-                }
-                else
-                {
-                    var assignResult = new CodeAssignStatement(
-                        new CodeSnippetExpression(resultOut.VariableName), _currentActionInvoker);
-                    _.CurrentStatements.Add(assignResult);
-                }
-               
-            }
-            else
-            {
-                var varStatement = _.CurrentDeclaration._private_(actionNode.Meta.Type, actionNode.VarName);
-                varStatement.InitExpression = new CodeObjectCreateExpression(actionNode.Meta.Type);
-
-                foreach (var item in actionNode.GraphItems.OfType<ActionIn>())
-                {
-                    var contextVariable = item.Item;
-                    if (contextVariable == null) continue;
-                    _._("{0}.{1} = {2}", varStatement.Name, item.Name, item.VariableName);
-                }
-
-
-                _._("{0}.System = System", varStatement.Name);
-                 
-
-                foreach (var item in actionNode.OutputVars.OfType<ActionBranch>())
-                {
-                    var branchOutput = item.OutputTo<SequenceItemNode>();
-                    if (branchOutput == null) continue;
-                    _._("{0}.{1} = ()=> {{ System.StartCoroutine({2}()); }}", varStatement.Name, item.Name, item.VariableName);
-                }
-                _._("while (this.DebugInfo(\"{0}\", this) == 1) yield return new WaitForEndOfFrame()", actionNode.Identifier);
-                _._("{0}.Execute()", varStatement.Name);
-                WriteActionOutputs(actionNode);
-               
-                
-            }
+           actionNode.WriteCode(this, _);
         }
 
         public override void VisitOutput(IActionOut output)
         {
             base.VisitOutput(output);
-            if (output.ActionFieldInfo.Type == typeof (System.Action)) return;
-            _._comment("Visit Output");
-            //if (output.Name == "Result") return;
-            _.TryAddNamespace(output.ActionFieldInfo.Type.Namespace);
+            if (output.ActionFieldInfo != null)
+                _.TryAddNamespace(output.ActionFieldInfo.Type.Namespace);
+            else return;
+            if (output.ActionFieldInfo.Type == typeof(System.Action)) return;
             var varDecl = new CodeMemberField(
                 output.VariableType.FullName.Replace("&", "").ToCodeReference(), 
                 output.VariableName
@@ -181,47 +85,15 @@ namespace Invert.uFrame.ECS.Templates
                 InitExpression = new CodeSnippetExpression(string.Format("default( {0} )", output.VariableType.FullName.Replace("&", "")))
             };
             _.CurrentDeclaration.Members.Add(varDecl);
-            //var variableReference = output.OutputTo<IContextVariable>();
-            //if (variableReference != null)
-            //    _.CurrentStatements.Add(new CodeAssignStatement(new CodeSnippetExpression(variableReference.VariableName),
-            //        new CodeSnippetExpression(output.VariableName)));
 
         }
 
         public override void VisitSetVariable(SetVariableNode setVariableNode)
         {
             base.VisitSetVariable(setVariableNode);
-            var ctxVariable = setVariableNode.VariableInputSlot.Item;
-            if (ctxVariable == null) return;
-
-            _._("{0} = ({1}){2}", ctxVariable.VariableName, ctxVariable.VariableType.FullName,
-                setVariableNode.ValueInputSlot.VariableName);
+           
         }
 
-        public void WriteActionOutputs(ActionNode action)
-        {
-            foreach (var output in action.OutputVars)
-            {
-                if (output is ActionBranch) continue;
-                WriteActionOutput(action, output);
-            }
-        }
-
-        private void WriteActionOutput(ActionNode node, IActionOut output)
-        {
-            _._("{0} = {1}.{2}", output.VariableName, node.VarName, output.Name);
-            var variableReference = output.OutputTo<IContextVariable>();
-            if (variableReference != null)
-                _.CurrentStatements.Add(new CodeAssignStatement(new CodeSnippetExpression(variableReference.VariableName),
-                    new CodeSnippetExpression(output.VariableName)));
-            var actionIn = output.OutputTo<IActionIn>();
-            if (actionIn != null)
-            {
-                _.CurrentStatements.Add(new CodeAssignStatement(
-                    new CodeSnippetExpression(actionIn.VariableName),
-                    new CodeSnippetExpression(output.VariableName)));
-            }
-        }
 
         public override void VisitBranch(ActionBranch output)
         {
@@ -234,7 +106,8 @@ namespace Invert.uFrame.ECS.Templates
             var actionNode = output.Node as ActionNode;
             if (actionNode != null)
             {
-                WriteActionOutputs(actionNode);
+                actionNode.WriteActionOutputs(_);
+                
             }
            
             base.VisitBranch(output);

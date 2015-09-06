@@ -114,6 +114,13 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class LoopCollectionNodeDrawerBase : GenericNodeDrawer<LoopCollectionNode,LoopCollectionNodeViewModel> {
+        
+        public LoopCollectionNodeDrawerBase(LoopCollectionNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
+    
     public class AnyFalseNodeDrawerBase : GenericNodeDrawer<AnyFalseNode,AnyFalseNodeViewModel> {
         
         public AnyFalseNodeDrawerBase(AnyFalseNodeViewModel viewModel) : 

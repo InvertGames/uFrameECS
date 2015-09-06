@@ -6,7 +6,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class CollectionsChildItem : CollectionsChildItemBase {
+    public class CollectionsChildItem : CollectionsChildItemBase, IMemberInfo {
     }
     
     public partial interface ICollectionsConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

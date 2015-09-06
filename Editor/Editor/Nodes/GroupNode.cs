@@ -156,17 +156,17 @@ namespace Invert.uFrame.ECS {
         }
         public IEnumerable<IContextVariable> GetContextVariables()
         {
-            //foreach (var item in Require)
-            //{
-            //    yield return new ContextVariable(item.Name)
-            //    {
-            //        Repository = this.Repository, 
-            //        Node = this, 
-            //        VariableType = this.Name, 
-            //        Source = item.SourceItem as ITypedItem,
-            //        Identifier = this.Identifier + ":" + this.Name
-            //    };
-            //}
+            foreach (var item in Require)
+            {
+                yield return new ContextVariable(item.Name)
+                {
+                    Repository = this.Repository,
+                    Node = this,
+                    VariableType = item.SourceItem as ITypeInfo,
+                    Source = item.SourceItem as ITypedItem,
+                    Identifier = this.Identifier + ":" + this.Name
+                };
+            }
             yield break;
         }
 

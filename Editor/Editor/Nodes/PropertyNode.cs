@@ -20,33 +20,17 @@ namespace Invert.uFrame.ECS
         {
             get
             {
-                return _o ?? (_o = new PropertyIn()
-            {
-                Repository = this.Repository,
-                Node = this.Node,
-                Name = "Object",
-                DoesAllowInputs = true,
-                Identifier = Identifier + ":" + "Object"
-
-            });
+                return GetSlot(ref _o,"Object",_=>_.DoesAllowInputs = true);
             }
-        }
+        } 
+
         [InputSlot("Property")]
         public PropertySelection PropertySelection
         {
             get
             {
-                return _propertySelection ?? (_propertySelection = new PropertySelection()
-                {
-                    Repository = this.Repository,
-                    Node = this.Node,
-                    Name = "Property",
-                    ObjectSelector = Object,
-                    Identifier = Identifier + ":" + "Property",
-                   
-                });
+                return GetSlot(ref _propertySelection, "Property", _ => _.ObjectSelector = Object);
             }
-
         }
 
         public override IEnumerable<IGraphItem> GraphItems
@@ -54,7 +38,11 @@ namespace Invert.uFrame.ECS
             get
             {
                 yield return Object;
-                yield return PropertySelection;
+                if (Object.Item != null)
+                {
+                    yield return PropertySelection;
+                }
+                
             }
         }
 

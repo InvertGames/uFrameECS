@@ -4,6 +4,6 @@ namespace Invert.uFrame.ECS
 {
     public interface ISetupCodeWriter
     {
-        void WriteSetupCode(TemplateContext ctx);
+        void WriteSetupCode(IHandlerNodeVisitor visitor, TemplateContext ctx);
     }
 }

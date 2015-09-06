@@ -94,52 +94,6 @@ namespace Invert.uFrame.ECS {
         }
         protected override void CreateContent()
         {
-
-      
-            var meta = Action.Meta;
-            if (meta != null)
-            {
-                foreach (var item in Action.InputVars)
-                {
-                    var vm = new InputOutputViewModel()
-                    {
-                        Name = item.Name,
-                        IsOutput = false,
-                        IsInput = true,
-                        DataObject = item,
-                        IsNewLine =  item.ActionFieldInfo.DisplayType.IsNewLine,
-                        DiagramViewModel = DiagramViewModel
-                    };
-                    ContentItems.Add(vm);
-                    if (vm.InputConnector != null)
-                    {
-                        vm.InputConnector.Style = ConnectorStyle.Circle;
-                        vm.InputConnector.TintColor = UnityEngine.Color.green;
-                    }
-                    
-                }
-                foreach (var item in Action.OutputVars)
-                {
-                    var vm = new InputOutputViewModel()
-                    {
-                        Name = item.Name,
-                        DataObject = item,
-                        IsOutput = true,
-                        IsNewLine = item.ActionFieldInfo.DisplayType.IsNewLine,
-                        DiagramViewModel = DiagramViewModel
-                    };
-                    ContentItems.Add(vm);
-
-                    if (item.ActionFieldInfo.Type != typeof (Action))
-                    {
-                        vm.OutputConnector.Style = ConnectorStyle.Circle;
-                        vm.OutputConnector.TintColor = UnityEngine.Color.green;
-                    }
-                    
-
-                }
-               
-            }
             base.CreateContent();
 
         }

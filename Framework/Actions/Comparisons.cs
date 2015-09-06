@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using uFrame.Actions.Attributes;
 using uFrame.Attributes;
 using uFrame.ECS;
@@ -144,6 +145,21 @@ namespace uFrame.Actions
             return Camera.main;
         }
     }
+    [ActionLibrary, uFrameCategory("Loops")]
+    public static class LoopsLibrary
+    {
+        [ActionTitle("Loop Collection")]
+        public static void LoopCollection(IList list, out object item, Action next)
+        {
+            item = null;
+            for (var i = 0; i < list.Count; i++)
+            {
+                item = list[i];
+                next();
+            } 
+        }
+    }
+
 }
 
 [ActionLibrary, uFrameCategory("Rigidbody")]
@@ -170,6 +186,9 @@ public static class RigidbodyLibrary
         rigidBody.rotation = Quaternion.Euler(x, y, z);
     }
 }
+
+
+
 namespace uFrame.Actions.Attributes
 {
 

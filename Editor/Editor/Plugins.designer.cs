@@ -47,6 +47,8 @@ namespace Invert.uFrame.ECS {
         
         private Invert.Core.GraphDesigner.NodeConfig<UserMethodNode> _UserMethod;
         
+        private Invert.Core.GraphDesigner.NodeConfig<LoopCollectionNode> _LoopCollection;
+        
         private Invert.Core.GraphDesigner.NodeConfig<AnyFalseNode> _AnyFalse;
         
         private Invert.Core.GraphDesigner.NodeConfig<ComponentCreatedNode> _ComponentCreated;
@@ -218,6 +220,15 @@ namespace Invert.uFrame.ECS {
             }
             set {
                 _UserMethod = value;
+            }
+        }
+        
+        public Invert.Core.GraphDesigner.NodeConfig<LoopCollectionNode> LoopCollection {
+            get {
+                return _LoopCollection;
+            }
+            set {
+                _LoopCollection = value;
             }
         }
         
@@ -496,6 +507,8 @@ namespace Invert.uFrame.ECS {
             Float.Color(NodeColor.Purple);
             UserMethod = container.AddNode<UserMethodNode,UserMethodNodeViewModel,UserMethodNodeDrawer>("UserMethod");
             UserMethod.Color(NodeColor.Blue);
+            LoopCollection = container.AddNode<LoopCollectionNode,LoopCollectionNodeViewModel,LoopCollectionNodeDrawer>("LoopCollection");
+            LoopCollection.Color(NodeColor.Red);
             AnyFalse = container.AddNode<AnyFalseNode,AnyFalseNodeViewModel,AnyFalseNodeDrawer>("AnyFalse");
             AnyFalse.Color(NodeColor.Orange);
             ComponentCreated = container.AddNode<ComponentCreatedNode,ComponentCreatedNodeViewModel,ComponentCreatedNodeDrawer>("ComponentCreated");
@@ -553,6 +566,7 @@ namespace Invert.uFrame.ECS {
             Handler.HasSubNode<ActionGroupNode>();
             Handler.HasSubNode<ActionNode>();
             Handler.HasSubNode<ComponentNode>();
+            Handler.HasSubNode<LoopCollectionNode>();
             Handler.HasSubNode<IntNode>();
             Handler.HasSubNode<PropertyNode>();
             Handler.HasSubNode<EnumValueNode>();

@@ -7,8 +7,29 @@ namespace Invert.uFrame.ECS {
     using System.Linq;
     using Invert.Core;
     using Invert.Core.GraphDesigner;
-    
-    
+
+    public class CollectionTypeInfo : ITypeInfo
+    {
+        public static SystemTypeInfo ListType = new SystemTypeInfo(typeof(IList));
+        public CollectionsChildItem ChildItem { get; set; } 
+        public ITypeInfo InnerType { get { return ChildItem.MemberType; }}
+        public string TypeName { get { return string.Format("List<{0}>", ChildItem.MemberType.FullName); }}
+
+        public string FullName
+        {
+            get { return "System.Collections.Generic." + TypeName; }
+        }
+
+        public IEnumerable<IMemberInfo> GetMembers()
+        {
+            return ListType.GetMembers();
+        }
+
+        public bool IsAssignableTo(ITypeInfo info)
+        {
+            return ListType.IsAssignableTo(info);
+        }
+    }
     public class ComponentNode : ComponentNodeBase, IComponentsConnectable, IMappingsConnectable, ITypedItem {
  
 
@@ -30,6 +51,22 @@ namespace Invert.uFrame.ECS {
         public string ContextTypeName
         {
             get { return Name; }
+        }
+
+        public override IEnumerable<IMemberInfo> GetMembers()
+        {
+            foreach (var item in Properties)
+            {
+                yield return item;
+            }
+            foreach (var item in Collections)
+            {
+                yield return new DefaultMemberInfo()
+                {
+                    MemberName = item.Name,
+                    MemberType = new CollectionTypeInfo() { ChildItem = item }
+                };
+            }
         }
 
         //public override IEnumerable<IMemberInfo> GetMembers()

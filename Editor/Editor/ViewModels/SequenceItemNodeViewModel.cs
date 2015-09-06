@@ -18,50 +18,45 @@ namespace Invert.uFrame.ECS {
         }
         protected override void CreateContent()
         {
-            //HashSet<string> usedIds = new HashSet<string>();
-            //foreach (var item in SequenceNode.PersistedItems.OfType<UsedVariable>())
-            //{
-            //    ContentItems.Add(new ItemViewModel<IContextVariable>(this)
-            //    {
-                    
-            //        DataObject = item,
-                    
-            //        IsNewLine = true,
-            //        OutputConnectorType = typeof(IContextVariable),
-            //        InputConnectorType = typeof(IContextVariable)
-            //    });
-            //    //ContentItems.Add(new InputOutputViewModel()
-            //    //{
-            //    //    IsOutput = true,
-            //    //    DataObject = item,
-            //    //    IsNewLine = true,
-            //    //    OutputConnectorType = typeof(IContextVariable),
-            //    //    Name = item.Name
-            //    //});
-            //    usedIds.Add(item.Identifier);
-            //}
-            //foreach (var item in SequenceNode.AllContextVariables)
-            //{
-                
-            //    if (usedIds.Contains(item.Identifier)) continue;
-            //    ContentItems.Add(new ItemViewModel<IContextVariable>(this)
-            //    {
-            //        DataObject = item,
-            //        IsNewLine = true,
-            //        OutputConnectorType = typeof(IContextVariable),
-            //        InputConnectorType = typeof(IContextVariable)
-            //    });
-            //    //ContentItems.Add(new InputOutputViewModel()
-            //    //{
-            //    //    IsOutput = true,
-            //    //    DataObject = item,
-            //    //    IsNewLine = true,
-            //    //    OutputConnectorType = typeof(IContextVariable),
-            //    //    Name = item.Name
-            //    //});
-            //}
+            foreach (var item in SequenceNode.GraphItems.OfType<IActionIn>())
+            {
+                var vm = new InputOutputViewModel()
+                {
+                    Name = item.Name,
+                    IsOutput = false,
+                    IsInput = true,
+                    DataObject = item,
+                    IsNewLine = item.ActionFieldInfo == null ? true : item.ActionFieldInfo.DisplayType.IsNewLine,
+                    DiagramViewModel = DiagramViewModel
+                };
+                ContentItems.Add(vm);
+                if (vm.InputConnector != null)
+                {
+                    vm.InputConnector.Style = ConnectorStyle.Circle;
+                    vm.InputConnector.TintColor = UnityEngine.Color.green;
+                }
 
-            //if (IsVisible(SectionVisibility.WhenNodeIsNotFilter) && HandlerNode.EventNode != null && !HandlerNode.EventNode.NeedsMappings) return;
+            }
+            foreach (var item in SequenceNode.GraphItems.OfType<IActionOut>())
+            {
+                var vm = new InputOutputViewModel()
+                {
+                    Name = item.Name,
+                    DataObject = item,
+                    IsOutput = true,
+                    IsNewLine = item.ActionFieldInfo == null ? true : item.ActionFieldInfo.DisplayType.IsNewLine,
+                    DiagramViewModel = DiagramViewModel
+                };
+                ContentItems.Add(vm);
+
+                if (!(item is ActionBranch))
+                {
+                    vm.OutputConnector.Style = ConnectorStyle.Circle;
+                    vm.OutputConnector.TintColor = UnityEngine.Color.green;
+                }
+
+
+            }
             base.CreateContent();
 
 

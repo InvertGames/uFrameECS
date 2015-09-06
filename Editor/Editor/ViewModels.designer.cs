@@ -197,6 +197,19 @@ namespace Invert.uFrame.ECS {
         }
     }
     
+    public class LoopCollectionNodeViewModelBase : SequenceItemNodeViewModel {
+        
+        public LoopCollectionNodeViewModelBase(LoopCollectionNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
+                base(graphItemObject, diagramViewModel) {
+        }
+        
+        public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
+            get {
+                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+            }
+        }
+    }
+    
     public class AnyFalseNodeViewModelBase : BoolExpressionNodeViewModel {
         
         public AnyFalseNodeViewModelBase(AnyFalseNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 

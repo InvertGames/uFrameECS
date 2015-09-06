@@ -15,9 +15,9 @@ namespace Invert.uFrame.ECS
         public static int VariableCount;
         private string _variableName;
 
-        public static string NewVariable
+        public static string GetNewVariable(string prefix)
         {
-            get { return string.Format("variable{0}", VariableCount++); }
+            return string.Format("{0}{1}",prefix, VariableCount++);
         }
 
         public override string Name
@@ -78,7 +78,7 @@ namespace Invert.uFrame.ECS
             {
                 if (string.IsNullOrEmpty(_variableName))
                 {
-                    _variableName = NewVariable;
+                    _variableName = GetNewVariable(this.Name);
                 }
                 return _variableName;
             }

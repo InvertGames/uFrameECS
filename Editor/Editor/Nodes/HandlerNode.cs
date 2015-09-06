@@ -292,7 +292,7 @@ namespace Invert.uFrame.ECS
             }
         }
     
-        public override void WriteCode(TemplateContext ctx)
+        public override void WriteCode(IHandlerNodeVisitor visitor, TemplateContext ctx)
         {
             VariableNode.VariableCount = 0;
             var handlerMethod = WriteHandler(ctx);
@@ -413,9 +413,9 @@ namespace Invert.uFrame.ECS
             return handlerFilterMethod;
         }
 
-        public virtual void WriteSetupCode(TemplateContext ctx)
+        public virtual void WriteSetupCode(IHandlerNodeVisitor visitor, TemplateContext ctx)
         {
-            WriteCode(ctx);
+            WriteCode(visitor, ctx);
         }
 
         protected virtual void WriteHandlerInvoker(CodeMethodInvokeExpression handlerInvoker, CodeMemberMethod handlerFilterMethod)

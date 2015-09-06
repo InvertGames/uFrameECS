@@ -6,18 +6,18 @@ namespace Invert.uFrame.ECS
 {
     public class HandlerNodeVisitor : IHandlerNodeVisitor
     {
-        private List<ActionNode> outputtedNodes = new List<ActionNode>();
+        private List<SequenceItemNode> outputtedNodes = new List<SequenceItemNode>();
 
         public void Visit(IDiagramNodeItem item)
         {
             if (item == null) return;
             var handlerNode = item as ISequenceNode;
-            var actionNode = item as ActionNode;
+            SequenceItemNode actionNode = item as SequenceItemNode;
             var actionBranch = item as ActionBranch;
             var actionOut = item as IActionOut;
             var actionIn = item as IActionIn;
-            var setVariableNode = item as SetVariableNode;
-            var groupNode = item as ActionGroupNode;
+            //var setVariableNode = item as SetVariableNode;
+            //var groupNode = item as ActionGroupNode;
             var handlerIn = item as HandlerIn;
             if (handlerIn != null)
             {
@@ -25,18 +25,18 @@ namespace Invert.uFrame.ECS
                 VisitHandlerIn(handlerIn);
                 AfterVisitHandlerIn(handlerIn); return;
             }
-            if (groupNode != null)
-            {
-                BeforeVisitGroup(groupNode);
-                VisitGroup(groupNode);
-                AfterVisitGroup(groupNode); return;
-            }
-            if (setVariableNode != null)
-            {
-                BeforeSetVariableHandler(setVariableNode);
-                VisitSetVariable(setVariableNode);
-                AfterVisitSetVariable(setVariableNode); return;
-            }
+            //if (groupNode != null)
+            //{
+            //    BeforeVisitGroup(groupNode);
+            //    VisitGroup(groupNode);
+            //    AfterVisitGroup(groupNode); return;
+            //}
+            //if (setVariableNode != null)
+            //{
+            //    BeforeSetVariableHandler(setVariableNode);
+            //    VisitSetVariable(setVariableNode);
+            //    AfterVisitSetVariable(setVariableNode); return;
+            //}
             if (handlerNode != null)
             {
                 BeforeVisitHandler(handlerNode);
@@ -48,7 +48,7 @@ namespace Invert.uFrame.ECS
             {
                 BeforeVisitAction(actionNode);
                 VisitAction(actionNode);
-                AfterVisitAction(actionNode); return;
+                AfterVisitAction( actionNode); return;
             }
 
             if (actionBranch != null)
@@ -84,12 +84,7 @@ namespace Invert.uFrame.ECS
 
         public virtual void VisitGroup(ActionGroupNode groupNode)
         {
-            var innerRight = groupNode.OutputsTo<SequenceItemNode>().FirstOrDefault(p => p.Filter == groupNode);
-            if (innerRight != null)
-                Visit(innerRight);
-            var outterRight = groupNode.OutputsTo<SequenceItemNode>().FirstOrDefault(p => p.Filter != groupNode);
-            if (outterRight != null)
-                Visit(outterRight);
+          
         }
 
         public virtual void BeforeVisitGroup(ActionGroupNode groupNode)
@@ -114,19 +109,19 @@ namespace Invert.uFrame.ECS
 
         public virtual void BeforeSetVariableHandler(SetVariableNode setVariableNode)
         {
-            Visit(setVariableNode.VariableInputSlot);
-            Visit(setVariableNode.ValueInputSlot);
+            //Visit(setVariableNode.VariableInputSlot);
+            //Visit(setVariableNode.ValueInputSlot);
         }
 
         public virtual void VisitSetVariable(SetVariableNode setVariableNode)
         {
             
-            Visit(setVariableNode.Right);
+           
         }
 
         private void AfterVisitSetVariable(SetVariableNode setVariableNode)
         {
-
+            Visit(setVariableNode.Right);
         }
 
         public virtual void AfterVisitInput(IActionIn actionIn)
@@ -172,8 +167,6 @@ namespace Invert.uFrame.ECS
 
         public virtual void BeforeVisitInput(IActionIn actionIn)
         {
-        
-
             var actionOutput = actionIn.InputFrom<ActionOut>();
             if (actionOutput == null) return;
 
@@ -185,49 +178,47 @@ namespace Invert.uFrame.ECS
             if (actionNode != null)
             {
                 if (outputtedNodes.Contains(actionNode)) return;
-
                 Visit(actionNode);
-               
             }
         }
 
-        public virtual void BeforeVisitAction(ActionNode actionNode)
+        public virtual void BeforeVisitAction(SequenceItemNode actionNode)
         {
-
-
             outputtedNodes.Add(actionNode);
 
             foreach (var input in actionNode.GraphItems.OfType<IActionIn>())
             {
                 Visit(input);
             }
-       
         }
 
-        public virtual void AfterVisitAction(ActionNode actionNode)
+        public virtual void AfterVisitAction(SequenceItemNode actionNode)
         {
-
-            
             var hasInferredOutput = false;
-            foreach (var output in actionNode.OutputVars.OfType<ActionOut>())
+            foreach (var output in actionNode.GraphItems.OfType<ActionOut>())
             {
                 Visit(output);
             }
-            foreach (var output in actionNode.OutputVars.OfType<ActionBranch>())
+            foreach (var output in actionNode.GraphItems.OfType<ActionBranch>())
             {
                 Visit(output);
                 if (output.OutputTo<ActionNode>() != null)
                 {
                     hasInferredOutput = true;
                 }
-
             }
-            if (!hasInferredOutput & actionNode.Right != null)
+            if (!hasInferredOutput)
             {
-                Visit(actionNode.Right);
+                var innerRight = actionNode.OutputsTo<SequenceItemNode>().FirstOrDefault(p => p.Filter == actionNode);
+                if (innerRight != null)
+                    Visit(innerRight);
+                var outterRight = actionNode.OutputsTo<SequenceItemNode>().FirstOrDefault(p => p.Filter != actionNode);
+                if (outterRight != null)
+                    Visit(outterRight);
             }
         }
-        public virtual void VisitAction(ActionNode actionNode)
+
+        public virtual void VisitAction(SequenceItemNode actionNode)
         {
 
         }

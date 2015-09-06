@@ -91,8 +91,13 @@ namespace Invert.uFrame.ECS {
         {
             yield break;
         }
-        
-        public virtual void WriteCode(TemplateContext ctx)
+
+        public override Color Color
+        {
+            get { return Color.blue; }
+        }
+
+        public virtual void WriteCode(IHandlerNodeVisitor visitor, TemplateContext ctx)
         {
             OutputVariables(ctx);
             ctx._comment(Name);
@@ -100,7 +105,7 @@ namespace Invert.uFrame.ECS {
             {
                 if (right != null)
                 {
-                    right.WriteCode(ctx);
+                    right.WriteCode(visitor,ctx);
                 }
             }
             

@@ -56,7 +56,7 @@ namespace Invert.uFrame.ECS {
             }
         }
 
-        [InputSlot("Variable")]
+
         public virtual VariableIn VariableInputSlot
         {
             get
@@ -78,7 +78,6 @@ namespace Invert.uFrame.ECS {
             }
         }
 
-        [InputSlot("Value")]
         public virtual ValueIn ValueInputSlot
         {
             get
@@ -93,12 +92,12 @@ namespace Invert.uFrame.ECS {
                 }
                 return _Value ?? (_Value = new ValueIn()
                 {
-                    Repository = Repository,
                     DoesAllowInputs = true, 
                     Node = this, 
                     Identifier = ValueInputSlotId, 
                     Name = "Value",
-                    Variable = VariableInputSlot
+                    Variable = VariableInputSlot,
+                    Repository = Repository
                 });
             }
         }
@@ -121,19 +120,23 @@ namespace Invert.uFrame.ECS {
         {
             get
             {
+                
                 yield return VariableInputSlot;
-                yield return ValueInputSlot;
+                if (VariableInputSlot.Item != null)
+                {
+                    yield return ValueInputSlot;
+                }
+                
             }
         }
 
-        public override void WriteCode(TemplateContext ctx)
+        public override void WriteCode(IHandlerNodeVisitor visitor, TemplateContext ctx)
         {
-            
-            ctx._("{0} = {1}",
-                VariableInputSlot.Item.VariableName,
-                ValueInputSlot.Item.VariableName
-                );
-            base.WriteCode(ctx);
+            var ctxVariable = VariableInputSlot.Item;
+            if (ctxVariable == null) return;
+
+            ctx._("{0} = ({1}){2}", ctxVariable.VariableName, ctxVariable.VariableType.FullName,
+                ValueInputSlot.VariableName);
         }
     }
 

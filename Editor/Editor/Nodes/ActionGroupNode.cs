@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -8,11 +10,14 @@ namespace Invert.uFrame.ECS {
     
     
     public class ActionGroupNode : ActionGroupNodeBase, IVariableContextProvider {
-        
-        
-        public override void WriteCode(TemplateContext ctx)
+        public override Color Color
         {
-            base.WriteCode(ctx);
+            get { return Color.blue; }
+        }
+
+        public override void WriteCode(IHandlerNodeVisitor visitor, TemplateContext ctx)
+        {
+            base.WriteCode(visitor, ctx);
 
         }
     }
