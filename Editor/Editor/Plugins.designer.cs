@@ -508,7 +508,7 @@ namespace Invert.uFrame.ECS {
             UserMethod = container.AddNode<UserMethodNode,UserMethodNodeViewModel,UserMethodNodeDrawer>("UserMethod");
             UserMethod.Color(NodeColor.Blue);
             LoopCollection = container.AddNode<LoopCollectionNode,LoopCollectionNodeViewModel,LoopCollectionNodeDrawer>("LoopCollection");
-            LoopCollection.Color(NodeColor.Red);
+            LoopCollection.Color(NodeColor.LightGray);
             AnyFalse = container.AddNode<AnyFalseNode,AnyFalseNodeViewModel,AnyFalseNodeDrawer>("AnyFalse");
             AnyFalse.Color(NodeColor.Orange);
             ComponentCreated = container.AddNode<ComponentCreatedNode,ComponentCreatedNodeViewModel,ComponentCreatedNodeDrawer>("ComponentCreated");

@@ -1,37 +1,34 @@
-using System.CodeDom;
 using Invert.Json;
 using UnityEngine;
 
-namespace Invert.uFrame.ECS {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Invert.Core;
+namespace Invert.uFrame.ECS
+{
     using Invert.Core.GraphDesigner;
     using Invert.Data;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    public partial interface ISequenceItemConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable
+    {
+    }
 
     public class SequenceItemNode : SequenceItemNodeBase, ICodeOutput
     {
+        private string _variableName;
+
         public override bool AllowMultipleInputs
         {
             get { return false; }
-        } 
+        }
 
         public override bool AllowMultipleOutputs
         {
             get { return false; }
         }
 
-        public override void RecordRemoved(IDataRecord record)
+        public override Color Color
         {
-            base.RecordRemoved(record);
-            var container = this.Container();
-            if (container == null || container.Identifier == record.Identifier)
-            {
-                Repository.Remove(this);
-            }
-          
+            get { return Color.blue; }
         }
 
         public IVariableContextProvider Left
@@ -42,6 +39,7 @@ namespace Invert.uFrame.ECS {
                 return r;
             }
         }
+
         public IEnumerable<IVariableContextProvider> LeftNodes
         {
             get
@@ -54,6 +52,12 @@ namespace Invert.uFrame.ECS {
                 }
             }
         }
+
+        public SequenceItemNode Right
+        {
+            get { return this.OutputTo<SequenceItemNode>(); }
+        }
+
         public IEnumerable<IVariableContextProvider> RightNodes
         {
             get
@@ -65,10 +69,18 @@ namespace Invert.uFrame.ECS {
                     right = right.Right;
                 }
             }
-        } 
-        public SequenceItemNode Right
+        }
+
+        [JsonProperty, InspectorProperty]
+        public string VariableName
         {
-            get { return this.OutputTo<SequenceItemNode>(); }
+            get { return _variableName ?? (VariableName = VariableNameProvider.GetNewVariableName(this.GetType().Name)); }
+            set { this.Changed("VariableName", ref _variableName, value); }
+        }
+
+        public IVariableNameProvider VariableNameProvider
+        {
+            get { return Filter as IVariableNameProvider; }
         }
 
         public IEnumerable<IContextVariable> GetAllContextVariables()
@@ -92,9 +104,14 @@ namespace Invert.uFrame.ECS {
             yield break;
         }
 
-        public override Color Color
+        public override void RecordRemoved(IDataRecord record)
         {
-            get { return Color.blue; }
+            base.RecordRemoved(record);
+            var container = this.Container();
+            if (container == null || container.Identifier == record.Identifier)
+            {
+                Repository.Remove(this);
+            }
         }
 
         public virtual void WriteCode(IHandlerNodeVisitor visitor, TemplateContext ctx)
@@ -105,10 +122,9 @@ namespace Invert.uFrame.ECS {
             {
                 if (right != null)
                 {
-                    right.WriteCode(visitor,ctx);
+                    right.WriteCode(visitor, ctx);
                 }
             }
-            
         }
 
         protected void OutputVariables(TemplateContext ctx)
@@ -120,9 +136,8 @@ namespace Invert.uFrame.ECS {
 
                 ctx.CurrentDeclaration.Members.Add(decl.GetFieldStatement());
             }
-     
         }
-        
+
         //public override IEnumerable<IDiagramNode> FilterNodes
         //{
         //    get
@@ -134,8 +149,8 @@ namespace Invert.uFrame.ECS {
         //                    .Where(p => p.FilterId == this.Identifier)
         //                    .OfType<IDiagramNode>())
         //        {
-        //            yield return item; 
-        //        } 
+        //            yield return item;
+        //        }
 
         //    }
         //}
@@ -144,8 +159,5 @@ namespace Invert.uFrame.ECS {
         //{
         //    get { return FilterNodes.OfType<IFilterItem>(); }
         //}
-    }
-    
-    public partial interface ISequenceItemConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
 }

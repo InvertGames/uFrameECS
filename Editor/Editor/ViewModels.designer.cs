@@ -205,7 +205,7 @@ namespace Invert.uFrame.ECS {
         
         public override Invert.Core.GraphDesigner.NodeStyle NodeStyle {
             get {
-                return Invert.Core.GraphDesigner.NodeStyle.Normal;
+                return Invert.Core.GraphDesigner.NodeStyle.Minimalistic;
             }
         }
     }

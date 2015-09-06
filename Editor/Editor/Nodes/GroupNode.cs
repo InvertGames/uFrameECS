@@ -1,3 +1,5 @@
+using Invert.Data;
+using Invert.Json;
 using UnityEngine;
 
 namespace Invert.uFrame.ECS {
@@ -13,7 +15,8 @@ namespace Invert.uFrame.ECS {
         IRequireConnectable, 
         IMappingsConnectable, 
         IHandlerConnectable, 
-        IVariableContextProvider 
+        IVariableContextProvider,
+        IVariableNameProvider
     
     {
         
@@ -173,6 +176,21 @@ namespace Invert.uFrame.ECS {
         public IVariableContextProvider Left
         {
             get { return null; }
+        }
+
+        private int _variableCount;
+
+
+        [JsonProperty]
+        public int VariableCount
+        {
+            get { return _variableCount; }
+            set { this.Changed("VariableCount", ref _variableCount, value); }
+        }
+
+        public string GetNewVariableName(string prefix)
+        {
+            return string.Format("{0}{1}", prefix, VariableCount++);
         }
     }
     
