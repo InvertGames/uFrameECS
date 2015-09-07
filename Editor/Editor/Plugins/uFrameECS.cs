@@ -537,6 +537,7 @@ namespace Invert.uFrame.ECS
                 var category = new SelectionMenuCategory()
                 {
                     Title = "Events",
+                    Expanded = true,
                     Description = "This category includes events exposed by ECS as well as any custom events."
                 };
 

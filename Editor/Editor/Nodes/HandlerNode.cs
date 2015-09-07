@@ -426,7 +426,8 @@ namespace Invert.uFrame.ECS
 
         private IEnumerable<EntityGroupIn> GetHandlerInputs()
         {
-            yield return EntityGroup;
+
+            bool hasMappings = false;
             var meta = Meta;
             if (meta != null)
             {
@@ -441,7 +442,13 @@ namespace Invert.uFrame.ECS
                         Identifier = this.Identifier + ":" + meta.Type.Name + ":" + item.Name
                     };
                     yield return variableIn;
+                    if (item.Name != "EntityId")
+                    hasMappings = true;
                 }
+            }
+            if (!hasMappings)
+            {
+                yield return EntityGroup;
             }
         }
         

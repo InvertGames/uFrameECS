@@ -74,7 +74,9 @@ namespace Invert.uFrame.ECS
         [JsonProperty, InspectorProperty]
         public string VariableName
         {
-            get { return _variableName ?? (VariableName = VariableNameProvider.GetNewVariableName(this.GetType().Name)); }
+            get {
+                if (VariableNameProvider == null) return null;
+                return _variableName ?? (VariableName = VariableNameProvider.GetNewVariableName(this.GetType().Name)); }
             set { this.Changed("VariableName", ref _variableName, value); }
         }
 
