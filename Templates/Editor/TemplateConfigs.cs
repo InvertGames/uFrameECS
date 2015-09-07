@@ -61,7 +61,7 @@ namespace Invert.uFrame.ECS.Templates
         {
             get
             {
-                return Path2.Combine("Modules", Ctx.Data.Name, Ctx.Data.Name + "Loader.cs");
+                return Path2.Combine("Systems", Ctx.Data.Name + "Loader.cs");
             }
         }
 
@@ -103,14 +103,14 @@ namespace Invert.uFrame.ECS.Templates
     {
         public string OutputPath
         {
-            get { return Path2.Combine("Modules", Ctx.Data.Title + "Loader.cs"); }
+            get { return Path2.Combine( Ctx.Data.Title + "Loader.cs"); }
         }
 
         public string Filename
         {
             get
             {
-                return Path2.Combine("Modules", Ctx.Data.Title + "Loader.cs");
+                return Path2.Combine( Ctx.Data.Title + "Loader.cs");
             }
         }
 
@@ -148,11 +148,15 @@ namespace Invert.uFrame.ECS.Templates
     [TemplateClass(TemplateLocation.DesignerFile)]
     [RequiresNamespace("uFrame.Kernel")]
     [RequiresNamespace("UnityEngine")]
-    public partial class SequenceTemplate<TType> : IClassTemplate<TType> where TType : ISequenceNode
+    public partial class SequenceTemplate<TType> : IClassTemplate<TType>,ITemplateCustomFilename where TType : ISequenceNode
     {
+        public string Filename
+        {
+             get { return Path2.Combine("Handlers", Ctx.Data.Name + "Handler.cs"); }
+        }
         public string OutputPath
         {
-            get { return Path2.Combine("Modules", Ctx.Data.Graph.Name, "Handlers"); }
+            get { return Path2.Combine("Handlers", Ctx.Data.Name + "Handler.cs"); }
         }
 
         public bool CanGenerate
@@ -181,6 +185,8 @@ namespace Invert.uFrame.ECS.Templates
             Ctx._("yield break");
            
         }
+
+       
     }
 
     [TemplateClass(TemplateLocation.DesignerFile)]
@@ -251,7 +257,7 @@ namespace Invert.uFrame.ECS.Templates
                 {
                      throw new Exception(Ctx.Data.Name + " Graph is null");
                 } 
-                return Path2.Combine("Modules", Ctx.Data.Graph.Name, Ctx.Data.Name + ".cs");
+                return Path2.Combine("Systems", Ctx.Data.Name + ".cs");
             }
         }
         public string OutputPath
@@ -308,7 +314,7 @@ namespace Invert.uFrame.ECS.Templates
         {
             get
             {
-                return Path2.Combine("Library", Ctx.Data.Graph.Name, "Components", Ctx.Data.Name + ".cs");
+                return Path2.Combine("Components", Ctx.Data.Name + ".cs");
             }
         }
         // Not used now
@@ -348,7 +354,7 @@ namespace Invert.uFrame.ECS.Templates
         {
             get
             {
-                return Path2.Combine("Library", Ctx.Data.Graph.Name, "Groups", Ctx.Data.Name + "Group.cs");
+                return Path2.Combine("Groups", Ctx.Data.Name + "Group.cs");
             }
         }
 
@@ -390,7 +396,7 @@ namespace Invert.uFrame.ECS.Templates
         {
             get
             {
-                return Path2.Combine("Library", Ctx.Data.Graph.Name, "Groups", Ctx.Data.Name + ".cs");
+                return Path2.Combine("Groups", Ctx.Data.Name + ".cs");
             }
         }
 
@@ -409,7 +415,7 @@ namespace Invert.uFrame.ECS.Templates
 
     [TemplateClass(TemplateLocation.DesignerFile), AsPartial]
     [RequiresNamespace("uFrame.ECS")]
-    public partial class EventTemplate : IClassTemplate<EventNode>
+    public partial class EventTemplate : IClassTemplate<EventNode>, ITemplateCustomFilename
     {
         public IEnumerable<PropertiesChildItem> Properties
         {
@@ -426,7 +432,7 @@ namespace Invert.uFrame.ECS.Templates
         {
             get
             {
-                return Path2.Combine("Library", Ctx.Data.Graph.Name, "Events.cs");
+                return Path2.Combine("Events", Ctx.Data.Name + ".cs");
             }
         }
         public string OutputPath
@@ -466,12 +472,15 @@ namespace Invert.uFrame.ECS.Templates
     [TemplateClass(TemplateLocation.DesignerFile), ForceBaseType(typeof(UFAction)), AsPartial]
     [RequiresNamespace("uFrame.ECS")]
     [RequiresNamespace("UnityEngine")]
-    public partial class CustomActionDesignerTemplate : IClassTemplate<CustomActionNode>
+    public partial class CustomActionDesignerTemplate : IClassTemplate<CustomActionNode>, ITemplateCustomFilename
     {
-
+        public string Filename
+        {
+            get { return Path2.Combine("CustomActions", Ctx.Data.Name + ".designer.cs"); }
+        }
         public string OutputPath
         {
-            get { return Path2.Combine("Library", Ctx.Data.Graph.Name, "CustomActions"); }
+            get { return Path2.Combine("CustomActions", Ctx.Data.Name + ".designer.cs"); }
         }
 
         public bool CanGenerate
@@ -504,16 +513,17 @@ namespace Invert.uFrame.ECS.Templates
         }
 
         public TemplateContext<CustomActionNode> Ctx { get; set; }
+        
     }
 
     [TemplateClass(TemplateLocation.EditableFile), ForceBaseType(typeof(UFAction)), AsPartial]
     [RequiresNamespace("uFrame.ECS")]
-    public partial class CustomActionEditableTemplate : IClassTemplate<CustomActionNode>
+    public partial class CustomActionEditableTemplate : IClassTemplate<CustomActionNode>, ITemplateCustomFilename
     {
 
         public string OutputPath
         {
-            get { return Path2.Combine("Library", Ctx.Data.Graph.Name, "CustomActions"); }
+            get { return Path2.Combine("CustomActions", Ctx.Data.Name + ".cs"); }
         }
 
         public bool CanGenerate
@@ -529,6 +539,11 @@ namespace Invert.uFrame.ECS.Templates
         }
 
         public TemplateContext<CustomActionNode> Ctx { get; set; }
+
+        public string Filename
+        {
+            get { return Path2.Combine("CustomActions", Ctx.Data.Name + ".cs"); }
+        }
     }
 
     public class _CONTEXTITEM_ : _ITEMTYPE_

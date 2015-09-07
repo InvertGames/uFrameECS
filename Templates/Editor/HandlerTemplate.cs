@@ -75,8 +75,8 @@ namespace Invert.uFrame.ECS.Templates
             base.VisitOutput(output);
             if (output.ActionFieldInfo != null)
                 _.TryAddNamespace(output.ActionFieldInfo.Type.Namespace);
-            else return;
-            if (output.ActionFieldInfo.Type == typeof(System.Action)) return;
+            
+            if (output is ActionBranch) return;
             var varDecl = new CodeMemberField(
                 output.VariableType.FullName.Replace("&", "").ToCodeReference(), 
                 output.VariableName

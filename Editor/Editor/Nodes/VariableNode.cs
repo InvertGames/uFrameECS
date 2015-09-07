@@ -1,4 +1,6 @@
 using System.CodeDom;
+using Invert.Data;
+using Invert.Json;
 
 namespace Invert.uFrame.ECS
 {
@@ -71,18 +73,16 @@ namespace Invert.uFrame.ECS
 
             }
         }
-
+        [JsonProperty, InspectorProperty]
         public string VariableName
         {
-            get
-            {
-                if (string.IsNullOrEmpty(_variableName))
-                {
-                    _variableName = GetNewVariable(this.Name);
-                }
-                return _variableName;
-            }
-            set { Name = value; }
+            get { return _variableName ?? (VariableName = VariableNameProvider.GetNewVariableName(this.GetType().Name)); }
+            set { this.Changed("VariableName", ref _variableName, value); }
+        }
+
+        public IVariableNameProvider VariableNameProvider
+        {
+            get { return Filter as IVariableNameProvider; }
         }
 
         public string AsParameter

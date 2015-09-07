@@ -343,7 +343,7 @@ namespace Invert.uFrame.ECS
                 ctx._("{0}.System = System", varStatement.Name);
 
 
-                foreach (var item in this.OutputVars.OfType<ActionBranch>())
+                foreach (var item in this.GraphItems.OfType<ActionBranch>())
                 {
                     var branchOutput = item.OutputTo<SequenceItemNode>();
                     if (branchOutput == null) continue;
@@ -508,9 +508,8 @@ namespace Invert.uFrame.ECS
 
         public void WriteActionOutputs(TemplateContext _)
         {
-            foreach (var output in this.OutputVars)
+            foreach (var output in this.GraphItems.OfType<ActionOut>())
             {
-                if (output is ActionBranch) continue;
                 WriteActionOutput( _, output);
             }
         }

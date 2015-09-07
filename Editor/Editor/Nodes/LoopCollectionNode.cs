@@ -93,7 +93,7 @@ namespace Invert.uFrame.ECS {
             base.WriteCode(visitor, ctx);
 
             var loop = new CodeIterationStatement(
-                new CodeSnippetStatement(string.Format("var {0}Index",  Item.VariableName)),
+                new CodeSnippetStatement(string.Format("var {0}Index = 0",  Item.VariableName)),
                 new CodeSnippetExpression(string.Format("{0}Index < {1}.Count", Item.VariableName, List.VariableName)),
                 new CodeSnippetStatement(string.Format("{0}Index++", Item.VariableName))
                 );

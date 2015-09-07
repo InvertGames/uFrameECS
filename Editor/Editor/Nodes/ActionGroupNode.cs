@@ -17,7 +17,7 @@ namespace Invert.uFrame.ECS {
 
         public override void WriteCode(IHandlerNodeVisitor visitor, TemplateContext ctx)
         {
-            base.WriteCode(visitor, ctx);
+            //base.WriteCode(visitor, ctx);
 
         }
 

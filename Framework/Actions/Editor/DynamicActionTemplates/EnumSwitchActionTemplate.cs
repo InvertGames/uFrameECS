@@ -58,11 +58,14 @@ public partial class EnumSwitchActionTemplate : UFAction, IClassTemplate<EnumNod
 
 [RequiresNamespace("UnityEngine")]
 [RequiresNamespace("uFrame.Actions")]
-public class ActionTemplate<TNodeType> :  IClassTemplate<TNodeType> where TNodeType : IDiagramNodeItem {
-
+public class ActionTemplate<TNodeType> :  IClassTemplate<TNodeType>, ITemplateCustomFilename where TNodeType : IDiagramNodeItem {
+    public string Filename
+    {
+        get { return Path2.Combine("DesignerActions", ClassName + ".cs"); }
+    }
     public string OutputPath
     {
-        get { return Path2.Combine("Library", Ctx.Data.Graph.Name, Ctx.Data.Name + "Actions"); }
+        get { return Path2.Combine("DesignerActions", ClassName + ".cs"); }
     }
 
     public virtual bool CanGenerate
