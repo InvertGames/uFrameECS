@@ -43,6 +43,7 @@ namespace Invert.uFrame.ECS
             base.Initialize(container);
             container.RegisterGraphItem<HandlerNode, HandlerNodeViewModel, HandlerNodeDrawer>();
             Handler.AllowAddingInMenu = false;
+            Library.HasSubNode<EnumNode>();
             //            ComponentGroup.AllowAddingInMenu = false;
             PropertyChanged.Name = "Property Changed Handler";
             UserMethod.AllowAddingInMenu = false;

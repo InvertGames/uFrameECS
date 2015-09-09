@@ -145,7 +145,7 @@ namespace Invert.Core.GraphDesigner
             ShouldStep = true;
         }
 
-        public void DrawInspector()
+        public void DrawInspector(Rect rect)
         {
             if (LastDebugEvent != null)
             {

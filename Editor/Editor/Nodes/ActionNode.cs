@@ -351,7 +351,7 @@ namespace Invert.uFrame.ECS
                 }
                 ctx._("while (this.DebugInfo(\"{0}\", this) == 1) yield return new WaitForEndOfFrame()", this.Identifier);
                 ctx._("{0}.Execute()", varStatement.Name);
-               
+
                 WriteActionOutputs(ctx);
 
             }
@@ -361,7 +361,7 @@ namespace Invert.uFrame.ECS
         private string _metaType;
         private IActionIn[] _inputVars;
         private IActionOut[] _outputVars;
-   
+
 
         public ActionMetaInfo Meta
         {
@@ -468,10 +468,11 @@ namespace Invert.uFrame.ECS
                     {
                         var variableOut = new ActionBranch()
                         {
-                            Repository = Repository,
                             ActionFieldInfo = item,
                             Node = this,
-                            Identifier = this.Identifier + ":" + item.Name
+                            Identifier = this.Identifier + ":" + item.Name,
+                            Repository = Repository,
+
                         };
                         yield return variableOut;
                     }
@@ -479,10 +480,11 @@ namespace Invert.uFrame.ECS
                     {
                         var variableOut = new ActionOut()
                         {
-                            Repository = Repository,
+
                             ActionFieldInfo = item,
                             Node = this,
-                            Identifier = this.Identifier + ":" + item.Name
+                            Identifier = this.Identifier + ":" + item.Name,
+                            Repository = Repository,
                         };
                         yield return variableOut;
                     }
@@ -510,7 +512,7 @@ namespace Invert.uFrame.ECS
         {
             foreach (var output in this.GraphItems.OfType<ActionOut>())
             {
-                WriteActionOutput( _, output);
+                WriteActionOutput(_, output);
             }
         }
 
@@ -667,7 +669,7 @@ namespace Invert.uFrame.ECS
             if (action != null)
             {
 
-                foreach (var item in action.GetAllContextVariables().Where(p=>p.VariableType.IsAssignableTo(VariableType)))
+                foreach (var item in action.GetAllContextVariables().Where(p => p.VariableType.IsAssignableTo(VariableType)))
                     yield return item;
             }
             else
@@ -788,7 +790,7 @@ namespace Invert.uFrame.ECS
         {
             get
             {
-     
+
                 return base.SelectedDisplayName;
             }
         }
@@ -797,7 +799,7 @@ namespace Invert.uFrame.ECS
         {
             get
             {
-             
+
                 var item = Item;
                 if (item == null)
                 {
@@ -811,7 +813,7 @@ namespace Invert.uFrame.ECS
         {
             get
             {
-                
+
                 var item = Item;
                 if (item == null)
                     return new SystemTypeInfo(typeof(object));
@@ -892,7 +894,7 @@ namespace Invert.uFrame.ECS
         public string ShortName
         {
             get { return VariableName; }
-           
+
         }
 
         public string ValueExpression
@@ -932,7 +934,7 @@ namespace Invert.uFrame.ECS
                     }
                 }
                 return _variableType = new SystemTypeInfo(ActionFieldInfo.Type);
-                
+
             }
             set { _variableType = value; }
         }
@@ -943,7 +945,7 @@ namespace Invert.uFrame.ECS
         }
         public IEnumerable<IContextVariable> GetPropertyDescriptions()
         {
-            
+
             return VariableType.GetPropertyDescriptions(this);
         }
     }
@@ -1018,6 +1020,6 @@ namespace Invert.uFrame.ECS
     }
 
 
-    
+
 
 }

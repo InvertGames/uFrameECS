@@ -123,7 +123,7 @@ namespace Invert.uFrame.ECS
             base.Validate(errors);
             if (PropertySelection.Item == null)
             {
-                errors.AddError("Please select a property.",this.Identifier);
+                errors.AddError("Please select a property.",this);
             }
         }
     }

@@ -81,7 +81,7 @@ namespace Invert.uFrame.ECS {
                     {
                         GetInfo = () =>
                         {
-                            return List.Item == null ? null : List.Item.VariableType.InnerType;
+                            return List.Item == null || List.Item.VariableType == null ? null : List.Item.VariableType.InnerType;
                         }
                     };
                 }); 

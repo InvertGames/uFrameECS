@@ -107,7 +107,7 @@ namespace Invert.uFrame.ECS {
         {
             base.Validate(errors);
             if (SourceProperty == null) 
-                errors.AddError("Source Property not set",this.Identifier);
+                errors.AddError("Source Property not set",this.Node);
         }
 
         protected override void WriteHandlerInvoker(CodeMethodInvokeExpression handlerInvoker, CodeMemberMethod handlerFilterMethod)

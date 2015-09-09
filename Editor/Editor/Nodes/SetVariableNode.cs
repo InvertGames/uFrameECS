@@ -107,12 +107,12 @@ namespace Invert.uFrame.ECS {
             base.Validate(errors);
             if (VariableInputSlot.Item == null || ValueInputSlot.Item == null)
             {
-                errors.AddError("Variable and Value must be set.");
+                errors.AddError("Variable and Value must be set.", this.Node);
                 return;
             }
             if (VariableInputSlot.Item.VariableType.Equals(ValueInputSlot.Item.VariableType))
             {
-                errors.AddError(string.Format("Variable types {0} and {1} do not match.", VariableInputSlot.Item.VariableType, ValueInputSlot.Item.VariableType));
+                errors.AddError(string.Format("Variable types {0} and {1} do not match.", VariableInputSlot.Item.VariableType, ValueInputSlot.Item.VariableType),this.Node);
             }
         }
 
