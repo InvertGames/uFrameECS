@@ -23,7 +23,7 @@ namespace Invert.uFrame.ECS {
                 {
                     Repository = this.Repository,
                     Node = this.Node,
-                    Name = "A Input",
+                    Name = "A",
                     DoesAllowInputs = true,
                     Identifier = Identifier + ":" + "A"
 
@@ -47,7 +47,7 @@ namespace Invert.uFrame.ECS {
                 {
                     Repository = this.Repository,
                     Node = this.Node,
-                    Name = "B Input",
+                    Name = "B",
                     DoesAllowInputs = true,
                     Identifier = Identifier + ":" + "B"
 
@@ -83,6 +83,15 @@ namespace Invert.uFrame.ECS {
             }
         }
 
+        public override void Validate(List<ErrorInfo> errors)
+        {
+            base.Validate(errors);
+            if (AInput.Item == null)
+                errors.AddError("A input is required.",this);
+            if (BInput.Item == null)
+                errors.AddError("B input is required.", this);
+        }
+
         public override IEnumerable<IGraphItem> GraphItems
         {
             get
@@ -90,6 +99,11 @@ namespace Invert.uFrame.ECS {
                 yield return AInput;
                 yield return BInput;
             }
+        }
+
+        public override IEnumerable<NodeInputConfig> SlotConfigurations
+        {
+            get { return base.SlotConfigurations; }
         }
     }
 

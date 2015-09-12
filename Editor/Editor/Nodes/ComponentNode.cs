@@ -11,7 +11,20 @@ namespace Invert.uFrame.ECS {
     public class CollectionTypeInfo : ITypeInfo
     {
         public static SystemTypeInfo ListType = new SystemTypeInfo(typeof(IList));
-        public CollectionsChildItem ChildItem { get; set; } 
+        public CollectionsChildItem ChildItem { get; set; }
+
+        public bool IsArray { get { return false; } }
+
+        public bool IsList
+        {
+            get { return true; }
+        }
+
+        public bool IsEnum
+        {
+            get { return false; }
+        }
+
         public ITypeInfo InnerType { get { return ChildItem.MemberType; }}
         public string TypeName { get { return string.Format("List<{0}>", ChildItem.MemberType.FullName); }}
 

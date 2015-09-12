@@ -29,6 +29,18 @@ namespace Invert.uFrame.ECS {
             return Info.IsAssignableTo(info);
         }
 
+        public bool IsArray { get { return Info.IsArray; } }
+
+        public bool IsList
+        {
+            get { return Info.IsList; }
+        }
+
+        public bool IsEnum
+        {
+            get { return Info.IsEnum; }
+        }
+
         public ITypeInfo InnerType
         {
             get { return Info.InnerType; }
@@ -99,7 +111,7 @@ namespace Invert.uFrame.ECS {
                 );
 
             loop.Statements._("{0} = {1}[{0}Index]", Item.VariableName, List.VariableName);
-            loop.Statements._("{0}()", Next.VariableName);
+            loop.Statements._("System.StartCoroutine({0}())", Next.VariableName);
             ctx.CurrentStatements.Add(loop);
         }
 
@@ -130,7 +142,9 @@ namespace Invert.uFrame.ECS {
             }
         }
     }
-    
+
+
+
     public partial interface ILoopCollectionConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {
     }
 }

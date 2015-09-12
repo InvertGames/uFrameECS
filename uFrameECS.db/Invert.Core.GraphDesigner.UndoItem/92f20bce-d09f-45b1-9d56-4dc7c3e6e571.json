@@ -1,8 +1,0 @@
-{
-	"Identifier":"92f20bce-d09f-45b1-9d56-4dc7c3e6e571"	, 
-	"Time":"8/28/2015 4:02:53 PM"	, 
-	"Group":"16253"	, 
-	"DataRecordId":"50cd2d84-17fc-4689-99a8-1b32e3b0564f"	, 
-	"Type":2	, 
-	"RecordType":"ShellNodeConfig, Invert.Core.GraphDesigner.Pro, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"	, 
-	"Data":"{\r\n\t\"Color\":0\t, \r\n\t\"NodeStyle\":0\t, \r\n\t\"Inheritable\":false\t, \r\n\t\"IsClass\":false\t, \r\n\t\"Row\":0\t, \r\n\t\"Column\":0\t, \r\n\t\"Visibility\":0\t, \r\n\t\"Name\":\"_\"\t, \r\n\t\"GraphId\":\"5f0e4e63-96ee-4a23-b1e3-4cfce292bfaf\"\t, \r\n\t\"Identifier\":\"50cd2d84-17fc-4689-99a8-1b32e3b0564f\"}\r\n"}

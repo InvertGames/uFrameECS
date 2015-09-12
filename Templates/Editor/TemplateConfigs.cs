@@ -41,7 +41,9 @@ namespace Invert.uFrame.ECS.Templates
             //            RegisteredTemplateGeneratorsFactory.RegisterTemplate<EntityNode, EntityTemplate>();
 
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<CustomActionNode, CustomActionEditableTemplate>();
-            RegisteredTemplateGeneratorsFactory.RegisterTemplate<CustomActionNode, CustomActionDesignerTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<CustomActionNode, CustomActionDesignerTemplate>();      
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<CodeActionNode, CodeActionEditableTemplate>();
+            RegisteredTemplateGeneratorsFactory.RegisterTemplate<CodeActionNode, CodeActionDesignerTemplate>();
             RegisteredTemplateGeneratorsFactory.RegisterTemplate<SystemNode, LoaderTemplate>();
         }
     }
@@ -539,6 +541,68 @@ namespace Invert.uFrame.ECS.Templates
         }
 
         public TemplateContext<CustomActionNode> Ctx { get; set; }
+
+        public string Filename
+        {
+            get { return Path2.Combine("CustomActions", Ctx.Data.Name + ".cs"); }
+        }
+    }
+    [TemplateClass(TemplateLocation.DesignerFile), ForceBaseType(typeof(UFAction)), AsPartial]
+    [RequiresNamespace("uFrame.ECS")]
+    [RequiresNamespace("UnityEngine")]
+    [RequiresNamespace("uFrame.Attributes")]
+    public partial class CodeActionDesignerTemplate : IClassTemplate<CodeActionNode>, ITemplateCustomFilename
+    {
+        public string Filename
+        {
+            get { return Path2.Combine("CodeActions", Ctx.Data.Name + ".designer.cs"); }
+        }
+        public string OutputPath
+        {
+            get { return Path2.Combine("CustomActions", Ctx.Data.Name + ".designer.cs"); }
+        }
+
+        public bool CanGenerate
+        {
+            get { return true; }
+        }
+
+        public void TemplateSetup()
+        {
+            Ctx.CurrentDeclaration.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(ActionTitle).ToCodeReference(),
+                        new CodeAttributeArgument(new CodePrimitiveExpression(Ctx.Data.Name))));
+    
+        }
+
+        public TemplateContext<CodeActionNode> Ctx { get; set; }
+
+    }
+
+    [TemplateClass(TemplateLocation.EditableFile), ForceBaseType(typeof(UFAction)), AsPartial]
+    [RequiresNamespace("uFrame.ECS")]
+    [RequiresNamespace("uFrame.Attributes")]
+    [RequiresNamespace("UnityEngine")]
+    public partial class CodeActionEditableTemplate : IClassTemplate<CodeActionNode>, ITemplateCustomFilename
+    {
+
+        public string OutputPath
+        {
+            get { return Path2.Combine("CodeActions", Ctx.Data.Name + ".cs"); }
+        }
+
+        public bool CanGenerate
+        {
+            get { return true; }
+        }
+
+        public void TemplateSetup()
+        {
+            this.Ctx.CurrentDeclaration.BaseTypes.Clear();
+            var method = Ctx.CurrentDeclaration.public_override_func(typeof(void), "Execute");
+
+        }
+
+        public TemplateContext<CodeActionNode> Ctx { get; set; }
 
         public string Filename
         {

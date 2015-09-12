@@ -9,7 +9,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class ActionGroupNode : ActionGroupNodeBase, IVariableContextProvider, IVariableNameProvider {
+    public class ActionGroupNode : ActionGroupNodeBase, IVariableContextProvider {
         public override Color Color
         {
             get { return Color.blue; }
@@ -21,14 +21,6 @@ namespace Invert.uFrame.ECS {
 
         }
 
-        public IVariableNameProvider NameProvider
-        {
-            get { return this.Filter as IVariableNameProvider; }
-        }
-        public string GetNewVariableName(string prefix)
-        {
-            return NameProvider.GetNewVariableName(prefix);
-        }
     }
     
     public partial interface IActionGroupConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

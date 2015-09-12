@@ -10,7 +10,7 @@ namespace Invert.uFrame.ECS {
     using Invert.Core.GraphDesigner;
     
     
-    public class SystemNode : SystemNodeBase, IVariableNameProvider {
+    public class SystemNode : SystemNodeBase {
 
         private int _variableCount;
 

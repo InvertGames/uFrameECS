@@ -257,15 +257,15 @@ namespace Invert.uFrame.ECS
                     
                 };
 
-                foreach (var child in evtNode.Members)
-                {
-                    yield return new ContextVariable("Event", child.Name)
-                    {
-                        Repository = this.Repository,
-                        Node = this,
-                        VariableType = new SystemTypeInfo(child.Type)
-                    };
-                }
+                //foreach (var child in evtNode.Members)
+                //{
+                //    yield return new ContextVariable("Event", child.Name)
+                //    {
+                //        Repository = this.Repository,
+                //        Node = this,
+                //        VariableType = new SystemTypeInfo(child.Type)
+                //    };
+                //}
             }
             foreach (var input in FilterInputs)
             {
@@ -494,6 +494,7 @@ namespace Invert.uFrame.ECS
 
         public string GetNewVariableName(string prefix)
         {
+            InvertApplication.Log("YUP");
             return string.Format("{0}{1}", prefix, VariableCount++);
         }
     }

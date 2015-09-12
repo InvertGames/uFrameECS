@@ -61,6 +61,7 @@ namespace Invert.uFrame.ECS {
 
         public override IEnumerable<IMemberInfo> GetMembers()
         {
+  
             foreach (var item in SelectComponents)
             {
                 var info = item as ITypeInfo;
@@ -68,13 +69,27 @@ namespace Invert.uFrame.ECS {
                 yield return new DefaultMemberInfo()
                 {
                     MemberName = item.Name,
-                    MemberType = new SystemTypeInfo(typeof(MonoBehaviour),item)
+                    MemberType = item
                 };
             }
         }
 
         public IEnumerable<IContextVariable> GetVariables(IFilterInput input)
         {
+            yield return new ContextVariable(input.HandlerPropertyName, "EntityId")
+            {
+                Repository = this.Repository,
+                Node = this,
+                VariableType = new SystemTypeInfo(typeof(int)),
+
+            };
+            yield return new ContextVariable(input.HandlerPropertyName, "Entity")
+            {
+                Repository = this.Repository,
+                Node = this,
+                VariableType = new SystemTypeInfo(typeof(MonoBehaviour)),
+                //TypeInfo = typeof(MonoBehaviour)
+            };
 
             foreach (var select in GetMembers())
             {
@@ -83,30 +98,34 @@ namespace Invert.uFrame.ECS {
                 {
                     Repository = this.Repository, 
                     Node = this, 
-                    VariableType = this
+                    VariableType = select.MemberType
                 };
-                foreach (var item in select.MemberType.GetMembers())
+                if (!select.MemberType.IsEnum)
                 {
-                    yield return new ContextVariable(input.HandlerPropertyName, select.MemberName, item.MemberName)
+                    foreach (var item in select.MemberType.GetMembers())
                     {
-                        Repository = this.Repository,
-                        Node = this,
-                        VariableType = this
-                    };
+                        yield return new ContextVariable(input.HandlerPropertyName, select.MemberName, item.MemberName)
+                        {
+                            Repository = this.Repository,
+                            Node = this,
+                            VariableType = item.MemberType
+                        };
+                    }
                 }
-                //yield return new ContextVariable(input.HandlerPropertyName, select.Name, "EntityId") { Repository = this.Repository, Node = this, VariableType = "int" };
-                //yield return new ContextVariable(input.HandlerPropertyName, select.Name, "Entity") { Repository = this.Repository, Node = this, VariableType = "uFrame.ECS.Entity" };
+          
+                ////yield return new ContextVariable(input.HandlerPropertyName, select.Name, "EntityId") { Repository = this.Repository, Node = this, VariableType = "int" };
+                ////yield return new ContextVariable(input.HandlerPropertyName, select.Name, "Entity") { Repository = this.Repository, Node = this, VariableType = "uFrame.ECS.Entity" };
 
-                //foreach (var item in select.PersistedItems.OfType<ITypedItem>())
-                //{
-                //    yield return new ContextVariable(input.HandlerPropertyName, select.Name, item.Name)
-                //    {
-                //        Repository = this.Repository,
-                //        Source = item,
-                //        VariableType = item.RelatedTypeName,
-                //        Node = this
-                //    };
-                //}
+                ////foreach (var item in select.PersistedItems.OfType<ITypedItem>())
+                ////{
+                ////    yield return new ContextVariable(input.HandlerPropertyName, select.Name, item.Name)
+                ////    {
+                ////        Repository = this.Repository,
+                ////        Source = item,
+                ////        VariableType = item.RelatedTypeName,
+                ////        Node = this
+                ////    };
+                ////}
             }
         }
 

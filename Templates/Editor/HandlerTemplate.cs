@@ -145,12 +145,16 @@ namespace Invert.uFrame.ECS.Templates
                 if (variableReference != null)
                 _.CurrentStatements.Add(new CodeAssignStatement(new CodeSnippetExpression(input.VariableName),
                     new CodeSnippetExpression(variableReference.VariableName)));
-            }
+            } 
             var inputVariable = input.InputFrom<VariableNode>();
             if (inputVariable != null)
             {
-        
-                _.CurrentDeclaration.Members.Add(inputVariable.GetFieldStatement());
+                var field = inputVariable.GetFieldStatement();
+                if (_.CurrentDeclaration.Members.OfType<CodeMemberField>().All(p => p.Name != field.Name))
+                {
+                    _.CurrentDeclaration.Members.Add(inputVariable.GetFieldStatement());
+                }
+                
             }
 
 

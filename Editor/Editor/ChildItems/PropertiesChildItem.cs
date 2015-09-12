@@ -22,6 +22,11 @@ namespace Invert.uFrame.ECS {
             }
             set { _friendlyName = value; }
         }
+
+        public override string DefaultTypeName
+        {
+            get { return typeof(int).Name; }
+        }
     }
     
     public partial interface IPropertiesConnectable : Invert.Core.GraphDesigner.IDiagramNodeItem, Invert.Core.GraphDesigner.IConnectable {

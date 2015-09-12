@@ -1,3 +1,5 @@
+using Invert.Core.GraphDesigner;
+
 namespace Invert.uFrame.ECS {
     using System;
     using System.Collections;
@@ -9,6 +11,32 @@ namespace Invert.uFrame.ECS {
         
         public VariableNodeViewModel(VariableNode graphItemObject, Invert.Core.GraphDesigner.DiagramViewModel diagramViewModel) : 
                 base(graphItemObject, diagramViewModel) {
+        }
+
+        protected override void CreateContent()
+        {
+            
+            foreach (var item in GraphItem.GraphItems.OfType<GenericSlot>())
+            {
+                var vm = new InputOutputViewModel()
+                {
+                    Name = item.Name,
+                    IsOutput = item is IActionOut,
+                    IsInput = !(item is IActionOut),
+                    DataObject = item,
+                    IsNewLine = true,
+                    DiagramViewModel = DiagramViewModel
+                };
+                ContentItems.Add(vm);
+                if (vm.InputConnector != null)
+                {
+                    vm.InputConnector.Style = ConnectorStyle.Circle;
+                    vm.InputConnector.TintColor = UnityEngine.Color.green;
+                }
+
+            }
+           
+            base.CreateContent();
         }
     }
 }

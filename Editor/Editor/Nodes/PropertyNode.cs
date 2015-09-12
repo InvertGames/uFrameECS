@@ -12,6 +12,17 @@ namespace Invert.uFrame.ECS
 
     public class PropertyNode : PropertyNodeBase, IContextVariable
     {
+
+        public override void RecordRemoved(IDataRecord record)
+        {
+            base.RecordRemoved(record);
+            var container = this.Filter;
+            if (container == null || container.Identifier == record.Identifier)
+            {
+                Repository.Remove(this);
+            }
+        }
+
         private PropertyIn _o;
         private PropertySelection _propertySelection;
 
@@ -57,8 +68,6 @@ namespace Invert.uFrame.ECS
                 return item.ShortName;
             }
         }
-
-        
 
         public ITypedItem Source
         {
@@ -162,17 +171,18 @@ namespace Invert.uFrame.ECS
 
     public class TypeSelection : SelectionFor<IClassTypeNode,TypeSelectionValue>, IActionIn
     {
+        public Func<IEnumerable<IDataRecord>> Filter { get; set; }
         public override IEnumerable<IDataRecord> GetAllowed()
         {
+            if (Filter != null)
+            {
+                return Filter();
+            }
             return Repository.AllOf<IClassTypeNode>().OfType<IDataRecord>();
         }
 
         public ActionFieldInfo ActionFieldInfo { get; set; }
-        public override string Name
-        {
-            get { return ActionFieldInfo.Name; }
-            set { base.Name = value; }
-        }
+       
         public string VariableName
         {
             get
@@ -184,6 +194,10 @@ namespace Invert.uFrame.ECS
         }
         public ITypeInfo VariableType { get { return new SystemTypeInfo(typeof(Type)); } }
 
+        public override bool AllowSelection
+        {
+            get { return true; }
+        }
 
         IContextVariable IActionIn.Item
         {

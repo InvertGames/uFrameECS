@@ -288,4 +288,11 @@ namespace Invert.uFrame.ECS {
                 base(viewModel) {
         }
     }
+    
+    public class CodeActionNodeDrawerBase : GenericNodeDrawer<CodeActionNode,CodeActionNodeViewModel> {
+        
+        public CodeActionNodeDrawerBase(CodeActionNodeViewModel viewModel) : 
+                base(viewModel) {
+        }
+    }
 }

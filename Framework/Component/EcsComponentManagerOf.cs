@@ -104,8 +104,12 @@ namespace uFrame.ECS
         {
             if (component == null) return;
             if (_components == null || !_components.ContainsKey(component.EntityId)) return;
-
+            
             _components[component.EntityId].Remove((TComponentType)component);
+            if (_components[component.EntityId].Count < 1)
+            {
+                _components.Remove(component.EntityId);
+            }
             if (_RemovedObservable != null)
             {
                 _RemovedObservable.OnNext((TComponentType)component);

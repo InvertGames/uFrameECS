@@ -226,7 +226,16 @@ namespace Invert.uFrame.ECS
         string GetNewVariableName(string prefix);
     }
     public class ActionNode : ActionNodeBase, ICodeOutput, IConnectableProvider
-    {
+    { 
+        public override void Validate(List<ErrorInfo> errors)
+        {
+            base.Validate(errors);
+            if (Meta == null)
+            {
+                errors.AddError(string.Format("Action {0} was not found.", MetaType), this);
+            }
+        }
+
         public override bool AllowMultipleOutputs
         {
             get { return false; }
@@ -301,7 +310,7 @@ namespace Invert.uFrame.ECS
                 // The outputs that should be assigned to by the method
                 foreach (var @out in this.GraphItems.OfType<ActionOut>())
                 {
-                    if (@out.Name == "Result")
+                    if (@out.ActionFieldInfo != null && @out.ActionFieldInfo.IsReturn)
                     {
                         resultOut = @out;
                         continue;
@@ -371,7 +380,7 @@ namespace Invert.uFrame.ECS
                     return null;
                 if (!uFrameECS.Actions.ContainsKey(MetaType))
                 {
-                    InvertApplication.LogError(string.Format("{0} action was not found in graph {1}.", MetaType, this.Graph.Name));
+                    //InvertApplication.LogError(string.Format("{0} action was not found in graph {1}.", MetaType, this.Graph.Name));
                     return null;
                 }
                 return _meta ?? (_meta = uFrameECS.Actions[MetaType]);
@@ -384,14 +393,12 @@ namespace Invert.uFrame.ECS
         }
 
         [JsonProperty]
-        public string MetaType
+        public virtual string MetaType
         {
             get { return _metaType; }
             set
             {
                 _metaType = value;
-
-
             }
         }
 
@@ -493,7 +500,7 @@ namespace Invert.uFrame.ECS
         }
 
 
-        public IEnumerable<IConnectable> Connectables
+        public virtual IEnumerable<IConnectable> Connectables
         {
             get
             {
@@ -518,6 +525,7 @@ namespace Invert.uFrame.ECS
 
         private void WriteActionOutput(TemplateContext _, IActionOut output)
         {
+            if (output.ActionFieldInfo != null && output.ActionFieldInfo.IsReturn) return;
             _._("{0} = {1}.{2}", output.VariableName, VarName, output.Name);
             var variableReference = output.OutputTo<IContextVariable>();
             if (variableReference != null)
@@ -567,47 +575,111 @@ namespace Invert.uFrame.ECS
     {
 
     }
-
-    //public class GroupIn : SelectionFor<IMappingsConnectable, GroupSelection>, IActionIn
-    //{
-    //    public override bool AllowInputs
-    //    {
-    //        get { return false; }
-    //    }
-
-    //    public override IEnumerable<IDataRecord> GetAllowed()
-    //    {
-    //        foreach (var item in Repository.AllOf<IMappingsConnectable>())
-    //        {
-    //            yield return item;
-    //        }
-    //    }
-
-    //    public ActionFieldInfo ActionFieldInfo { get; set; }
-    //    public string VariableName
-    //    {
-    //        get
-    //        {
-    //            var actionNode = Node as ActionNode;
-    //            return actionNode.Meta.Type.Name + "_" + Name;
-    //        }
-    //    }
-
-    //    public object VariableType { get { return typeof(Type).Name; } }
-
-    //    public override string Name
-    //    {
-    //        get { return ActionFieldInfo.Name; }
-    //        set { base.Name = value; }
-    //    }
+    public class CustomAction : SequenceItemNode, IConnectableProvider
+    {
 
 
+        public virtual IEnumerable<IActionIn> GetInputs()
+        {
+            yield break;
+        }
+        public virtual IEnumerable<IActionOut> GetOutputs()
+        {
+            yield break;
+        }
 
-    //    IContextVariable IActionIn.Item
-    //    {
-    //        get { return null; }
-    //    }
-    //}
+        public virtual IEnumerable<ActionBranch> GetBranches()
+        {
+            yield break;
+        }
+
+        public override IEnumerable<IGraphItem> GraphItems
+        {
+            get
+            {
+                if (Repository == null)
+                    yield break;
+                foreach (var item in GetInputs())
+                {
+                    yield return item;
+                } 
+                foreach (var item in GetBranches())
+                {
+                    yield return item;
+                }
+                foreach (var item in GetOutputs())
+                {
+                    yield return item;
+                }
+              
+            }
+        }
+
+        public virtual IEnumerable<IConnectable> Connectables
+        {
+            get { return GraphItems.OfType<IConnectable>(); }
+        }
+    }
+
+    [ActionTitle("Enum Switch"), uFrameCategory("Enums", "Conditions")]
+    public class EnumSwitch : CustomAction
+    {
+        private VariableIn _enumIn;
+        private ActionBranch[] _branches;
+
+        public VariableIn EnumIn
+        {
+            get { return GetSlot(ref _enumIn,"Enum",_=>_.DoesAllowInputs = true); }
+        }
+        
+        public override IEnumerable<IGraphItem> GraphItems
+        {
+            get
+            { 
+                if (Repository == null)
+                    yield break;
+
+                yield return EnumIn;
+
+                if (EnumIn.Item == null)
+                {
+                    yield break;
+                }
+                if (Branches != null)
+                {
+                    foreach (var item in Branches)
+                        yield return item;
+                }
+                
+            }
+        }
+          
+        public override IEnumerable<IConnectable> Connectables
+        {
+            get
+            {
+                yield return EnumIn;
+                if (_branches != null)
+                    foreach (var item in Branches) yield return item;
+            }
+        } 
+
+        public ActionBranch[] Branches
+        {
+            get
+            {
+                return _branches ?? (_branches = EnumIn.Item == null ? null : EnumIn.Item.VariableType.GetMembers()
+                          .Select(p => CreateSlot<ActionBranch>(p.MemberName))
+                          .ToArray());
+            }
+            set { _branches = value; }
+        }
+
+        public override void WriteCode(IHandlerNodeVisitor visitor, TemplateContext ctx)
+        {
+            base.WriteCode(visitor, ctx);
+        }
+    }
 
     public class ActionIn : SelectionFor<IContextVariable, VariableSelection>, IActionIn
     {
@@ -618,10 +690,12 @@ namespace Invert.uFrame.ECS
             var outputVariable = output as IContextVariable;
             if (outputVariable != null)
             {
-                if (!outputVariable.VariableType.IsAssignableTo(VariableType))
-                {
-                    return false;
-                }
+                var varType = outputVariable.VariableType;
+                if (varType != null)
+                    if (!varType.IsAssignableTo(VariableType))
+                    {
+                        return false;
+                    }
             }
             return true;
         }
@@ -772,7 +846,7 @@ namespace Invert.uFrame.ECS
 
         public override IContextVariable Item
         {
-            get { return base.Item; }
+            get { return base.Item; } 
         }
 
         public IVariableContextProvider Handler

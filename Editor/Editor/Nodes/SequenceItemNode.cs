@@ -1,3 +1,4 @@
+using Invert.Core;
 using Invert.Json;
 using UnityEngine;
 
@@ -75,14 +76,14 @@ namespace Invert.uFrame.ECS
         public string VariableName
         {
             get {
-                if (VariableNameProvider == null) return null;
-                return _variableName ?? (VariableName = VariableNameProvider.GetNewVariableName(this.GetType().Name)); }
+                return _variableName ?? (_variableName = VariableNameProvider.GetNewVariableName(this.GetType().Name));
+            }
             set { this.Changed("VariableName", ref _variableName, value); }
         }
 
         public IVariableNameProvider VariableNameProvider
         {
-            get { return Filter as IVariableNameProvider; }
+            get { return Graph as IVariableNameProvider; }
         }
 
         public IEnumerable<IContextVariable> GetAllContextVariables()
@@ -140,26 +141,5 @@ namespace Invert.uFrame.ECS
             }
         }
 
-        //public override IEnumerable<IDiagramNode> FilterNodes
-        //{
-        //    get
-        //    {
-        //        yield return this;
-        //        foreach (
-        //            var item in
-        //                Repository.AllOf<SequenceItemNode>()
-        //                    .Where(p => p.FilterId == this.Identifier)
-        //                    .OfType<IDiagramNode>())
-        //        {
-        //            yield return item;
-        //        }
-
-        //    }
-        //}
-
-        //public override IEnumerable<IFilterItem> FilterItems
-        //{
-        //    get { return FilterNodes.OfType<IFilterItem>(); }
-        //}
     }
 }

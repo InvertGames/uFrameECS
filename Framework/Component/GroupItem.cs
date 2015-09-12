@@ -16,7 +16,7 @@ namespace uFrame.ECS
             set { throw new NotImplementedException(); }
         }
 
-        public Entity EntityView
+        public Entity Entity
         {
             get { return _entityView ?? (_entityView = EntityService.GetEntityView(EntityId)); }
         }

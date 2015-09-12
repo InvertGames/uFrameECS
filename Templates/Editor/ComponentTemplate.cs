@@ -38,7 +38,7 @@ namespace Invert.uFrame.ECS.Templates
             }
         }
 
-        [ForEach("Collections"), GenerateProperty, WithName, WithLazyField]
+        [ForEach("Collections"), GenerateProperty, WithName, WithLazyField(null,typeof(SerializeField))]
         public List<_ITEMTYPE_> Collection { get; set; }
     }
 }

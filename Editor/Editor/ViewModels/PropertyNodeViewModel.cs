@@ -12,6 +12,11 @@ namespace Invert.uFrame.ECS {
                 base(graphItemObject, diagramViewModel) {
         }
 
+        public override IEnumerable<string> Tags
+        {
+            get { yield break; }
+        }
+
         protected override void DataObjectChanged()
         {
             base.DataObjectChanged();

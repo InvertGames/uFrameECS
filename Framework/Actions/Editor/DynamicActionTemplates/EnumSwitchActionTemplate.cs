@@ -16,43 +16,13 @@ public class EcsDyanmicActionTemplates : DiagramPlugin
     }
     public override void Initialize(UFrameContainer container)
     {
-        RegisteredTemplateGeneratorsFactory.RegisterTemplate<EnumNode, EnumSwitchActionTemplate>();
+
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<ComponentNode, AddComponentTemplate>();
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<EventNode, PublishActionTemplate>();
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<EntityNode, SpawnEntityTemplate>();
         RegisteredTemplateGeneratorsFactory.RegisterTemplate<IMappingsConnectable, LoopComponentsTemplate>();
     }
 }
-
-[TemplateClass(TemplateLocation.DesignerFile)]
-public partial class EnumSwitchActionTemplate : UFAction, IClassTemplate<EnumNode>
-{
-    public string OutputPath { get { return Path2.Combine(Ctx.Data.Graph.Name, "Actions"); } }
-    public bool CanGenerate { get { return true; } }
-
-    [GenerateMethod]
-    public override void Execute()
-    {
-        Ctx._("return true");
-    }
-
-    public void TemplateSetup()
-    {
-        Ctx.CurrentDeclaration.CustomAttributes.Add(
-            new CodeAttributeDeclaration(typeof(ActionTitle).ToCodeReference(),
-                new CodeAttributeArgument(
-                    new CodePrimitiveExpression(string.Format("Switch/{0}/{1}", Ctx.Data.Graph.Name, Ctx.Data.Name)))));
-        Ctx.CurrentDeclaration.Name = Ctx.Data.Name + "Switch";
-        foreach (var item in Ctx.Data.Items)
-        {
-            var field = Ctx.CurrentDeclaration._public_(typeof(Action), item.Name);
-            field.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(Out).ToCodeReference()));
-        }
-    }
-
-    public TemplateContext<EnumNode> Ctx { get; set; }
-}
-
 
 [TemplateClass(TemplateLocation.DesignerFile)]
 

@@ -14,6 +14,16 @@ namespace Invert.uFrame.ECS
 
     public class VariableNode : VariableNodeBase, IContextVariable , ITypedItem
     {
+
+        public override void RecordRemoved(IDataRecord record)
+        {
+            base.RecordRemoved(record);
+            var container = this.Filter;
+            if (container == null || container.Identifier == record.Identifier)
+            {
+                Repository.Remove(this);
+            }
+        }
         public static int VariableCount;
         private string _variableName;
 
@@ -73,18 +83,20 @@ namespace Invert.uFrame.ECS
 
             }
         }
+
+
+
         [JsonProperty, InspectorProperty]
         public string VariableName
         {
             get {
-                if (VariableNameProvider == null) return null;
-                return _variableName ?? (VariableName = VariableNameProvider.GetNewVariableName(this.GetType().Name)); }
+                return _variableName ?? (_variableName = VariableNameProvider.GetNewVariableName(this.GetType().Name)); }
             set { this.Changed("VariableName", ref _variableName, value); }
         }
 
         public IVariableNameProvider VariableNameProvider
         {
-            get { return Filter as IVariableNameProvider; }
+            get { return Graph as IVariableNameProvider; }
         }
 
         public string AsParameter
